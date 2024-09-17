@@ -12,9 +12,25 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { MessagesModule } from './messages/messages.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import  typeOrmConfig  from './config/typeormConfig';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [ ExercisesModule, UserRoutineExerciseModule, UserRoutineLogModule, UsersModule, SubscriptionsModule, RoutinesModule, PaymentsModule, NotificationsModule, MessagesModule, UserProgressModule, AuthModule],
+  imports: [ 
+   
+      ConfigModule.forRoot({
+        isGlobal: true,
+        load: [typeOrmConfig] // através de este import se trae la clave typeorm creada en el config
+      }),
+      TypeOrmModule.forRootAsync({
+        inject: [ConfigService],
+        useFactory: (configService : ConfigService) => 
+          configService.get('typeorm'),//esta es la clave creada en el config en typeorm.ts
+      }),
+    
+    
+    ExercisesModule, UserRoutineExerciseModule, UserRoutineLogModule, UsersModule, SubscriptionsModule, RoutinesModule, PaymentsModule, NotificationsModule, MessagesModule, UserProgressModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

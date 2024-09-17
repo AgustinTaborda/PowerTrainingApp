@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 
 @Entity('payments')
 export class PaymentEntity {
+    @PrimaryGeneratedColumn('uuid')
     id: string = uuid();
     
     @Column({ type: 'date'})
@@ -20,7 +21,7 @@ export class PaymentEntity {
     @Column({ type: 'varchar',length: 255})
     transactionId: string = uuid(); // Para que se usaría?
 
-    @Column({ type: 'number', precision: 10, scale: 2})
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
     discount: number;
    
 }
