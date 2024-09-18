@@ -21,7 +21,11 @@ const options = {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document,options);
+ 
 
+
+
+  app.enableCors()
   await app.listen(3000);
 }
 bootstrap();
