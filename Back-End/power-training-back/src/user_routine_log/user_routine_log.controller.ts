@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserRoutineLogService } from './user_routine_log.service';
 import { CreateUserRoutineLogDto } from './dto/create-user_routine_log.dto';
 import { UpdateUserRoutineLogDto } from './dto/update-user_routine_log.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user-routine-log')
 @Controller('user-routine-log')
 export class UserRoutineLogController {
   constructor(private readonly userRoutineLogService: UserRoutineLogService) {}
