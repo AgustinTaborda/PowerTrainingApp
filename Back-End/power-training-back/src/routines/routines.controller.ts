@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { RoutinesService } from './routines.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('routines')
 @Controller('routines')
 export class RoutinesController {
   constructor(private readonly routinesService: RoutinesService) {}

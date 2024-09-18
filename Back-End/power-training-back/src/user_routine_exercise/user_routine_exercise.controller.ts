@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserRoutineExerciseService } from './user_routine_exercise.service';
 import { CreateUserRoutineExerciseDto } from './dto/create-user_routine_exercise.dto';
 import { UpdateUserRoutineExerciseDto } from './dto/update-user_routine_exercise.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user-routine-exercise')
 @Controller('user-routine-exercise')
 export class UserRoutineExerciseController {
   constructor(private readonly userRoutineExerciseService: UserRoutineExerciseService) {}

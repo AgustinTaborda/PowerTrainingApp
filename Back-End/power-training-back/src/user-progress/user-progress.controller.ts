@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserProgressService } from './user-progress.service';
 import { CreateUserProgressDto } from './dto/create-user-progress.dto';
 import { UpdateUserProgressDto } from './dto/update-user-progress.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user-progress')
 @Controller('user-progress')
 export class UserProgressController {
   constructor(private readonly userProgressService: UserProgressService) {}
