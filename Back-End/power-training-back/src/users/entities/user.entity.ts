@@ -15,7 +15,7 @@ export class UserEntity {
     @Column({ type: 'date'})
     birthDay: Date;
 
-    @Column({ type: 'boolean'})
+    @Column({ type: 'boolean', default: false})
     isAdmin: boolean;
 
     @Column({ type: 'varchar',length: 255})
@@ -24,7 +24,7 @@ export class UserEntity {
     @Column({ type: 'varchar',length: 255})
     password: string;
     
-    @Column({ type: 'date'})
+    @Column({ type: 'date',default: new Date()})
     subscriptionEndDate: Date;
     
 
