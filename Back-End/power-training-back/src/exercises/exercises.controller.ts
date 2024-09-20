@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('exercises')
 @Controller('exercises')
@@ -15,8 +15,13 @@ export class ExercisesController {
   }
 
   @Get()
-  findAll() {
-    return this.exercisesService.findAll();
+  @ApiQuery({ name: 'limit', required: false, example: 5, description: 'Limite de items por página' })
+  @ApiQuery({ name: 'page', required: false, example: 1, description: 'Número de página' })
+  findAll(
+        @Query('limit') limit: number = 5,
+        @Query('page') page: number = 1
+        ) {
+    return this.exercisesService.findAll({limit, page});
   }
 
   @Get(':id')

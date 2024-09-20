@@ -14,8 +14,17 @@ export class ExercisesService {
     return await this.exercisesRepository.save(exercise)
   }
 
- async findAll() {
-    return await this.exercisesRepository.find();
+ async findAll({limit, page}): Promise<ExerciseEntity[]> {
+    page = Math.max(1, Math.round(page)); 
+    limit = Math.max(1, Math.round(limit)); 
+
+    const exercises: ExerciseEntity[] = await this.exercisesRepository.find({
+      take: limit,
+      skip: (page - 1) * limit,
+      order: { name: 'ASC' }
+    });
+    
+    return exercises;
   }
 
  async findOne(id: uuid): Promise<ExerciseEntity> {
