@@ -37,15 +37,15 @@ export class ExercisesService {
       
       // Aplicar filtros dinámicos
       if (filters.name) {
-        qb.andWhere('exercises.name LIKE :name', { name: `%${filters.name}%` });
+        qb.andWhere('LOWER(exercises.name) LIKE LOWER(:name)', { name: `%${filters.name}%` });
       }
       
       if (filters.benefits) {
-        qb.andWhere('exercises.benefits LIKE :benefits', { benefits: `%${filters.benefits}%` });
+        qb.andWhere('LOWER(exercises.benefits) LIKE LOWER(:benefits)', { benefits: `%${filters.benefits}%` });
       }
       
       if (filters.tags) {
-        qb.andWhere('exercises.tags LIKE :tags', { tags: `%${filters.tags}%` });
+        qb.andWhere('LOWER(exercises.tags) LIKE LOWER(:tags)', { tags: `%${filters.tags}%` });
       }
       
   
