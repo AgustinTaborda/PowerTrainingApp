@@ -33,20 +33,21 @@ export class ExercisesService {
     limit: number = 10 // Límite de resultados por página, por defecto 10
   ): Promise<{ data: ExerciseEntity[], count: number }> {
     try {
-      const qb = this.exercisesRepository.createQueryBuilder('users');
+      const qb = this.exercisesRepository.createQueryBuilder('exercises');
       
       // Aplicar filtros dinámicos
       if (filters.name) {
-        qb.andWhere('LOWER(users.name) = LOWER(:name)', { name: filters.name });
+        qb.andWhere('exercises.name LIKE :name', { name: `%${filters.name}%` });
       }
-  
+      
       if (filters.benefits) {
-        qb.andWhere('users.lastName = LOWER(:lastname)', { lastname: filters.benefits });
+        qb.andWhere('exercises.benefits LIKE :benefits', { benefits: `%${filters.benefits}%` });
       }
-  
+      
       if (filters.tags) {
-        qb.andWhere('users.birthDay = :birthday', { birthday: filters.tags });
+        qb.andWhere('exercises.tags LIKE :tags', { tags: `%${filters.tags}%` });
       }
+      
   
       // Paginación: definir el offset y el límite
       const offset = (page - 1) * limit;
