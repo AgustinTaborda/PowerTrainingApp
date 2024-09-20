@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Query, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  Query, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiParam, ApiQuery, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam,  ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 
 @ApiTags('users')
@@ -32,6 +32,7 @@ export class UsersController {
     @Query('page') page: number = 1
   ) {
     return this.usersService.findAll(limit, page);
+  }
   @Get('/byFilters')
   @ApiOperation({ summary: 'Retrieve all users that match with criteria, name,lastname,birthday,isadmin,email, example: users/byFilters?email=myemail@mail.com&name=jhon&isadmin=true' }) 
   
@@ -42,6 +43,7 @@ export class UsersController {
   @ApiQuery({ name: 'email', required: false, type: String })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
+
   findAllByFilters(
     @Query('name') name?: string,
     @Query('lastname') lastname?: string,
