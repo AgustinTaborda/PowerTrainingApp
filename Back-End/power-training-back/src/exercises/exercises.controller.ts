@@ -4,12 +4,21 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ExerciseEntity } from './entities/exercise.entity';
+import { ExerciseSeed } from './exercises.seed';
 
 @ApiTags('exercises')
 @Controller('exercises')
 export class ExercisesController {
-  constructor(private readonly exercisesService: ExercisesService) {}
+  constructor(
+    private readonly exercisesService: ExercisesService,
+    private readonly exerciseSeed: ExerciseSeed
+    
+  ) {}
 
+  @Post('/seed')
+  seedExercises() {
+    return this.exerciseSeed.seedExercises();
+  }
   @Post()
   create(@Body() createExerciseDto: CreateExerciseDto) {
     return this.exercisesService.create(createExerciseDto);
