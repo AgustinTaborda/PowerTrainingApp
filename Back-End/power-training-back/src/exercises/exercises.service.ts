@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,17 +14,52 @@ export class ExercisesService {
     return await this.exercisesRepository.save(exercise)
   }
 
- async findAll({limit, page}): Promise<ExerciseEntity[]> {
-    page = Math.max(1, Math.round(page)); 
-    limit = Math.max(1, Math.round(limit)); 
+//  async findAll({limit, page}): Promise<ExerciseEntity[]> {
+//     page = Math.max(1, Math.round(page)); 
+//     limit = Math.max(1, Math.round(limit)); 
 
-    const exercises: ExerciseEntity[] = await this.exercisesRepository.find({
-      take: limit,
-      skip: (page - 1) * limit,
-      order: { name: 'ASC' }
-    });
+//     const exercises: ExerciseEntity[] = await this.exercisesRepository.find({
+//       take: limit,
+//       skip: (page - 1) * limit,
+//       order: { name: 'ASC' }
+//     });
     
-    return exercises;
+//     return exercises;
+//   }
+
+  async findAllByFilters(
+    filters: { name?: string, benefits?: string, tags?: string },
+    page: number = 1,  // Página actual, por defecto es la 1
+    limit: number = 10 // Límite de resultados por página, por defecto 10
+  ): Promise<{ data: ExerciseEntity[], count: number }> {
+    try {
+      const qb = this.exercisesRepository.createQueryBuilder('users');
+      
+      // Aplicar filtros dinámicos
+      if (filters.name) {
+        qb.andWhere('LOWER(users.name) = LOWER(:name)', { name: filters.name });
+      }
+  
+      if (filters.benefits) {
+        qb.andWhere('users.lastName = LOWER(:lastname)', { lastname: filters.benefits });
+      }
+  
+      if (filters.tags) {
+        qb.andWhere('users.birthDay = :birthday', { birthday: filters.tags });
+      }
+  
+      // Paginación: definir el offset y el límite
+      const offset = (page - 1) * limit;
+      qb.skip(offset).take(limit);
+  
+      // Obtener los resultados y el total
+      const [data, count] = await qb.getManyAndCount(); // Esto devuelve los resultados y el conteo total de registros
+  
+      return { data, count }; // Devolvemos los resultados y el total
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 
  async findOne(id: uuid): Promise<ExerciseEntity> {
