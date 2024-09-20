@@ -15,8 +15,17 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async findAll() {
-    return await this.userRepository.find();
+  async findAll(limit:number, page:number) {
+    page = Math.max(1, Math.round(page)); 
+    limit = Math.max(1, Math.round(limit)); 
+
+    const users: UserEntity[] = await this.userRepository.find({
+      take: limit,
+      skip: (page - 1) * limit,
+      order: { name: 'ASC' }
+    });
+    
+    return users;
   }
 
   async findOne(id: uuid) {
