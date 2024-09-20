@@ -26,7 +26,7 @@ export class ExercisesController {
   // }
 
   @Get('/')
-  @ApiOperation({ summary: 'Retrieve all users that match with criteria, name,lastname,birthday,isadmin,email, example: /exercises?name=tricep polea&page=1&limit=5' }) 
+  @ApiOperation({ summary: 'Retrieve all excercises' }) 
 
   @ApiQuery({ name: 'name', required: false, type: String })
   @ApiQuery({ name: 'benefits', required: false, type: String })

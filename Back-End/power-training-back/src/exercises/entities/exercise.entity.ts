@@ -11,7 +11,7 @@ export class ExerciseEntity {
     @Column({ type: 'varchar', length: 255 })
     description: string;
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ name: 'urlvideoexample',type: 'varchar', length: 255 })
     urlVideoExample: string;
 
     @Column({ type: 'varchar', length: 255 })
