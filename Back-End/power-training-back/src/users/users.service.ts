@@ -30,48 +30,48 @@ export class UsersService {
   }
   
 
-    async findAllByFilters(
-      filters: { name?: string, lastname?: string, birthday?: string, isadmin?: Boolean, email?: string },
-      page: number = 1,  // Página actual, por defecto es la 1
-      limit: number = 10 // Límite de resultados por página, por defecto 10
-    ): Promise<{ data: UserEntity[], count: number }> {
-      try {
-        const qb = this.userRepository.createQueryBuilder('users');
-        
-        // Aplicar filtros dinámicos
-        if (filters.name) {
-          qb.andWhere('LOWER(users.name) = LOWER(:name)', { name: filters.name });
-        }
-    
-        if (filters.lastname) {
-          qb.andWhere('users.lastName = LOWER(:lastname)', { lastname: filters.lastname });
-        }
-    
-        if (filters.birthday) {
-          qb.andWhere('users.birthDay = :birthday', { birthday: filters.birthday });
-        }
-    
-        if (filters.isadmin !== undefined) {
-          qb.andWhere('users.isAdmin = :isadmin', { isadmin: filters.isadmin });
-        }
-    
-        if (filters.email) {
-          qb.andWhere('users.email = LOWER(:email)', { email: filters.email });
-        }
-    
-        // Paginación: definir el offset y el límite
-        const offset = (page - 1) * limit;
-        qb.skip(offset).take(limit);
-    
-        // Obtener los resultados y el total
-        const [data, count] = await qb.getManyAndCount(); // Esto devuelve los resultados y el conteo total de registros
-    
-        return { data, count }; // Devolvemos los resultados y el total
-      } catch (error) {
-        console.log(error);
-        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+  async findAllByFilters(
+    filters: { name?: string, lastname?: string, birthday?: string, isadmin?: Boolean, email?: string },
+    page: number = 1,  // Página actual, por defecto es la 1
+    limit: number = 10 // Límite de resultados por página, por defecto 10
+  ): Promise<{ data: UserEntity[], count: number }> {
+    try {
+      const qb = this.userRepository.createQueryBuilder('users');
+      
+      // Aplicar filtros dinámicos
+      if (filters.name) {
+        qb.andWhere('LOWER(users.name) = LOWER(:name)', { name: filters.name });
       }
+  
+      if (filters.lastname) {
+        qb.andWhere('users.lastName = LOWER(:lastname)', { lastname: filters.lastname });
+      }
+  
+      if (filters.birthday) {
+        qb.andWhere('users.birthDay = :birthday', { birthday: filters.birthday });
+      }
+  
+      if (filters.isadmin !== undefined) {
+        qb.andWhere('users.isAdmin = :isadmin', { isadmin: filters.isadmin });
+      }
+  
+      if (filters.email) {
+        qb.andWhere('users.email = LOWER(:email)', { email: filters.email });
+      }
+  
+      // Paginación: definir el offset y el límite
+      const offset = (page - 1) * limit;
+      qb.skip(offset).take(limit);
+  
+      // Obtener los resultados y el total
+      const [data, count] = await qb.getManyAndCount(); // Esto devuelve los resultados y el conteo total de registros
+  
+      return { data, count }; // Devolvemos los resultados y el total
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
+  }
     
 
   async findOne(id: uuid) {
