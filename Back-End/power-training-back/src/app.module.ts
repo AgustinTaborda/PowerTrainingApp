@@ -11,10 +11,11 @@ import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MessagesModule } from './messages/messages.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
-import { AuthModule } from './auth/auth.module';
+//import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import  typeOrmConfig  from './config/typeormConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CloudfileManagerModule } from './cloudfile-manager/cloudfile-manager.module';
 
 @Module({
   imports: [ 
@@ -30,7 +31,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
     
     
-    ExercisesModule, UserRoutineExerciseModule, UserRoutineLogModule, UsersModule, SubscriptionsModule, RoutinesModule, PaymentsModule, NotificationsModule, MessagesModule, UserProgressModule, AuthModule],
+    ExercisesModule, UserRoutineExerciseModule, UserRoutineLogModule, UsersModule, SubscriptionsModule, RoutinesModule, PaymentsModule, NotificationsModule, MessagesModule, UserProgressModule,CloudfileManagerModule/*, AuthModule*/],
   controllers: [AppController],
   providers: [AppService],
 })
