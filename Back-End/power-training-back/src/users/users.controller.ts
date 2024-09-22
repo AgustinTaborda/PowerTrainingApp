@@ -13,7 +13,13 @@ export class UsersController {
   @Post('/seed')
   @ApiOperation({ summary: 'Seed users' })
   async seedUsers() {
-    return await this.usersService.seedUsers();
+    try {
+      await this.usersService.seedUsers();
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException('Error al cargar usuarios.')
+    }
+    return {message: 'Usuarios cargados correctamente.'}
   }
 
   

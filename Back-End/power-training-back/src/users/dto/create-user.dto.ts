@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { v4 as uuid } from "uuid";
-export class CreateUserDto {
 
+export class CreateUserDto {
     
    @ApiProperty({
             description : "Nombre del usuario",

@@ -11,11 +11,12 @@ import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MessagesModule } from './messages/messages.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
-//import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import  typeOrmConfig  from './config/typeormConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudfileManagerModule } from './cloudfile-manager/cloudfile-manager.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [ 
@@ -31,7 +32,24 @@ import { CloudfileManagerModule } from './cloudfile-manager/cloudfile-manager.mo
       }),
     
     
-    ExercisesModule, UserRoutineExerciseModule, UserRoutineLogModule, UsersModule, SubscriptionsModule, RoutinesModule, PaymentsModule, NotificationsModule, MessagesModule, UserProgressModule,CloudfileManagerModule/*, AuthModule*/],
+    ExercisesModule, 
+    AuthModule, 
+    UserRoutineExerciseModule, 
+    UserRoutineLogModule, 
+    UsersModule, 
+    SubscriptionsModule, 
+    RoutinesModule, 
+    PaymentsModule, 
+    NotificationsModule, 
+    MessagesModule, 
+    UserProgressModule,
+    CloudfileManagerModule,
+    JwtModule.register({
+      global: true,
+      signOptions: { expiresIn: '1h'},
+      secret: process.env.JWT_SECRET
+    })
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
