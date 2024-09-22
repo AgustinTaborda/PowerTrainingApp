@@ -1,37 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-//import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Controller, Post, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
-/*
-@ApiTags('auth')
+import { CredentialsDto } from './dto/credentials.dto';
+
+@ApiTags('Authorization')
 @Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+export class AuthController{
+    constructor(
+        private readonly authService:AuthService,
+    ) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
-  }
+    // @ApiBody({
+    //     description: 'Ingresar los datos del nuevo usuario',
+    //     type: CreateUserWithConfirmationDto
+    // })
+    // @HttpCode(HttpStatus.CREATED)
+    // @Post('signup')
+    // authSignUp(@Body() createUser:CreateUserWithConfirmationDto) {
+    //     const {password, passwordConfirmation, ...userDtoWithoutPassword} = createUser;
+        
+    //     if (password !== passwordConfirmation) {
+    //         throw new BadRequestException('Password do not match');
+    //     }
+    //     return this.authService.authSignUp({password, ...userDtoWithoutPassword})
+    // }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+    @Post('signin')
+    authSignIn(@Body() credentials: CredentialsDto) {        
+        const { email, password } = credentials;
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
+        return this.authService.authSignIn(email, password);
+    }
 }
-  */
