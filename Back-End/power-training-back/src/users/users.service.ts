@@ -1,19 +1,33 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
- import { v4 as uuid } from "uuid";
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import { v4 as uuid } from "uuid";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
 
-    async create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
-    return await this.userRepository.save(user);
+  async create(createUserDto: CreateUserDto) {
+    const user = await this.userRepository.findOne({where: {email: createUserDto.email}})
+    if (user) {
+      throw new BadRequestException('Email already in use')
+    }
+
+    const hashedPassword: string = await bcrypt.hash(createUserDto.password, 10);
+    if (!hashedPassword) {
+      throw new BadRequestException('Password could not be hashed')
+    }
+
+    const dbUser = await this.userRepository.save({...createUserDto, password: hashedPassword});
+    if (!dbUser) {
+      throw new BadRequestException('User could not be register correctly');
+    }
+
+    return dbUser
   }
 
   async findAll(limit:number, page:number) {
@@ -86,7 +100,7 @@ export class UsersService {
     return await this.userRepository.delete(id);
   }
 
-  async seedUsers(): Promise<UserEntity[]> {
+  async seedUsers() {
     const users = [
       { subscriptionEndDate: '2025-09-15', birthDay: '1990-03-25', isAdmin: false, password: 'hashed_password1', name: 'John', lastName: 'Doe', email: 'john.doe@example.com' },
       { subscriptionEndDate: '2024-11-20', birthDay: '1985-07-14', isAdmin: true, password: 'hashed_password2', name: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com' },
@@ -110,6 +124,12 @@ export class UsersService {
       { subscriptionEndDate: '2023-07-04', birthDay: '1989-04-02', isAdmin: false, password: 'hashed_password20', name: 'Lucas', lastName: 'Rodriguez', email: 'lucas.rodriguez@example.com' },
     ];
 
-    return await this.userRepository.save(users);
+    for (const user of users) {
+      const { subscriptionEndDate, isAdmin, birthDay, ...createUserDto } = user;
+  
+      const userBirthday: Date = new Date(birthDay); 
+
+      await this.create({...createUserDto, birthDay: userBirthday}); 
+    }
   }
 }
