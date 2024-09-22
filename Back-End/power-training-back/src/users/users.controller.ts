@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,  Query, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  Query, BadRequestException, Req, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiParam,  ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
+import { Request } from 'express';
+import { Response } from 'express';
 
 @ApiTags('users')
 @Controller('users')
@@ -28,6 +30,16 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+  @Get('/logout')
+  logout(@Res() res: Response) {
+    // Redirigir al usuario al logout de Auth0
+   // const auth0LogoutUrl = `https://${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=${process.env.POST_LOGOUT_REDIRECT_URI}`;
+   const auth0LogoutUrl = `https://${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=${process.env.POST_LOGOUT_REDIRECT_URI}`;
+
+
+    // Redirigir al usuario a la URL de logout de Auth0
+    return res.redirect(auth0LogoutUrl);
+  }
 
   @Get()
   @ApiQuery({ name: 'limit', required: false, example: 5, description: 'Limite de items por página' })
@@ -39,6 +51,8 @@ export class UsersController {
   ) {
     return this.usersService.findAll(limit, page);
   }
+
+
   @Get('/byFilters')
   @ApiOperation({ summary: 'Retrieve all users that match with criteria, name,lastname,birthday,isadmin,email, example: users/byFilters?email=myemail@mail.com&name=jhon&isadmin=true' }) 
   
@@ -67,6 +81,12 @@ export class UsersController {
     return this.usersService.findAllByFilters({ name, lastname, birthday, isadmin, email }, page, limit);
   }
 
+  @Get('/auth1')
+  loginWhitAuth0(@Req() req : Request) {
+    console.log(req.oidc.user);
+   console.log('El estado de req.oidc.isAuthenticated() en users.controller.ts es '+req.oidc.isAuthenticated());
+    return req.oidc.isAuthenticated() ? 'Logged in' : 'Not logged in';
+  }
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9'}) 
  // @ApiParam({ name: 'id', type: 'uuid' })

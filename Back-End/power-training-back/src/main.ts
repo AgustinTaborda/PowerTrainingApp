@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+import { config as auth0Config } from './config/auth0.config';
+import { auth } from 'express-openid-connect';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,8 +26,9 @@ const options = {
  
 
 
-
+  app.use(auth(auth0Config));// ya crea los endpoints necesarios automágicamente
   app.enableCors()
   await app.listen(3000);
 }
 bootstrap();
+
