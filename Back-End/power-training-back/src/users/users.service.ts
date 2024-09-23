@@ -54,11 +54,11 @@ export class UsersService {
       
       // Aplicar filtros dinámicos
       if (filters.name) {
-        qb.andWhere('LOWER(users.name) = LOWER(:name)', { name: filters.name });
+        qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', { name: filters.name });
       }
   
       if (filters.lastname) {
-        qb.andWhere('users.lastName = LOWER(:lastname)', { lastname: filters.lastname });
+        qb.andWhere('LOWER(users.lastName) LIKE LOWER(:lastname)', { lastname: filters.lastname });
       }
   
       if (filters.birthday) {
@@ -70,7 +70,7 @@ export class UsersService {
       }
   
       if (filters.email) {
-        qb.andWhere('users.email = LOWER(:email)', { email: filters.email });
+        qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', { email: filters.email });
       }
   
       // Paginación: definir el offset y el límite
