@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExerciseEntity } from './entities/exercise.entity';
 import { ExerciseSeed } from './exercises.seed';
 
+
+
+
 @Module({
   imports : [TypeOrmModule.forFeature([ExerciseEntity])],
   controllers: [ExercisesController],

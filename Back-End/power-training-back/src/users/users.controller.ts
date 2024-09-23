@@ -80,13 +80,13 @@ export class UsersController {
     } 
     return this.usersService.findAllByFilters({ name, lastname, birthday, isadmin, email }, page, limit);
   }
-
+/*
   @Get('/auth1')
   loginWhitAuth0(@Req() req : Request) {
     console.log(req.oidc.user);
    console.log('El estado de req.oidc.isAuthenticated() en users.controller.ts es '+req.oidc.isAuthenticated());
     return req.oidc.isAuthenticated() ? 'Logged in' : 'Not logged in';
-  }
+  }*/
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9'}) 
  // @ApiParam({ name: 'id', type: 'uuid' })

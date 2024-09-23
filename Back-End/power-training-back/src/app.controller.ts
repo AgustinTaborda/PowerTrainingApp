@@ -5,10 +5,15 @@ import { Request } from 'express';
 export class AppController {
   constructor() {}
 
-  @Get()
-  getHello(@Req() req : Request): string {
-    console.log('El estado del login en app.controller.ts es '+ req.oidc.isAuthenticated());
-    return JSON.stringify(req.oidc.user);
-   
+  @Get('/login')
+  getHello(@Req() req: Request, @Res() res: Response) {
+    return req.oidc.user
   }
+  @Get('/logout')
+  logoutFRomAuth0(@Req() req: Request, @Res() res: Response) {
+    return req.oidc.user
+  }
+
+    
 }
+  
