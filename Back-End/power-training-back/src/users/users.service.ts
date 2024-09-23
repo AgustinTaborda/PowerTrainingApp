@@ -54,7 +54,7 @@ export class UsersService {
       
       // Aplicar filtros dinámicos
       if (filters.name) {
-        qb.andWhere('LOWER(users.name) = LOWER(:name)', { name: filters.name });
+        qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', { name: filters.name });
       }
   
       if (filters.lastname) {
