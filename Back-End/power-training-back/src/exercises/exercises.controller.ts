@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ExerciseEntity } from './entities/exercise.entity';
 import { ExerciseSeed } from './exercises.seed';
+//import { JwtAuthGuard } from 'src/guards/jwtauth.guard';
 
 @ApiTags('exercises')
 @Controller('exercises')
@@ -58,6 +59,11 @@ export class ExercisesController {
   findOne(@Param('id') id: string) {
     return this.exercisesService.findOne(id);
   }
+  /*@UseGuards(JwtAuthGuard) // Aplica el guardia a esta ruta
+  @Get('/protected')
+  test() {
+    return 'este es un recurso protegido';
+  }*/
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateExerciseDto: UpdateExerciseDto) {
@@ -68,4 +74,5 @@ export class ExercisesController {
   remove(@Param('id') id: string) {
     return this.exercisesService.remove(id);
   }
+
 }

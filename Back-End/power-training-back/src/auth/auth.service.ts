@@ -5,9 +5,17 @@ import { Repository } from "typeorm";
 import * as bcrypt from 'bcrypt'
 import { JwtService } from "@nestjs/jwt";
 import { Role } from "./roles.enum";
+import { requiresAuth } from "express-openid-connect";
+import { Request } from 'express'
+
 
 @Injectable()
 export class AuthService{
+    auth0Login(req: Request) {
+        return req.oidc.isAuthenticated()
+    }
+    
+
     constructor (
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         private readonly jwtService: JwtService
@@ -37,5 +45,14 @@ export class AuthService{
 
         return {success: 'User logged in succesfully', token}
     }
+
+    verifyToken(token: string): boolean {
+        try {
+          const payload = this.jwtService.verify(token);
+          return !!payload; // Devuelve true si el token es válido
+        } catch (error) {
+          throw new UnauthorizedException('Token no válido');
+        }
+      }
         
 }

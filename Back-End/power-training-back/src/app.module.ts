@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ExercisesModule } from './exercises/exercises.module';
 import { UserRoutineExerciseModule } from './user_routine_exercise/user_routine_exercise.module';
 import { UserRoutineLogModule } from './user_routine_log/user_routine_log.module';
@@ -51,6 +50,6 @@ import { JwtModule } from '@nestjs/jwt';
     })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
