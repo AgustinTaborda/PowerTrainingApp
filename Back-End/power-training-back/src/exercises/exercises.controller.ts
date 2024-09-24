@@ -5,6 +5,7 @@ import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ExerciseEntity } from './entities/exercise.entity';
 import { ExerciseSeed } from './exercises.seed';
+import { Auth0TokenGuard } from '../guards/auth0.guard';
 //import { JwtAuthGuard } from 'src/guards/jwtauth.guard';
 
 @ApiTags('exercises')
@@ -34,7 +35,7 @@ export class ExercisesController {
   //       ) {
   //   return this.exercisesService.findAll({limit, page});
   // }
-
+ @UseGuards(new Auth0TokenGuard())
   @Get('/')
   @ApiOperation({ summary: 'Retrieve all excercises' }) 
 
