@@ -6,26 +6,30 @@ export class UserEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid();
 
-    @Column({ type: 'varchar',length: 255})
+    @Column({ nullable: true,type: 'varchar',length: 255 }) // ID de Google OAuth
+    googleId: string;
+
+    @Column({ nullable: true,type: 'varchar',length: 255})
     name: string;
 
-    @Column({ type: 'varchar',length: 255})
+    @Column({ nullable: true,type: 'varchar',length: 255})
     lastName: string;
 
-    @Column({ type: 'date'})
+    @Column({nullable: true, type: 'date'})
     birthDay: Date;
 
     @Column({ type: 'boolean', default: false})
     isAdmin: boolean;
 
-    @Column({ type: 'varchar',length: 255})
+    @Column({nullable: true, type: 'varchar',length: 255})
     email: string;
 
-    @Column({ type: 'varchar',length: 255})
+    @Column({nullable: true, type: 'varchar',length: 255})
     password: string;
     
-    @Column({ type: 'date',default: new Date()})
+    @Column({nullable: true, type: 'date',default: new Date()})
     subscriptionEndDate: Date;
+    picture: string;
     
 
 }

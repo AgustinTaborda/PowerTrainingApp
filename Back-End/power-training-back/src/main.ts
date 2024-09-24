@@ -8,7 +8,16 @@ import { auth } from 'express-openid-connect';
 async function bootstrap() {
   const config = {
     authRequired: false,
-    auth0Logout: true
+    auth0Logout: true,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.CLIENT_ID,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
+    secret: process.env.SECRET,
+   /* routes: {
+      login: '/auth/login',// login: false as false,  // Esto deshabilita la ruta de login por defecto si usas una personalizada
+      callback: '/api'  // Define la ruta de callback para la redirección
+    }*/
+    
   };
 
 
