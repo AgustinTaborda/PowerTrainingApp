@@ -6,39 +6,38 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 @Injectable()
 export class PaymentsService {
   async create(createPaymentDto: CreatePaymentDto) {
-    const client = new MercadoPagoConfig({ accessToken: process.env.YOUR_ACCESS_TOKEN });
+    try {
+      const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_YOUR_ACCESS_TOKEN });
 
-    const preference = new Preference(client);
-    
-    const body = {
-      items: [
-        {
-          id: '001',
-          title: 'Suscripcion mensual',
-          unit_price: 1000,
-          quantity: 1,
-          currency_id: 'ARS'
-        }
-      ],
-      back_urls: {
-        "success": "https://3d3a-210-23-154-34.ngrok-free.app/api",
-        "failure": "https://3d3a-210-23-154-34.ngrok-free.app/api",
-        "pending": "https://3d3a-210-23-154-34.ngrok-free.app/api"
-      },
-      auto_return: "approved",
-	  };
+      const preference = new Preference(client);
+      
+      const body = {
+        items: [
+          {
+            id: '001',
+            title: 'Suscripcion mensual',
+            unit_price: 1000,
+            quantity: 1,
+            currency_id: 'ARS'
+          }
+        ],
+        back_urls: {
+          "success": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
+          "failure": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
+          "pending": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit"
+        },
+        auto_return: "approved",
+      };
 
-    const result = await preference.create( { body } )
+      const result = await preference.create({ body })
 
-// 	Preference.create(preference)
-// 		.then(function (response) {
-// 			res.json({
-// 				id: response.body.id
-// 			});
-// 		}).catch(function (error) {
-// 			console.log(error);
-// 		});
-// });
+      return {
+        id: result.id,
+      }
+    } catch (error) {
+      console.error('Error al crear la preferencia de pago:', error);
+      throw new Error('Error al crear el pago');
+    }
   }
 
   findAll() {
