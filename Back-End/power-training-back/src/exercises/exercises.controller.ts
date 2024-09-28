@@ -67,6 +67,7 @@ export class ExercisesController {
   }*/
 
   @Patch(':id')
+  @ApiOperation({ summary: 'You can update exercises, remember only 3 types of status lowercase active or inactive or trash' }) 
   update(@Param('id') id: string, @Body() updateExerciseDto: UpdateExerciseDto) {
     return this.exercisesService.update(id, updateExerciseDto);
   }
