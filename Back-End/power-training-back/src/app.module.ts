@@ -16,6 +16,7 @@ import  typeOrmConfig  from './config/typeormConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudfileManagerModule } from './cloudfile-manager/cloudfile-manager.module';
 import { JwtModule } from '@nestjs/jwt';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [ 
@@ -47,7 +48,8 @@ import { JwtModule } from '@nestjs/jwt';
       global: true,
       signOptions: { expiresIn: '1h'},
       secret: process.env.JWT_SECRET
-    })
+    }),
+    EmailModule
   ],
   controllers: [AppController],
   providers: [],

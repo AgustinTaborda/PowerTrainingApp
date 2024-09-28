@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 //import { config as auth0Config } from './config/auth0.config';
 import { auth } from 'express-openid-connect';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const config = {
@@ -57,7 +58,14 @@ const options = {
 
 
   //app.use(auth(auth0Config));// ya crea los endpoints necesarios automágicamente
-  app.enableCors()
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    }
+  }));
   await app.listen(3000);
 }
 bootstrap();
