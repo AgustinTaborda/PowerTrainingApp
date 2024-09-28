@@ -11,10 +11,8 @@ export class Email {
         port: process.env.EMAIL_PORT,
         secure: true, // true for port 465, false for other ports.
         auth: {
-            user: "AKIASE5KRJ7RYV6LMHHB",
-            pass: "qaZ/XKW+FRke3VBqXIhl3TPxrD2nCW1CZk15nRPm",
-            // user: process.env.EMAIL_USER,
-            // pass: process.env.EMAIL_PASSWORD,
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
         },
     });
 
