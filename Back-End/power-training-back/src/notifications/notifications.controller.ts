@@ -2,12 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MailService } from '../mailer/mailer.service';
+import { SendEmailDto } from './dto/sendemaildto';
 
 @ApiTags('notifications')
 @Controller('notifications')
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) {}
+  constructor(private readonly notificationsService: NotificationsService,
+    private readonly mailService: MailService
+  ) {}
 
   @Post()
   create(@Body() createNotificationDto: CreateNotificationDto) {
@@ -32,5 +36,13 @@ export class NotificationsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.notificationsService.remove(+id);
+  }
+
+  @ApiOperation({ summary: 'Send email' }) 
+  @Post('/send-email')
+  async sendEmail(@Body() body:  SendEmailDto) {
+    const { to, subject, text } = body;
+    await this.mailService.sendEmail(to, subject, text);
+    return { message: 'Email sent' };
   }
 }
