@@ -22,7 +22,8 @@ export class PaymentsService {
           }
         ],
         back_urls: {
-          "success": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
+          // "success": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
+          "success": "https://3d3a-210-23-154-34.ngrok-free.app/api#/payments/success",
           "failure": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
           "pending": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit"
         },
@@ -38,6 +39,14 @@ export class PaymentsService {
       console.error('Error al crear la preferencia de pago:', error);
       throw new Error('Error al crear el pago');
     }
+  }
+
+  async paymentSuccess(paymentId: string, status: string, merchantOrderId: string) {
+    return {
+      Payment: paymentId,
+      Status: status,
+      MerchantOrder: merchantOrderId,
+    };
   }
 
   findAll() {
