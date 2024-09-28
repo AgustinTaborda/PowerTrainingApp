@@ -8,10 +8,18 @@ export class SubscriptionEntity {
     id: string = uuid();
 
     @Column()
+    isActive: boolean;
+
+    @Column()
     name: string;
 
     @Column()
     price: number;
+
+    @Column()
+    userId: string = uuid();
+
+
 
 
 }

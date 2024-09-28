@@ -70,7 +70,7 @@ export class UsersService {
       }
   
       if (filters.email) {
-        qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', { email: filters.email });
+        qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', { email:  `%${filters.email}%` });
       }
   
       // Paginación: definir el offset y el límite
