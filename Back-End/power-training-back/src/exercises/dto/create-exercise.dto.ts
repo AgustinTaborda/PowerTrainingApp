@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Status } from "../types/status.enum";
 
 export class CreateExerciseDto {
     @ApiProperty({
@@ -30,4 +31,9 @@ export class CreateExerciseDto {
         example: 'Triceps Polea'
     })
     tags: string;
+    @ApiProperty({
+        description: 'Es el status del ejercicio, acepta 3 estados: active, trash, inactive',
+        example: 'active'        
+    })
+    status:Status
 }

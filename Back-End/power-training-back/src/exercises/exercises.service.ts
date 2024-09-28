@@ -72,13 +72,24 @@ export class ExercisesService {
   }
 
   async update(id: uuid, updateExerciseDto: UpdateExerciseDto): Promise<ExerciseEntity> {
+    try{
     const exercise = await this.exercisesRepository.findOne({ where: { id } });
     if (!exercise) {
       throw new NotFoundException(`Exercise with ID ${id} not found`);
     }
-    const updatedExercise = this.exercisesRepository.merge(exercise, updateExerciseDto);
-    return this.exercisesRepository.save(updatedExercise); 
+   
+    const updatedExercise =  this.exercisesRepository.merge(exercise, updateExerciseDto);
+    
+    return await this.exercisesRepository.save(updatedExercise); 
+
+  }catch(error){
+
+    if (error instanceof NotFoundException) {
+      throw error; 
+    }
+    throw new HttpException('An error occurred while updating the exercise: '+ error.message, HttpStatus.BAD_REQUEST); 
   }
+}
 
   async remove(id: uuid) {
     const exercise = await this.exercisesRepository.findOne({ where: { id } });
