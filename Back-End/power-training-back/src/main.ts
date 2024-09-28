@@ -59,6 +59,7 @@ const options = {
 
   //app.use(auth(auth0Config));// ya crea los endpoints necesarios automágicamente
   app.enableCors();
+  /*
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
@@ -66,6 +67,8 @@ const options = {
       enableImplicitConversion: true,
     }
   }));
+*/
+
   await app.listen(3000);
 }
 bootstrap();

@@ -2,9 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { paymentDto } from './dto/payment.dto';
+import { PaymentEntity } from './entities/payment.entity';
+import { DeepPartial, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PaymentsService {
+  constructor(@InjectRepository(PaymentEntity) private paymentsRepository: Repository<PaymentEntity>) {}
+  async createPayment(paymentDto: paymentDto) {
+    try {
+    
+      this.paymentsRepository.create(paymentDto);  
+      return  await this.paymentsRepository.save(paymentDto);
+    } catch (error) {
+      return error.message;
+    }
+
+   
+  }
   async create(createPaymentDto: CreatePaymentDto) {
     try {
       const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_YOUR_ACCESS_TOKEN });
@@ -65,3 +81,4 @@ export class PaymentsService {
     return `This action removes a #${id} payment`;
   }
 }
+

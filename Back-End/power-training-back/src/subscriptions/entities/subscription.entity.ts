@@ -16,9 +16,6 @@ export class SubscriptionEntity {
     @Column()
     price: number;
 
-    @Column()
-    userId: string = uuid();
-
 
 
 

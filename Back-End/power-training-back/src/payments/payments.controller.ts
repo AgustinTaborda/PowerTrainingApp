@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { paymentDto } from './dto/payment.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('payments')
 @Controller('payments')
@@ -12,6 +13,12 @@ export class PaymentsController {
   @Post()
   create(@Body() createPaymentDto: CreatePaymentDto) {
     return this.paymentsService.create(createPaymentDto);
+  }
+
+  @Post('/lb')
+  @ApiOperation({ summary: 'Create new Payment' }) 
+  pay(@Body() paymentDto: paymentDto) {
+    return this.paymentsService.createPayment(paymentDto);
   }
 
   @Get('success')
