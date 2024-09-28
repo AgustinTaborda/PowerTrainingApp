@@ -2,10 +2,12 @@ import { registerAs } from '@nestjs/config'
 import {config as dotenvConfig} from 'dotenv'
 import { DataSource, DataSourceOptions } from 'typeorm'
 
-dotenvConfig({
-    path : './.env.development',
-    
-})
+if (process.env.NODE_ENV !== 'production') {
+    dotenvConfig({
+      path: './.env.development',
+    });
+  }
+
 
 const config ={
     type: 'postgres',
@@ -18,7 +20,7 @@ const config ={
     entities:['dist/**/*.entity{.ts,.js}'],
     migrations: ['dist/migrations/*{.ts,.js}'],
     synchronize: true,
-    logging: false 
+    logging: process.env.NODE_ENV !== 'production',
     
 }
 

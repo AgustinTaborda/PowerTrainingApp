@@ -42,7 +42,9 @@ export class CloudfileManagerController {
       throw new BadRequestException('No se ha subido ningún archivo');
     }
     if (file.size === 0) {
+
       throw new BadRequestException('El archivo está vacío');
+      
     }
     
     return  await this.cloudfileManagerService.uploadVideo(file).then(response => response.url);
