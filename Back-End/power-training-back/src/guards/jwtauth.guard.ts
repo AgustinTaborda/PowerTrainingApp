@@ -1,14 +1,37 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { AuthService } from '../auth/auth.service';
-/*
-@Injectable()
-export class JwtAuthGuard implements CanActivate {
-  constructor(private authService: AuthService) {}
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { Request } from "express";
 
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization']?.split(' ')[1];
-    return this.authService.verifyToken(token);
-  }
-   
-} */
+@Injectable()
+export class JWTAuthGuard implements CanActivate{
+
+    constructor(
+        private readonly jwtService:JwtService
+    ) {}
+    
+    async canActivate(
+            context: ExecutionContext
+        ): Promise<boolean> {
+        const request: Request = context.switchToHttp().getRequest();
+        const token = request.header('authorization')?.split(' ')[1] ?? '';   
+        
+        if (!token) {
+            throw new UnauthorizedException('Authorization header is missing');
+        }
+
+        try {            
+            const payload = await this.jwtService.verifyAsync(token, { 
+                secret: process.env.JWT_SECRET
+            });            
+
+            // payload.roles = ['Admin'];
+            payload.iat = new Date(payload.iat * 1000);
+            payload.exp = new Date(payload.exp * 1000);
+            request.user = payload;
+            return true
+        } catch (error) {
+            throw new UnauthorizedException('Invalid token')
+        }
+    }
+
+}
