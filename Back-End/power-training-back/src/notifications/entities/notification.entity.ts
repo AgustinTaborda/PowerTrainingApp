@@ -32,7 +32,5 @@ export class NotificationEntity {
     methodToSend: string;
     @Column()
     userId: string = uuid();
-
-
-   
+       
 }

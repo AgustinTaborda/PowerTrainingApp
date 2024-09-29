@@ -16,6 +16,11 @@ import  typeOrmConfig  from './config/typeormConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudfileManagerModule } from './cloudfile-manager/cloudfile-manager.module';
 import { JwtModule } from '@nestjs/jwt';
+import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronTasksService } from './crontask/crontask.exercise.service';
+import { ExerciseEntity } from './exercises/entities/exercise.entity';
+import { CronExercisesModule } from './crontask/crontask.exercise.module';
 
 @Module({
   imports: [ 
@@ -47,7 +52,10 @@ import { JwtModule } from '@nestjs/jwt';
       global: true,
       signOptions: { expiresIn: '1h'},
       secret: process.env.JWT_SECRET
-    })
+    }),
+    EmailModule,
+    ScheduleModule.forRoot(),
+    CronExercisesModule
   ],
   controllers: [AppController],
   providers: [],

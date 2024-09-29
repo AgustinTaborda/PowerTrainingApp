@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
+import { Status } from "../types/status.enum";
 @Entity('exercises')
 export class ExerciseEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -19,5 +20,10 @@ export class ExerciseEntity {
 
     @Column({ type: 'varchar', length: 255 })
     tags: string;
+
+    @Column({ type: 'enum',
+        enum: Status,
+        default: Status.ACTIVE })
+    status:Status
 
 }

@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 //import { config as auth0Config } from './config/auth0.config';
 import { auth } from 'express-openid-connect';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const config = {
@@ -29,6 +30,7 @@ async function bootstrap() {
     customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
     swaggerOptions: {
       oauth2RedirectUrl: `${process.env.BASE_URL}/api`, // Configurar redirección
+      persistAuthorization: true,
     },
   };
 
@@ -48,7 +50,10 @@ async function bootstrap() {
         },
       },
     })
-    .addBearerAuth()
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
@@ -56,6 +61,16 @@ async function bootstrap() {
 
   //app.use(auth(auth0Config));// ya crea los endpoints necesarios automágicamente
   app.enableCors();
-  await app.listen(3002);
+  /*
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    }
+  }));
+*/
+
+  await app.listen(3003);
 }
 bootstrap();

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { v4 as uuid } from "uuid";
 
 @Entity('payments')
@@ -6,22 +7,21 @@ export class PaymentEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string = uuid();
     
-    @Column({ type: 'date'})
+    @Column({ type: 'date',nullable: true})
     paymentDay: Date;
 
-    @Column({ type: 'date'})
-    subscriptionEndDate: Date;
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+    payment: number;
 
-    @Column({ type: 'varchar',length: 255})
+    @Column({ type: 'varchar',length: 255,nullable: true})
     userId: string = uuid();
 
-    @Column({ type: 'varchar',length: 255})
-    subscriptionId: string = uuid();
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+    subscriptionid: number;
 
-    @Column({ type: 'varchar',length: 255})
-    transactionId: string = uuid(); // Para que se usaría?
-
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     discount: number;
+
+   
    
 }

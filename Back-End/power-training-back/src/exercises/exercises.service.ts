@@ -5,30 +5,56 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ExerciseEntity } from './entities/exercise.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { v4 as uuid } from "uuid";
+import { Status } from './types/status.enum';
+import { ChangeStatusDto } from './dto/change-status.dto';
 
 @Injectable()
 export class ExercisesService {
+
+
+  async changeStatus(id: string, status: Status) : Promise<ChangeStatusDto> {
+    try {
+    
+  
+      let exercise = await this.exercisesRepository.findOne({ where: { id } });
+      if (!exercise) {
+        throw new NotFoundException(`Exercise with ID ${id} not found`);
+      }
+  
+     const result = await this.exercisesRepository.update(id, { status });
+    
+  
+      if (result.affected === 0) {
+        throw new HttpException(`Failed to update exercise with ID ${id}`, HttpStatus.BAD_REQUEST);
+      }
+  
+      exercise = await this.exercisesRepository.findOneBy({ id  });
+      
+      return {
+        id: exercise.id,
+        status: exercise.status,
+        description: exercise.description,
+      };
+    } catch (error) {
+      throw new HttpException(
+        'An error occurred while updating the exercise: ' + error.message,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+   
+  }
+
+
+
   constructor(@InjectRepository(ExerciseEntity) private exercisesRepository: Repository<ExerciseEntity>) {}
   async create(createExerciseDto: CreateExerciseDto) {
     const exercise = this.exercisesRepository.create(createExerciseDto)
     return await this.exercisesRepository.save(exercise)
   }
 
-//  async findAll({limit, page}): Promise<ExerciseEntity[]> {
-//     page = Math.max(1, Math.round(page)); 
-//     limit = Math.max(1, Math.round(limit)); 
-
-//     const exercises: ExerciseEntity[] = await this.exercisesRepository.find({
-//       take: limit,
-//       skip: (page - 1) * limit,
-//       order: { name: 'ASC' }
-//     });
-    
-//     return exercises;
-//   }
 
   async findAllByFilters(
-    filters: { name?: string, benefits?: string, tags?: string },
+    filters: { name?: string, benefits?: string, tags?: string , status?: string },
     page: number = 1,  // Página actual, por defecto es la 1
     limit: number = 10 // Límite de resultados por página, por defecto 10
   ): Promise<{ data: ExerciseEntity[], count: number }> {
@@ -47,6 +73,10 @@ export class ExercisesService {
       if (filters.tags) {
         qb.andWhere('LOWER(exercises.tags) LIKE LOWER(:tags)', { tags: `%${filters.tags}%` });
       }
+
+      if (filters.status) {
+        qb.andWhere('exercises.status = :status', { status: filters.status });
+      }
       
   
       // Paginación: definir el offset y el límite
@@ -59,7 +89,7 @@ export class ExercisesService {
       return { data, count }; // Devolvemos los resultados y el total
     } catch (error) {
       console.log(error);
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -72,13 +102,24 @@ export class ExercisesService {
   }
 
   async update(id: uuid, updateExerciseDto: UpdateExerciseDto): Promise<ExerciseEntity> {
+    try{
     const exercise = await this.exercisesRepository.findOne({ where: { id } });
     if (!exercise) {
       throw new NotFoundException(`Exercise with ID ${id} not found`);
     }
-    const updatedExercise = this.exercisesRepository.merge(exercise, updateExerciseDto);
-    return this.exercisesRepository.save(updatedExercise); 
+   
+    const updatedExercise =  this.exercisesRepository.merge(exercise, updateExerciseDto);
+    
+    return await this.exercisesRepository.save(updatedExercise); 
+
+  }catch(error){
+
+    if (error instanceof NotFoundException) {
+      throw error; 
+    }
+    throw new HttpException('An error occurred while updating the exercise: '+ error.message, HttpStatus.BAD_REQUEST); 
   }
+}
 
   async remove(id: uuid) {
     const exercise = await this.exercisesRepository.findOne({ where: { id } });
