@@ -2,16 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } f
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ExerciseEntity } from './entities/exercise.entity';
 import { ExerciseSeed } from './exercises.seed';
 import { Auth0TokenGuard } from '../guards/auth0.guard';
 import { Status } from './types/status.enum';
 import { ChangeStatusDto } from './dto/change-status.dto';
-//import { JwtAuthGuard } from 'src/guards/jwtauth.guard';
+import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
 
 @ApiTags('exercises')
 @Controller('exercises')
+@ApiBearerAuth('access-token')
+@UseGuards(JWTAuthGuard) 
 export class ExercisesController {
   constructor(
     private readonly exercisesService: ExercisesService,

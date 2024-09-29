@@ -2,13 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete,  Query, BadRequestEx
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiParam,  ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam,  ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 import { Request } from 'express';
 import { Response } from 'express';
 import { GoogleAuthGuard } from '../guards/google.guard';
+import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
 
 @ApiTags('users')
+@ApiBearerAuth('access-token')
+@UseGuards(JWTAuthGuard) 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

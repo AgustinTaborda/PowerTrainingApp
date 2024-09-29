@@ -32,6 +32,7 @@ const options = {
   customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
   swaggerOptions: {
     oauth2RedirectUrl: `${process.env.BASE_URL}/api`, // Configurar redirección
+    persistAuthorization: true,
   }
 };
 
@@ -49,7 +50,7 @@ const options = {
                             }
                           }
                         })
-                        .addBearerAuth()
+                        .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
                         .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
