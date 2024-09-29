@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -8,7 +18,7 @@ import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
 
 @ApiTags('payments')
 @ApiBearerAuth('access-token')
-@UseGuards(JWTAuthGuard) 
+// @UseGuards(JWTAuthGuard)
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
@@ -19,7 +29,7 @@ export class PaymentsController {
   }
 
   @Post('/lb')
-  @ApiOperation({ summary: 'Create new Payment' }) 
+  @ApiOperation({ summary: 'Create new Payment' })
   pay(@Body() paymentDto: paymentDto) {
     return this.paymentsService.createPayment(paymentDto);
   }
@@ -30,7 +40,11 @@ export class PaymentsController {
     @Query('status') status: string,
     @Query('merchant_order_id') merchantOrderId: string,
   ) {
-    return this.paymentsService.paymentSuccess(paymentId, status, merchantOrderId);
+    return this.paymentsService.paymentSuccess(
+      paymentId,
+      status,
+      merchantOrderId,
+    );
   }
 
   @Get()
@@ -52,6 +66,4 @@ export class PaymentsController {
   remove(@Param('id') id: string) {
     return this.paymentsService.remove(+id);
   }
-
-  
 }
