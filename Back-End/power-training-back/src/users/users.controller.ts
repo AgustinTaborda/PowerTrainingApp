@@ -8,6 +8,7 @@ import { Request } from 'express';
 import { Response } from 'express';
 import { GoogleAuthGuard } from '../guards/google.guard';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -44,7 +45,8 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(JWTAuthGuard, GoogleAuthGuard) 
+  // @UseGuards(JWTAuthGuard, GoogleAuthGuard) 
+  @UseGuards(CombinedAuthGuard) 
   @Get()
   @ApiQuery({ name: 'limit', required: false, example: 5, description: 'Limite de items por página' })
   @ApiQuery({ name: 'page', required: false, example: 1, description: 'Número de página' })
@@ -57,7 +59,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  @UseGuards(JWTAuthGuard) 
+  @UseGuards(CombinedAuthGuard) 
   @Get('/byFilters')
   @ApiOperation({ summary: 'Retrieve all users that match with criteria, name,lastname,birthday,isadmin,email, example: users/byFilters?email=myemail@mail.com&name=jhon&isadmin=true' }) 
   
@@ -93,7 +95,7 @@ export class UsersController {
     return req.oidc.isAuthenticated() ? 'Logged in' : 'Not logged in';
   }*/
   @ApiBearerAuth('access-token')
-  @UseGuards(JWTAuthGuard) 
+  @UseGuards(CombinedAuthGuard) 
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9'}) 
  // @ApiParam({ name: 'id', type: 'uuid' })
@@ -101,12 +103,16 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(CombinedAuthGuard) 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9 in param, and body, see example value below' }) 
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(CombinedAuthGuard) 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9 in param' })
   remove(@Param('id') id: string) {

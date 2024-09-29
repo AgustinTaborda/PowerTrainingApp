@@ -9,11 +9,12 @@ import { Auth0TokenGuard } from '../guards/auth0.guard';
 import { Status } from './types/status.enum';
 import { ChangeStatusDto } from './dto/change-status.dto';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 @ApiTags('exercises')
 @Controller('exercises')
 @ApiBearerAuth('access-token')
-@UseGuards(JWTAuthGuard) 
+@UseGuards(CombinedAuthGuard) 
 export class ExercisesController {
   constructor(
     private readonly exercisesService: ExercisesService,
