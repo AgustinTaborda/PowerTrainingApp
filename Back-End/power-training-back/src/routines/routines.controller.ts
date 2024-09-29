@@ -4,10 +4,11 @@ import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 @ApiTags('routines')
 @ApiBearerAuth('access-token')
-@UseGuards(JWTAuthGuard) 
+@UseGuards(CombinedAuthGuard) 
 @Controller('routines')
 export class RoutinesController {
   constructor(private readonly routinesService: RoutinesService) {}

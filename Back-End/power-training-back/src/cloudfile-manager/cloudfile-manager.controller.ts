@@ -5,11 +5,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 //import { AuthGuard } from '../guards/auth.guards';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 
 @ApiTags('files')
 @ApiBearerAuth('access-token')
-@UseGuards(JWTAuthGuard) 
+@UseGuards(CombinedAuthGuard) 
 @Controller('files')
 export class CloudfileManagerController {
   constructor(private readonly cloudfileManagerService: CloudfileManagerService) {

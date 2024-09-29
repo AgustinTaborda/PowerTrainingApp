@@ -4,10 +4,11 @@ import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 @ApiTags('subscriptions')
 @ApiBearerAuth('access-token')
-@UseGuards(JWTAuthGuard) 
+@UseGuards(CombinedAuthGuard) 
 @Controller('subscriptions')
 export class SubscriptionsController {
   constructor(private readonly subscriptionsService: SubscriptionsService) {}
