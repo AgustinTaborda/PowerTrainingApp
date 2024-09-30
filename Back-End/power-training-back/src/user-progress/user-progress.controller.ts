@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UserProgressService } from './user-progress.service';
 import { CreateUserProgressDto } from './dto/create-user-progress.dto';
 import { UpdateUserProgressDto } from './dto/update-user-progress.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 @ApiTags('user-progress')
+@ApiBearerAuth('access-token')
+@UseGuards(CombinedAuthGuard) 
 @Controller('user-progress')
 export class UserProgressController {
   constructor(private readonly userProgressService: UserProgressService) {}

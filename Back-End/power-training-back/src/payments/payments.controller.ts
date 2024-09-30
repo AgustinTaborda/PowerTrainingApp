@@ -5,10 +5,11 @@ import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { paymentDto } from './dto/payment.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
+import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
 @ApiTags('payments')
 @ApiBearerAuth('access-token')
-@UseGuards(JWTAuthGuard) 
+@UseGuards(CombinedAuthGuard) 
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
