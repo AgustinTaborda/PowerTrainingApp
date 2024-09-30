@@ -1,84 +1,94 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import { paymentDto } from './dto/payment.dto';
-import { PaymentEntity } from './entities/payment.entity';
-import { DeepPartial, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../users/entities/user.entity';
+import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
+import { SubscriptionPlan } from '../subscriptions/entities/subscriptionPlan.entity';
 
 @Injectable()
-export class PaymentsService {
-  constructor(@InjectRepository(PaymentEntity) private paymentsRepository: Repository<PaymentEntity>) {}
-  async createPayment(paymentDto: paymentDto) {
-    try {
-    
-      this.paymentsRepository.create(paymentDto);  
-      return  await this.paymentsRepository.save(paymentDto);
-    } catch (error) {
-      return error.message;
-    }
+export class PaymentService {
+  private mercadoPagoClient: MercadoPagoConfig;
 
-   
-  }
-  async create(createPaymentDto: CreatePaymentDto) {
-    try {
-      const client = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_YOUR_ACCESS_TOKEN });
-
-      const preference = new Preference(client);
-      
-      const body = {
-        items: [
-          {
-            id: '001',
-            title: 'Suscripcion mensual',
-            unit_price: 1000,
-            quantity: 1,
-            currency_id: 'ARS'
-          }
-        ],
-        back_urls: {
-          // "success": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
-          "success": "https://3d3a-210-23-154-34.ngrok-free.app/api#/payments/success",
-          "failure": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit",
-          "pending": "https://www.youtube.com/watch?v=SLHTzOytM0A&t=302s&ab_channel=Jusdeit"
-        },
-        auto_return: "approved",
-      };
-
-      const result = await preference.create({ body })
-
-      return {
-        id: result.id,
-      }
-    } catch (error) {
-      console.error('Error al crear la preferencia de pago:', error);
-      throw new Error('Error al crear el pago');
-    }
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+    @InjectRepository(SubscriptionEntity)
+    private subscriptionRepository: Repository<SubscriptionEntity>,
+    @InjectRepository(SubscriptionPlan)
+    private subscriptionPlanRepository: Repository<SubscriptionPlan>,
+  ) {
+    this.mercadoPagoClient = new MercadoPagoConfig({
+      accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+    });
   }
 
-  async paymentSuccess(paymentId: string, status: string, merchantOrderId: string) {
-    return {
-      Payment: paymentId,
-      Status: status,
-      MerchantOrder: merchantOrderId,
+  async createPayment(userId: string, planId: string, cartItems: any[]) {
+    // Obtener el plan de suscripción seleccionado
+    const subscriptionPlan = await this.subscriptionPlanRepository.findOne({
+      where: { id: planId },
+    });
+
+    if (!subscriptionPlan) {
+      throw new Error('Plan de suscripción no encontrado');
+    }
+
+    // Crear la preferencia de pago con los items del carrito y las URLs de retorno dinámicas
+    const items = cartItems.map((item) => ({
+      id: item.id,
+      title: item.name,
+      unit_price: item.price,
+      quantity: item.quantity,
+      currency_id: 'ARS',
+    }));
+
+    const preference = new Preference(this.mercadoPagoClient);
+    const body = {
+      items: items,
+      back_urls: {
+        success: `${process.env.FRONTEND_URL}/dashboard/order/success`,
+        failure: `${process.env.FRONTEND_URL}/dashboard/order/failure`,
+        pending: `${process.env.FRONTEND_URL}/dashboard/order/pending`,
+      },
+      auto_return: 'approved',
     };
-  }
 
-  findAll() {
-    return `This action returns all payments`;
-  }
+    try {
+      const result = await preference.create({ body });
 
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
-  }
+      // Obtener el usuario para el que se está creando la suscripción
+      const user = await this.userRepository.findOne({ where: { id: userId } });
 
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
-  }
+      if (!user) {
+        throw new Error('Usuario no encontrado');
+      }
 
-  remove(id: number) {
-    return `This action removes a #${id} payment`;
+      // Calcular las fechas de inicio y fin de la suscripción
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(
+        startDate.getMonth() + subscriptionPlan.durationInMonths,
+      );
+
+      // Crear la suscripción y guardarla en la base de datos
+      const subscription = new SubscriptionEntity();
+      subscription.user = user;
+      subscription.subscriptionPlan = subscriptionPlan;
+      subscription.paymentStatus = 'approved'; // Actualizar a 'paid' después de confirmar el pago
+      subscription.subscriptionStartDate = startDate;
+      subscription.subscriptionEndDate = endDate;
+
+      await this.subscriptionRepository.save(subscription);
+
+      // Marcar al usuario como suscrito y actualizar la fecha de fin de suscripción
+      user.isSubscribed = true;
+      user.subscriptionEndDate = endDate;
+
+      await this.userRepository.save(user);
+
+      return result;
+    } catch (error) {
+      throw new Error('Error al crear el pago con Mercado Pago');
+    }
   }
 }
-

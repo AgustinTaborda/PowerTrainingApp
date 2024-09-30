@@ -1,23 +1,25 @@
-import {Entity, Column, PrimaryGeneratedColumn} from "typeorm";
-import {v4 as uuid} from "uuid";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+import { SubscriptionPlan } from './subscriptionPlan.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Entity('subscriptions')
 export class SubscriptionEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn()
-    id: string = uuid();
+  @ManyToOne(() => UserEntity, (user) => user.subscriptions)
+  user: UserEntity; // Relación con el usuario
 
-    @Column()
-    isActive: boolean;
+  @ManyToOne(() => SubscriptionPlan, { eager: true }) // Cargar el plan automáticamente
+  subscriptionPlan: SubscriptionPlan; // Relación con el plan de suscripción
 
-    @Column()
-    name: string;
+  @Column()
+  paymentStatus: string; // Estado del pago, por ejemplo: "paid", "pending", etc.
 
-    @Column()
-    price: number;
+  @Column({ type: 'date' })
+  subscriptionStartDate: Date; // Fecha de inicio de la suscripción
 
-
-
-
+  @Column({ type: 'date' })
+  subscriptionEndDate: Date; // Fecha de fin de la suscripción
 }
-

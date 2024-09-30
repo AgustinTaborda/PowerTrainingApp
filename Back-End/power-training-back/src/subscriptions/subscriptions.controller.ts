@@ -1,40 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { SubscriptionsService } from './subscriptions.service';
-import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
-import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
-
-@ApiTags('subscriptions')
-@ApiBearerAuth('access-token')
-@UseGuards(CombinedAuthGuard) 
+import { Controller, Post, Get, Param, Body } from '@nestjs/common';
+import { SubscriptionService } from './subscriptions.service';
+import { SubscriptionEntity } from './entities/subscription.entity';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Subscriptions')
 @Controller('subscriptions')
-export class SubscriptionsController {
-  constructor(private readonly subscriptionsService: SubscriptionsService) {}
+export class SubscriptionController {
+  constructor(private readonly subscriptionService: SubscriptionService) {}
 
   @Post()
-  create(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-    return this.subscriptionsService.create(createSubscriptionDto);
+  async createSubscription(
+    @Body('userId') userId: string,
+    @Body('planId') planId: string,
+  ): Promise<SubscriptionEntity> {
+    return await this.subscriptionService.createSubscription(userId, planId);
   }
+
+  @Get('user/:userId')
+  async getSubscriptionsForUser(
+    @Param('userId') userId: string,
+  ): Promise<SubscriptionEntity[]> {
+    return await this.subscriptionService.getSubscriptionsForUser(userId);
+  }
+
+  // @Get('user/:id')
+  // async getSubscriptionsForUser(
+  //   @Param('id') id: string,
+  // ): Promise<SubscriptionEntity[]> {
+  //   return await this.subscriptionService.getSubscriptionsForUser(id);
+  // }
 
   @Get()
-  findAll() {
-    return this.subscriptionsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subscriptionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubscriptionDto: UpdateSubscriptionDto) {
-    return this.subscriptionsService.update(+id, updateSubscriptionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subscriptionsService.remove(+id);
+  async getAllSubscriptions(): Promise<SubscriptionEntity[]> {
+    return await this.subscriptionService.getAllSubscriptions();
   }
 }
