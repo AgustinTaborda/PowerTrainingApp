@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from '../subscriptions/entities/subscriptionPlan.entity';
+import { MailService } from 'src/mailer/mailer.service';
 
 @Module({
   imports: [
@@ -15,8 +16,8 @@ import { SubscriptionPlan } from '../subscriptions/entities/subscriptionPlan.ent
       SubscriptionEntity,
       SubscriptionPlan,
     ]), // Incluir todas las entidades necesarias
-  ],
+  ],  
   controllers: [PaymentsController],
-  providers: [PaymentService],
+  providers: [PaymentService,MailService],
 })
 export class PaymentsModule {}
