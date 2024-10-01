@@ -4,7 +4,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenvConfig({
-    path: './.env.development',
+    path: './.env',
   });
 }
 
@@ -20,8 +20,9 @@ const config = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
-  dropSchema: false,
+  dropSchema: false,//para recrear todas las tablas
 };
+
 
 export const connectionSource = new DataSource(config as DataSourceOptions);
 export default registerAs('typeorm', () => config); // permite tener una "clave" que su valor es el objeto config
