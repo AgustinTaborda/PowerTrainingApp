@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 
@@ -59,3 +60,6 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+=======
+node_modules
+>>>>>>> 3a829ac768dcf61e2464d0c9708f028ae59dd5ee
