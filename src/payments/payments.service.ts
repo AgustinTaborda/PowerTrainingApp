@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from '../subscriptions/entities/subscriptionPlan.entity';
-
+import { MailService } from '../mailer/mailer.service';
 @Injectable()
 export class PaymentService {
   private mercadoPagoClient: MercadoPagoConfig;
@@ -17,6 +17,8 @@ export class PaymentService {
     private subscriptionRepository: Repository<SubscriptionEntity>,
     @InjectRepository(SubscriptionPlan)
     private subscriptionPlanRepository: Repository<SubscriptionPlan>,
+    public mailService: MailService
+   
   ) {
     this.mercadoPagoClient = new MercadoPagoConfig({
       accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
@@ -58,7 +60,7 @@ export class PaymentService {
 
       // Obtener el usuario para el que se está creando la suscripción
       const user = await this.userRepository.findOne({ where: { id: userId } });
-
+      
       if (!user) {
         throw new Error('Usuario no encontrado');
       }
@@ -86,8 +88,13 @@ export class PaymentService {
 
       await this.userRepository.save(user);
 
+      this.mailService.sendEmail(user.email,
+        'Mensajes POWERTRAINING',
+        'Le informamos que su pago ha sido aprobado con éxito. Muchas gracias.',
+      )
       return result;
     } catch (error) {
+     
       throw new Error('Error al crear el pago con Mercado Pago');
     }
   }

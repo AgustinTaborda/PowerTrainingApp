@@ -20,7 +20,7 @@ const config = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
-  dropSchema: false,
+  dropSchema: false,//para recrear todas las tablas
 };
 
 export const connectionSource = new DataSource(config as DataSourceOptions);
