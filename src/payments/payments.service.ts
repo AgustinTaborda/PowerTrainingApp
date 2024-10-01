@@ -88,19 +88,13 @@ export class PaymentService {
 
       await this.userRepository.save(user);
 
-<<<<<<< HEAD
       if (user.email){
-=======
->>>>>>> 3a829ac768dcf61e2464d0c9708f028ae59dd5ee
       this.mailService.sendEmail(user.email,
         'Mensajes POWERTRAINING',
         'Le informamos que su pago ha sido aprobado con éxito. Muchas gracias.',
       )
-<<<<<<< HEAD
     }
 
-=======
->>>>>>> 3a829ac768dcf61e2464d0c9708f028ae59dd5ee
       return result;
     } catch (error) {
      
