@@ -1,0 +1,46 @@
+import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
+import { SubscriptionPlan } from 'src/subscriptions/entities/subscriptionPlan.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { v4 as uuid } from 'uuid';
+@Entity('users')
+export class UserEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string = uuid();
+
+  @Column({ nullable: true, type: 'varchar', length: 255 }) // ID de Google OAuth
+  googleId: string;
+
+  @Column({ nullable: true })
+  providerId: string;
+
+  @Column({ nullable: true })
+  provider: string;
+
+  @Column({ nullable: true, type: 'varchar', length: 255 })
+  name: string;
+
+  @Column({ nullable: true, type: 'varchar', length: 255 })
+  lastName: string;
+
+  @Column({ nullable: true, type: 'date' })
+  birthDay: Date;
+
+  @Column({ type: 'boolean', default: false })
+  isAdmin: boolean;
+
+  @Column({ nullable: true, type: 'varchar', length: 255 })
+  email: string;
+
+  @Column({ nullable: true, type: 'varchar', length: 255 })
+  password: string;
+
+  @Column({ default: false })
+  isSubscribed: boolean; // Si el usuario tiene una suscripción activa
+
+  @Column({ nullable: true, type: 'date', default: new Date() })
+  subscriptionEndDate: Date;
+  picture: string;
+
+  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.user)
+  subscriptions: SubscriptionEntity[];
+}
