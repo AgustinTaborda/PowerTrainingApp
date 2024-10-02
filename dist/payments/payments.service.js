@@ -74,7 +74,9 @@ let PaymentService = class PaymentService {
             user.isSubscribed = true;
             user.subscriptionEndDate = endDate;
             await this.userRepository.save(user);
-            this.mailService.sendEmail(user.email, 'Mensajes POWERTRAINING', 'Le informamos que su pago ha sido aprobado con éxito. Muchas gracias.');
+            if (user.email) {
+                this.mailService.sendEmail(user.email, 'Mensajes POWERTRAINING', 'Le informamos que su pago ha sido aprobado con éxito. Muchas gracias.');
+            }
             return result;
         }
         catch (error) {
