@@ -30,6 +30,7 @@ import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -65,7 +66,7 @@ export class UsersController {
 
   @ApiBearerAuth('access-token')
   @Roles(Role.Admin, Role.Superadmin)
-  @UseGuards(CombinedAuthGuard)
+  @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get()
   @ApiQuery({
     name: 'limit',

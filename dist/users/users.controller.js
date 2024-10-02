@@ -21,6 +21,7 @@ const swagger_1 = require("@nestjs/swagger");
 const google_jwtauth_guard_1 = require("../guards/google-jwtauth.guard");
 const roles_enum_1 = require("../auth/roles.enum");
 const roles_decorator_1 = require("../decorator/roles.decorator");
+const roles_guard_1 = require("../guards/roles.guard");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -87,7 +88,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiBearerAuth)('access-token'),
     (0, roles_decorator_1.Roles)(roles_enum_1.Role.Admin, roles_enum_1.Role.Superadmin),
-    (0, common_1.UseGuards)(google_jwtauth_guard_1.CombinedAuthGuard),
+    (0, common_1.UseGuards)(google_jwtauth_guard_1.CombinedAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Get)(),
     (0, swagger_1.ApiQuery)({
         name: 'limit',
