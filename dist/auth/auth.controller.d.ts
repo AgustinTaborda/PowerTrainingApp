@@ -12,7 +12,7 @@ export declare class AuthController {
             name: string;
             lastName: string;
             birthDay: Date;
-            isAdmin: boolean;
+            role: import("./roles.enum").Role;
         };
     }>;
     signInWithProvider(profile: any): Promise<{
@@ -23,7 +23,7 @@ export declare class AuthController {
             name: string;
             lastName: string;
             birthDay: Date;
-            isAdmin: boolean;
+            role: import("./roles.enum").Role;
         };
     }>;
     handleAuthRedirect2(req: Request): string | {

@@ -78,7 +78,7 @@ export class AuthService {
       sub: user.id,
       id: user.id,
       email: user.email,
-      role: [user.isAdmin ? Role.Admin : Role.User],
+      role: user.role,
     };
 
     const token = this.jwtService.sign(userPayload);
@@ -91,7 +91,7 @@ export class AuthService {
         name: user.name,
         lastName: user.lastName,
         birthDay: user.birthDay,
-        isAdmin: user.isAdmin,
+        role: user.role,
       },
     };
   }

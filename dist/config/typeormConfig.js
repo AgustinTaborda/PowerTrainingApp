@@ -6,7 +6,7 @@ const dotenv_1 = require("dotenv");
 const typeorm_1 = require("typeorm");
 if (process.env.NODE_ENV !== 'production') {
     (0, dotenv_1.config)({
-        path: './.env.development',
+        path: './.env',
     });
 }
 const config = {

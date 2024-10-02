@@ -19,6 +19,8 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const swagger_1 = require("@nestjs/swagger");
 const google_jwtauth_guard_1 = require("../guards/google-jwtauth.guard");
+const roles_enum_1 = require("../auth/roles.enum");
+const roles_decorator_1 = require("../decorator/roles.decorator");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -84,6 +86,7 @@ __decorate([
 ], UsersController.prototype, "logout", null);
 __decorate([
     (0, swagger_1.ApiBearerAuth)('access-token'),
+    (0, roles_decorator_1.Roles)(roles_enum_1.Role.Admin, roles_enum_1.Role.Superadmin),
     (0, common_1.UseGuards)(google_jwtauth_guard_1.CombinedAuthGuard),
     (0, common_1.Get)(),
     (0, swagger_1.ApiQuery)({

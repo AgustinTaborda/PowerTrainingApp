@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from 'src/auth/roles.enum';
 //import { v4 as uuid } from "uuid";
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -37,10 +38,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         })    
         password: string;
         @ApiProperty({
-            description : "Si es administrador o no",
-            example : "true"
+            description : "El rol que tiene este usuario",
+            example : "Admin / User / Superadmin"
         })
-        isAdmin: boolean;
+        role: Role;
         @ApiProperty({
             description : "Fecha de finalización de la suscripción",
             example : "2022-01-01"

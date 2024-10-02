@@ -1,6 +1,7 @@
 import { UserEntity } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from './roles.enum';
 export declare class AuthService {
     private userRepository;
     private readonly jwtService;
@@ -13,7 +14,7 @@ export declare class AuthService {
             name: string;
             lastName: string;
             birthDay: Date;
-            isAdmin: boolean;
+            role: Role;
         };
     }>;
     authSignInWithProvider(profile: any): Promise<{
@@ -24,7 +25,7 @@ export declare class AuthService {
             name: string;
             lastName: string;
             birthDay: Date;
-            isAdmin: boolean;
+            role: Role;
         };
     }>;
     private generateToken;

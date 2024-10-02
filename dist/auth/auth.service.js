@@ -19,7 +19,6 @@ const user_entity_1 = require("../users/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
 const jwt_1 = require("@nestjs/jwt");
-const roles_enum_1 = require("./roles.enum");
 let AuthService = class AuthService {
     constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
@@ -79,7 +78,7 @@ let AuthService = class AuthService {
             sub: user.id,
             id: user.id,
             email: user.email,
-            role: [user.isAdmin ? roles_enum_1.Role.Admin : roles_enum_1.Role.User],
+            role: user.role,
         };
         const token = this.jwtService.sign(userPayload);
         return {
@@ -90,7 +89,7 @@ let AuthService = class AuthService {
                 name: user.name,
                 lastName: user.lastName,
                 birthDay: user.birthDay,
-                isAdmin: user.isAdmin,
+                role: user.role,
             },
         };
     }
