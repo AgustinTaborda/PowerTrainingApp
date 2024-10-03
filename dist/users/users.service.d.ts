@@ -3,6 +3,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from "uuid";
+import { Role } from 'src/auth/roles.enum';
 export declare class UsersService {
     private userRepository;
     constructor(userRepository: Repository<UserEntity>);
@@ -12,13 +13,14 @@ export declare class UsersService {
         lastName: string;
         birthDay: Date;
         email: string;
+        role: Role;
     } & UserEntity>;
     findAll(limit: number, page: number): Promise<UserEntity[]>;
     findAllByFilters(filters: {
         name?: string;
         lastname?: string;
         birthday?: string;
-        isadmin?: Boolean;
+        role?: string;
         email?: string;
     }, page?: number, limit?: number): Promise<{
         data: UserEntity[];
