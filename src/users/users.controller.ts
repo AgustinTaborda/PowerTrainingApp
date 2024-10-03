@@ -28,6 +28,9 @@ import { Response } from 'express';
 import { GoogleAuthGuard } from '../guards/google.guard';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
+import { Role } from 'src/auth/roles.enum';
+import { Roles } from 'src/decorator/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -62,8 +65,8 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  // @UseGuards(JWTAuthGuard, GoogleAuthGuard)
-  @UseGuards(CombinedAuthGuard)
+  @Roles(Role.Admin, Role.Superadmin)
+  @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get()
   @ApiQuery({
     name: 'limit',
@@ -87,12 +90,12 @@ export class UsersController {
   @Get('/byFilters')
   @ApiOperation({
     summary:
-      'Retrieve all users that match with criteria, name,lastname,birthday,isadmin,email, example: users/byFilters?email=myemail@mail.com&name=jhon&isadmin=true',
+      'Retrieve all users that match with criteria, name,lastname,birthday,role,email, example: users/byFilters?email=myemail@mail.com&name=jhon&role=true',
   })
   @ApiQuery({ name: 'name', required: false, type: String })
   @ApiQuery({ name: 'lastname', required: false, type: String })
   @ApiQuery({ name: 'birthday', required: false, type: String })
-  @ApiQuery({ name: 'isadmin', required: false, type: Boolean })
+  @ApiQuery({ name: 'role', required: false, type: Boolean })
   @ApiQuery({ name: 'email', required: false, type: String })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -100,18 +103,18 @@ export class UsersController {
     @Query('name') name?: string,
     @Query('lastname') lastname?: string,
     @Query('birthday') birthday?: string,
-    @Query('isadmin') isadmin?: Boolean,
+    @Query('role') role?: string,
     @Query('email') email?: string,
     @Query('page') page: number = 1, // Página por defecto es 1
     @Query('limit') limit: number = 10, // Límite por defecto es 10
   ): Promise<{ data: UserEntity[]; count: number }> {
-    if (!name && !lastname && !birthday && !isadmin && !email) {
+    if (!name && !lastname && !birthday && !role && !email) {
       throw new BadRequestException(
         'At least one filter must be provided, example /users/byFilters?name=John&email=john@example.com&page=2&limit=5',
       );
     }
     return this.usersService.findAllByFilters(
-      { name, lastname, birthday, isadmin, email },
+      { name, lastname, birthday, role, email },
       page,
       limit,
     );

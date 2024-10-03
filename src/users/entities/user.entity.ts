@@ -1,7 +1,9 @@
+import { Role } from 'src/auth/roles.enum';
 import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from 'src/subscriptions/entities/subscriptionPlan.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
 @Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -25,8 +27,12 @@ export class UserEntity {
   @Column({ nullable: true, type: 'date' })
   birthDay: Date;
 
-  @Column({ type: 'boolean', default: false })
-  isAdmin: boolean;
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.User, 
+  })
+  role: Role;
 
   @Column({ nullable: true, type: 'varchar', length: 255 })
   email: string;

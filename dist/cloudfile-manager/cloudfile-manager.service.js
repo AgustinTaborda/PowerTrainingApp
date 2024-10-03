@@ -14,7 +14,7 @@ let CloudfileManagerService = class CloudfileManagerService {
     async uploadImage(file) {
         console.log(file);
         return new Promise((resolve, reject) => {
-            const upload = cloudinary_1.v2.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
+            const upload = cloudinary_1.v2.uploader.upload_stream({ resource_type: 'image', secure: true }, (error, result) => {
                 if (error) {
                     reject(error);
                 }
@@ -27,7 +27,7 @@ let CloudfileManagerService = class CloudfileManagerService {
     }
     async uploadVideo(file) {
         return new Promise((resolve, reject) => {
-            const upload = cloudinary_1.v2.uploader.upload_stream({ resource_type: 'video' }, (error, result) => {
+            const upload = cloudinary_1.v2.uploader.upload_stream({ resource_type: 'video', secure: true }, (error, result) => {
                 if (error) {
                     reject(error);
                 }
