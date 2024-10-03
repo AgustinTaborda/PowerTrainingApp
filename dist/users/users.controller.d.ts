@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { Response } from 'express';
+import { Role } from 'src/auth/roles.enum';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
@@ -15,10 +16,11 @@ export declare class UsersController {
         lastName: string;
         birthDay: Date;
         email: string;
+        role: Role;
     } & UserEntity>;
     logout(res: Response): void;
     findAll(limit?: number, page?: number): Promise<UserEntity[]>;
-    findAllByFilters(name?: string, lastname?: string, birthday?: string, isadmin?: Boolean, email?: string, page?: number, limit?: number): Promise<{
+    findAllByFilters(name?: string, lastname?: string, birthday?: string, role?: string, email?: string, page?: number, limit?: number): Promise<{
         data: UserEntity[];
         count: number;
     }>;
