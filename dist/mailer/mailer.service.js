@@ -20,7 +20,7 @@ let MailService = class MailService {
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASSWORD,
-            }
+            },
         };
         const data2 = {
             service: 'gmail',
@@ -29,6 +29,9 @@ let MailService = class MailService {
                 pass: process.env.EMAIL_PASSWORD,
             },
             secure: true,
+            tls: {
+                rejectUnauthorized: false,
+            },
         };
         this.transporter = (0, nodemailer_1.createTransport)(data2);
     }

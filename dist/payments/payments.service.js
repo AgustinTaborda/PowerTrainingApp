@@ -74,11 +74,25 @@ let PaymentService = class PaymentService {
             user.isSubscribed = true;
             user.subscriptionEndDate = endDate;
             await this.userRepository.save(user);
-            this.mailService.sendEmail(user.email, 'Mensajes POWERTRAINING', 'Le informamos que su pago ha sido aprobado con éxito. Muchas gracias.');
+            const emailContent = `
+        Hola ${user.name},
+
+        Gracias por tu compra. A continuación te dejamos los detalles de tu suscripción:
+
+        - Plan: ${subscriptionPlan.name}
+        - Duración: ${subscriptionPlan.durationInMonths} meses
+        - Precio total: ${subscriptionPlan.price}
+
+        Fecha de inicio de la suscripción: ${startDate.toDateString()}
+        Fecha de finalización de la suscripción: ${endDate.toDateString()}
+
+        ¡Gracias por confiar en nosotros!
+      `;
+            await this.mailService.sendEmail(user.email, 'Confirmación de Compra - Suscripción', emailContent);
             return result;
         }
         catch (error) {
-            throw new Error('Error al crear el pago con Mercado Pago');
+            throw new Error('Error al crear el pago con Mercado Pago: ' + error.message);
         }
     }
 };
