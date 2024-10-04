@@ -28,6 +28,7 @@ const jwt_1 = require("@nestjs/jwt");
 const email_module_1 = require("./email/email.module");
 const schedule_1 = require("@nestjs/schedule");
 const crontask_exercise_module_1 = require("./crontask/crontask.exercise.module");
+const excelreports_module_1 = require("./excelreports/excelreports.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -56,12 +57,13 @@ exports.AppModule = AppModule = __decorate([
             cloudfile_manager_module_1.CloudfileManagerModule,
             jwt_1.JwtModule.register({
                 global: true,
-                signOptions: { expiresIn: '1h' },
+                signOptions: { expiresIn: '200h' },
                 secret: process.env.JWT_SECRET
             }),
             email_module_1.EmailModule,
             schedule_1.ScheduleModule.forRoot(),
-            crontask_exercise_module_1.CronExercisesModule
+            crontask_exercise_module_1.CronExercisesModule,
+            excelreports_module_1.ExcelreportsModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [],

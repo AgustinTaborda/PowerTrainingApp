@@ -39,14 +39,14 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: "Email del usuario",
-        example: "luis@gmail.com"
+        example: "john.doe@example.com"
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: "Contraseña del usuario",
-        example: "123456"
+        example: "hashed_password1"
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
