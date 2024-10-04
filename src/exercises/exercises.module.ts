@@ -12,5 +12,6 @@ import { ExerciseSeed } from './exercises.seed';
   imports : [TypeOrmModule.forFeature([ExerciseEntity])],
   controllers: [ExercisesController],
   providers: [ExercisesService,ExerciseSeed],
+  exports: [ExercisesService, TypeOrmModule],
 })
 export class ExercisesModule {}

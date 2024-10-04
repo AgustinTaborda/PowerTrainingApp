@@ -26,7 +26,7 @@ async function bootstrap() {
         },
     };
     const swaggerConfig = new swagger_1.DocumentBuilder()
-        .setTitle('Api Backend PowerTrainingApp, PF Henry ')
+        .setTitle('Api Backend PowerTrainingApp, PF Henry 01102024')
         .setDescription('Api con la documentación de cada endpoint disponible en la aplicación')
         .setVersion('1.0')
         .addOAuth2({

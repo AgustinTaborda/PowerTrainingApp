@@ -35,7 +35,8 @@ export class CronTasksService {
       .set({ status: Status.INACTIVE })
       .where('status = :status', { status: 'trash' })
       .execute();
-      this.logger.debug('Exercises moved to inactive');
+     console.log('Exercises moved to inactive');
+    
   }catch(error){
     console.log(error)
   }

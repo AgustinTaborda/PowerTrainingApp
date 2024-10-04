@@ -65,7 +65,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  @Roles(Role.Admin, Role.Superadmin)
+  //@Roles(Role.Admin, Role.Superadmin)
   @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get()
   @ApiQuery({
