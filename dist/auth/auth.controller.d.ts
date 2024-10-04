@@ -8,7 +8,9 @@ export declare class AuthController {
         success: string;
         token: string;
         userData: {
+            sud: string;
             id: string;
+            email: string;
             name: string;
             lastName: string;
             birthDay: Date;
@@ -19,7 +21,9 @@ export declare class AuthController {
         success: string;
         token: string;
         userData: {
+            sud: string;
             id: string;
+            email: string;
             name: string;
             lastName: string;
             birthDay: Date;

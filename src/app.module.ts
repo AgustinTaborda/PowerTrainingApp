@@ -12,7 +12,7 @@ import { MessagesModule } from './messages/messages.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import  typeOrmConfig  from './config/typeormConfig';
+import typeOrmConfig from './config/typeormConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CloudfileManagerModule } from './cloudfile-manager/cloudfile-manager.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -21,41 +21,40 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronTasksService } from './crontask/crontask.exercise.service';
 import { ExerciseEntity } from './exercises/entities/exercise.entity';
 import { CronExercisesModule } from './crontask/crontask.exercise.module';
+import { Gateway } from './gateway/gateway.module';
 
 @Module({
-  imports: [ 
-   
-      ConfigModule.forRoot({
-        isGlobal: true,
-        load: [typeOrmConfig] // através de este import se trae la clave typeorm creada en el config
-      }),
-      TypeOrmModule.forRootAsync({
-        inject: [ConfigService],
-        useFactory: (configService : ConfigService) => 
-          configService.get('typeorm'),//esta es la clave creada en el config en typeorm.ts
-      }),
-    
-    
-    ExercisesModule, 
-    AuthModule, 
-    UserRoutineExerciseModule, 
-    UserRoutineLogModule, 
-    UsersModule, 
-    SubscriptionsModule, 
-    RoutinesModule, 
-    PaymentsModule, 
-    NotificationsModule, 
-    MessagesModule, 
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeOrmConfig], // através de este import se trae la clave typeorm creada en el config
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        configService.get('typeorm'), //esta es la clave creada en el config en typeorm.ts
+    }),
+    Gateway,
+    ExercisesModule,
+    AuthModule,
+    UserRoutineExerciseModule,
+    UserRoutineLogModule,
+    UsersModule,
+    SubscriptionsModule,
+    RoutinesModule,
+    PaymentsModule,
+    NotificationsModule,
+    MessagesModule,
     UserProgressModule,
     CloudfileManagerModule,
     JwtModule.register({
       global: true,
-      signOptions: { expiresIn: '1h'},
-      secret: process.env.JWT_SECRET
+      signOptions: { expiresIn: '1h' },
+      secret: process.env.JWT_SECRET,
     }),
     EmailModule,
     ScheduleModule.forRoot(),
-    CronExercisesModule
+    CronExercisesModule,
   ],
   controllers: [AppController],
   providers: [],

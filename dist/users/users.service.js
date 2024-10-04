@@ -24,7 +24,9 @@ let UsersService = class UsersService {
         this.userRepository = userRepository;
     }
     async create(createUserDto) {
-        const user = await this.userRepository.findOne({ where: { email: createUserDto.email } });
+        const user = await this.userRepository.findOne({
+            where: { email: createUserDto.email },
+        });
         if (user) {
             throw new common_1.BadRequestException('Email already in use');
         }
@@ -32,7 +34,10 @@ let UsersService = class UsersService {
         if (!hashedPassword) {
             throw new common_1.BadRequestException('Password could not be hashed');
         }
-        const dbUser = await this.userRepository.save({ ...createUserDto, password: hashedPassword });
+        const dbUser = await this.userRepository.save({
+            ...createUserDto,
+            password: hashedPassword,
+        });
         if (!dbUser) {
             throw new common_1.BadRequestException('User could not be register correctly');
         }
@@ -44,7 +49,7 @@ let UsersService = class UsersService {
         const users = await this.userRepository.find({
             take: limit,
             skip: (page - 1) * limit,
-            order: { name: 'ASC' }
+            order: { name: 'ASC' },
         });
         return users;
     }
@@ -52,19 +57,27 @@ let UsersService = class UsersService {
         try {
             const qb = this.userRepository.createQueryBuilder('users');
             if (filters.name) {
-                qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', { name: filters.name });
+                qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', {
+                    name: filters.name,
+                });
             }
             if (filters.lastname) {
-                qb.andWhere('LOWER(users.lastName) LIKE LOWER(:lastname)', { lastname: filters.lastname });
+                qb.andWhere('LOWER(users.lastName) LIKE LOWER(:lastname)', {
+                    lastname: filters.lastname,
+                });
             }
             if (filters.birthday) {
-                qb.andWhere('users.birthDay = :birthday', { birthday: filters.birthday });
+                qb.andWhere('users.birthDay = :birthday', {
+                    birthday: filters.birthday,
+                });
             }
             if (filters.role !== undefined) {
                 qb.andWhere('users.role = :role', { role: filters.role });
             }
             if (filters.email) {
-                qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', { email: `%${filters.email}%` });
+                qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', {
+                    email: `%${filters.email}%`,
+                });
             }
             const offset = (page - 1) * limit;
             qb.skip(offset).take(limit);
@@ -87,16 +100,96 @@ let UsersService = class UsersService {
     }
     async seedUsers() {
         const users = [
-            { subscriptionEndDate: '2025-09-15', birthDay: '1990-03-25', role: roles_enum_1.Role.Superadmin, password: 'hashed_password1', name: 'John', lastName: 'Doe', email: 'john.doe@example.com' },
-            { subscriptionEndDate: '2024-11-20', birthDay: '1985-07-14', role: roles_enum_1.Role.Admin, password: 'hashed_password2', name: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com' },
-            { subscriptionEndDate: '2026-01-30', birthDay: '2000-12-05', role: roles_enum_1.Role.User, password: 'hashed_password3', name: 'Bob', lastName: 'Johnson', email: 'bob.johnson@example.com' },
-            { subscriptionEndDate: '2024-05-14', birthDay: '1995-02-18', role: roles_enum_1.Role.User, password: 'hashed_password4', name: 'Alice', lastName: 'Williams', email: 'alice.williams@example.com' },
-            { subscriptionEndDate: '2025-07-20', birthDay: '1998-08-10', role: roles_enum_1.Role.User, password: 'hashed_password5', name: 'Charlie', lastName: 'Brown', email: 'charlie.brown@example.com' },
-            { subscriptionEndDate: '2023-12-22', birthDay: '1992-11-25', role: roles_enum_1.Role.User, password: 'hashed_password6', name: 'David', lastName: 'Clark', email: 'david.clark@example.com' },
-            { subscriptionEndDate: '2026-03-03', birthDay: '1996-05-15', role: roles_enum_1.Role.User, password: 'hashed_password7', name: 'Eve', lastName: 'Turner', email: 'eve.turner@example.com' },
-            { subscriptionEndDate: '2025-11-11', birthDay: '1999-09-29', role: roles_enum_1.Role.User, password: 'hashed_password8', name: 'Frank', lastName: 'Moore', email: 'frank.moore@example.com' },
-            { subscriptionEndDate: '2024-08-08', birthDay: '1997-03-30', role: roles_enum_1.Role.User, password: 'hashed_password9', name: 'Grace', lastName: 'Taylor', email: 'grace.taylor@example.com' },
-            { subscriptionEndDate: '2025-02-17', birthDay: '1993-10-22', role: roles_enum_1.Role.User, password: 'hashed_password10', name: 'Hank', lastName: 'Anderson', email: 'hank.anderson@example.com' }
+            {
+                subscriptionEndDate: '2025-09-15',
+                birthDay: '1990-03-25',
+                role: roles_enum_1.Role.Superadmin,
+                password: 'hashed_password1',
+                name: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com',
+            },
+            {
+                subscriptionEndDate: '2024-11-20',
+                birthDay: '1985-07-14',
+                role: roles_enum_1.Role.Admin,
+                password: 'hashed_password2',
+                name: 'Jane',
+                lastName: 'Smith',
+                email: 'jane.smith@example.com',
+            },
+            {
+                subscriptionEndDate: '2026-01-30',
+                birthDay: '2000-12-05',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password3',
+                name: 'Bob',
+                lastName: 'Johnson',
+                email: 'bob.johnson@example.com',
+            },
+            {
+                subscriptionEndDate: '2024-05-14',
+                birthDay: '1995-02-18',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password4',
+                name: 'Alice',
+                lastName: 'Williams',
+                email: 'alice.williams@example.com',
+            },
+            {
+                subscriptionEndDate: '2025-07-20',
+                birthDay: '1998-08-10',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password5',
+                name: 'Charlie',
+                lastName: 'Brown',
+                email: 'charlie.brown@example.com',
+            },
+            {
+                subscriptionEndDate: '2023-12-22',
+                birthDay: '1992-11-25',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password6',
+                name: 'David',
+                lastName: 'Clark',
+                email: 'david.clark@example.com',
+            },
+            {
+                subscriptionEndDate: '2026-03-03',
+                birthDay: '1996-05-15',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password7',
+                name: 'Eve',
+                lastName: 'Turner',
+                email: 'eve.turner@example.com',
+            },
+            {
+                subscriptionEndDate: '2025-11-11',
+                birthDay: '1999-09-29',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password8',
+                name: 'Frank',
+                lastName: 'Moore',
+                email: 'frank.moore@example.com',
+            },
+            {
+                subscriptionEndDate: '2024-08-08',
+                birthDay: '1997-03-30',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password9',
+                name: 'Grace',
+                lastName: 'Taylor',
+                email: 'grace.taylor@example.com',
+            },
+            {
+                subscriptionEndDate: '2025-02-17',
+                birthDay: '1993-10-22',
+                role: roles_enum_1.Role.User,
+                password: 'hashed_password10',
+                name: 'Hank',
+                lastName: 'Anderson',
+                email: 'hank.anderson@example.com',
+            },
         ];
         for (const user of users) {
             const { subscriptionEndDate, birthDay, ...createUserDto } = user;

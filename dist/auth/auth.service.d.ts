@@ -10,7 +10,9 @@ export declare class AuthService {
         success: string;
         token: string;
         userData: {
+            sud: string;
             id: string;
+            email: string;
             name: string;
             lastName: string;
             birthDay: Date;
@@ -21,7 +23,9 @@ export declare class AuthService {
         success: string;
         token: string;
         userData: {
+            sud: string;
             id: string;
+            email: string;
             name: string;
             lastName: string;
             birthDay: Date;

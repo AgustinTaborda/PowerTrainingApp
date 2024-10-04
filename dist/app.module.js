@@ -28,6 +28,7 @@ const jwt_1 = require("@nestjs/jwt");
 const email_module_1 = require("./email/email.module");
 const schedule_1 = require("@nestjs/schedule");
 const crontask_exercise_module_1 = require("./crontask/crontask.exercise.module");
+const gateway_module_1 = require("./gateway/gateway.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -36,12 +37,13 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                load: [typeormConfig_1.default]
+                load: [typeormConfig_1.default],
             }),
             typeorm_1.TypeOrmModule.forRootAsync({
                 inject: [config_1.ConfigService],
                 useFactory: (configService) => configService.get('typeorm'),
             }),
+            gateway_module_1.Gateway,
             exercises_module_1.ExercisesModule,
             auth_module_1.AuthModule,
             user_routine_exercise_module_1.UserRoutineExerciseModule,
@@ -57,11 +59,11 @@ exports.AppModule = AppModule = __decorate([
             jwt_1.JwtModule.register({
                 global: true,
                 signOptions: { expiresIn: '1h' },
-                secret: process.env.JWT_SECRET
+                secret: process.env.JWT_SECRET,
             }),
             email_module_1.EmailModule,
             schedule_1.ScheduleModule.forRoot(),
-            crontask_exercise_module_1.CronExercisesModule
+            crontask_exercise_module_1.CronExercisesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [],

@@ -85,7 +85,9 @@ let AuthService = class AuthService {
             success: 'User logged in successfully',
             token,
             userData: {
+                sud: user.id,
                 id: user.id,
+                email: user.email,
                 name: user.name,
                 lastName: user.lastName,
                 birthDay: user.birthDay,

@@ -20,9 +20,8 @@ const config = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
-  dropSchema: false,//para recrear todas las tablas
+  dropSchema: false, //para recrear todas las tablas
 };
-
 
 export const connectionSource = new DataSource(config as DataSourceOptions);
 export default registerAs('typeorm', () => config); // permite tener una "clave" que su valor es el objeto config
