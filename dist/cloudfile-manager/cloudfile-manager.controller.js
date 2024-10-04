@@ -23,7 +23,7 @@ let CloudfileManagerController = class CloudfileManagerController {
         this.cloudfileManagerService = cloudfileManagerService;
     }
     async uploadImages(file) {
-        console.log(file);
+        console.log(file.);
         return await this.cloudfileManagerService.uploadImage(file).then(response => response.url);
     }
     async uploadVideos(file) {
@@ -34,6 +34,9 @@ let CloudfileManagerController = class CloudfileManagerController {
             throw new common_1.BadRequestException('El archivo está vacío');
         }
         return await this.cloudfileManagerService.uploadVideo(file).then(response => response.url);
+    }
+    async listVideos() {
+        return await this.cloudfileManagerService.listVideos();
     }
 };
 exports.CloudfileManagerController = CloudfileManagerController;
@@ -66,6 +69,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], CloudfileManagerController.prototype, "uploadVideos", null);
+__decorate([
+    (0, common_1.Get)('/listVideos'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CloudfileManagerController.prototype, "listVideos", null);
 exports.CloudfileManagerController = CloudfileManagerController = __decorate([
     (0, swagger_1.ApiTags)('files'),
     (0, swagger_1.ApiBearerAuth)('access-token'),

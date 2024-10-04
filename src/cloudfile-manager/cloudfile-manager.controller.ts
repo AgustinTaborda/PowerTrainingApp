@@ -21,7 +21,7 @@ export class CloudfileManagerController {
   @Post('/uploadImage')
   @UseInterceptors(FileInterceptor('image'))
   async uploadImages(@UploadedFile() file: Express.Multer.File){
-    console.log(file);
+    console.log(file.);
     return  await this.cloudfileManagerService.uploadImage(file).then(response => response.url);
   }
 
@@ -53,8 +53,15 @@ export class CloudfileManagerController {
     
     return  await this.cloudfileManagerService.uploadVideo(file).then(response => response.url);
   }
+
+  @Get('/listVideos')
+  async listVideos(){
+    return  await this.cloudfileManagerService.listVideos();
  
+
   }
+
+}
 
   
 
