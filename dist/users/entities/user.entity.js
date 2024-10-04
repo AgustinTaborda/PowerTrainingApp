@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserEntity = void 0;
+const roles_enum_1 = require("../../auth/roles.enum");
 const subscription_entity_1 = require("../../subscriptions/entities/subscription.entity");
 const typeorm_1 = require("typeorm");
 const uuid_1 = require("uuid");
@@ -48,9 +49,13 @@ __decorate([
     __metadata("design:type", Date)
 ], UserEntity.prototype, "birthDay", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'boolean', default: false }),
-    __metadata("design:type", Boolean)
-], UserEntity.prototype, "isAdmin", void 0);
+    (0, typeorm_1.Column)({
+        type: 'enum',
+        enum: roles_enum_1.Role,
+        default: roles_enum_1.Role.User,
+    }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "role", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true, type: 'varchar', length: 255 }),
     __metadata("design:type", String)

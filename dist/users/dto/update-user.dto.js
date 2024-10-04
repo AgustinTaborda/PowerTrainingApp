@@ -13,6 +13,7 @@ exports.UpdateUserDto = void 0;
 const mapped_types_1 = require("@nestjs/mapped-types");
 const create_user_dto_1 = require("./create-user.dto");
 const swagger_1 = require("@nestjs/swagger");
+const roles_enum_1 = require("../../auth/roles.enum");
 class UpdateUserDto extends (0, mapped_types_1.PartialType)(create_user_dto_1.CreateUserDto) {
 }
 exports.UpdateUserDto = UpdateUserDto;
@@ -53,11 +54,11 @@ __decorate([
 ], UpdateUserDto.prototype, "password", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: "Si es administrador o no",
-        example: "true"
+        description: "El rol que tiene este usuario",
+        example: "Admin / User / Superadmin"
     }),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "isAdmin", void 0);
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "role", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: "Fecha de finalización de la suscripción",

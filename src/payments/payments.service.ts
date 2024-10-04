@@ -98,7 +98,7 @@ export class PaymentService {
       return result;
     } catch (error) {
      
-      throw new Error('Error al crear el pago con Mercado Pago');
+      throw new Error('Error al crear el pago con Mercado Pago: '+error.message);
     }
   }
 }

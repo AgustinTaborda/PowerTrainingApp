@@ -19,6 +19,9 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const swagger_1 = require("@nestjs/swagger");
 const google_jwtauth_guard_1 = require("../guards/google-jwtauth.guard");
+const roles_enum_1 = require("../auth/roles.enum");
+const roles_decorator_1 = require("../decorator/roles.decorator");
+const roles_guard_1 = require("../guards/roles.guard");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -43,11 +46,11 @@ let UsersController = class UsersController {
     findAll(limit = 5, page = 1) {
         return this.usersService.findAll(limit, page);
     }
-    findAllByFilters(name, lastname, birthday, isadmin, email, page = 1, limit = 10) {
-        if (!name && !lastname && !birthday && !isadmin && !email) {
+    findAllByFilters(name, lastname, birthday, role, email, page = 1, limit = 10) {
+        if (!name && !lastname && !birthday && !role && !email) {
             throw new common_1.BadRequestException('At least one filter must be provided, example /users/byFilters?name=John&email=john@example.com&page=2&limit=5');
         }
-        return this.usersService.findAllByFilters({ name, lastname, birthday, isadmin, email }, page, limit);
+        return this.usersService.findAllByFilters({ name, lastname, birthday, role, email }, page, limit);
     }
     findOne(id) {
         return this.usersService.findOne(id);
@@ -84,7 +87,8 @@ __decorate([
 ], UsersController.prototype, "logout", null);
 __decorate([
     (0, swagger_1.ApiBearerAuth)('access-token'),
-    (0, common_1.UseGuards)(google_jwtauth_guard_1.CombinedAuthGuard),
+    (0, roles_decorator_1.Roles)(roles_enum_1.Role.Admin, roles_enum_1.Role.Superadmin),
+    (0, common_1.UseGuards)(google_jwtauth_guard_1.CombinedAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Get)(),
     (0, swagger_1.ApiQuery)({
         name: 'limit',
@@ -110,24 +114,24 @@ __decorate([
     (0, common_1.UseGuards)(google_jwtauth_guard_1.CombinedAuthGuard),
     (0, common_1.Get)('/byFilters'),
     (0, swagger_1.ApiOperation)({
-        summary: 'Retrieve all users that match with criteria, name,lastname,birthday,isadmin,email, example: users/byFilters?email=myemail@mail.com&name=jhon&isadmin=true',
+        summary: 'Retrieve all users that match with criteria, name,lastname,birthday,role,email, example: users/byFilters?email=myemail@mail.com&name=jhon&role=true',
     }),
     (0, swagger_1.ApiQuery)({ name: 'name', required: false, type: String }),
     (0, swagger_1.ApiQuery)({ name: 'lastname', required: false, type: String }),
     (0, swagger_1.ApiQuery)({ name: 'birthday', required: false, type: String }),
-    (0, swagger_1.ApiQuery)({ name: 'isadmin', required: false, type: Boolean }),
+    (0, swagger_1.ApiQuery)({ name: 'role', required: false, type: Boolean }),
     (0, swagger_1.ApiQuery)({ name: 'email', required: false, type: String }),
     (0, swagger_1.ApiQuery)({ name: 'page', required: false, type: Number }),
     (0, swagger_1.ApiQuery)({ name: 'limit', required: false, type: Number }),
     __param(0, (0, common_1.Query)('name')),
     __param(1, (0, common_1.Query)('lastname')),
     __param(2, (0, common_1.Query)('birthday')),
-    __param(3, (0, common_1.Query)('isadmin')),
+    __param(3, (0, common_1.Query)('role')),
     __param(4, (0, common_1.Query)('email')),
     __param(5, (0, common_1.Query)('page')),
     __param(6, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, Boolean, String, Number, Number]),
+    __metadata("design:paramtypes", [String, String, String, String, String, Number, Number]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAllByFilters", null);
 __decorate([

@@ -6,6 +6,7 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from "uuid";
 import * as bcrypt from "bcrypt";
+import { Role } from 'src/auth/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -45,7 +46,7 @@ export class UsersService {
   
 
   async findAllByFilters(
-    filters: { name?: string, lastname?: string, birthday?: string, isadmin?: Boolean, email?: string },
+    filters: { name?: string, lastname?: string, birthday?: string, role?: string, email?: string },
     page: number = 1,  // Página actual, por defecto es la 1
     limit: number = 10 // Límite de resultados por página, por defecto 10
   ): Promise<{ data: UserEntity[], count: number }> {
@@ -65,8 +66,8 @@ export class UsersService {
         qb.andWhere('users.birthDay = :birthday', { birthday: filters.birthday });
       }
   
-      if (filters.isadmin !== undefined) {
-        qb.andWhere('users.isAdmin = :isadmin', { isadmin: filters.isadmin });
+      if (filters.role !== undefined) {
+        qb.andWhere('users.role = :role', { role: filters.role });
       }
   
       if (filters.email) {
@@ -103,30 +104,20 @@ export class UsersService {
 
   async seedUsers() {
     const users = [
-      { subscriptionEndDate: '2025-09-15', birthDay: '1990-03-25', isAdmin: false, password: 'hashed_password1', name: 'John', lastName: 'Doe', email: 'john.doe@example.com' },
-      { subscriptionEndDate: '2024-11-20', birthDay: '1985-07-14', isAdmin: true, password: 'hashed_password2', name: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com' },
-      { subscriptionEndDate: '2026-01-30', birthDay: '2000-12-05', isAdmin: false, password: 'hashed_password3', name: 'Bob', lastName: 'Johnson', email: 'bob.johnson@example.com' },
-      { subscriptionEndDate: '2024-06-05', birthDay: '1995-05-22', isAdmin: true, password: 'hashed_password4', name: 'Alice', lastName: 'Williams', email: 'alice.williams@example.com' },
-      { subscriptionEndDate: '2023-12-01', birthDay: '1988-09-10', isAdmin: false, password: 'hashed_password5', name: 'Charlie', lastName: 'Brown', email: 'charlie.brown@example.com' },
-      { subscriptionEndDate: '2024-04-15', birthDay: '1992-04-11', isAdmin: false, password: 'hashed_password6', name: 'David', lastName: 'Wilson', email: 'david.wilson@example.com' },
-      { subscriptionEndDate: '2025-08-24', birthDay: '1991-07-29', isAdmin: true, password: 'hashed_password7', name: 'Emma', lastName: 'Moore', email: 'emma.moore@example.com' },
-      { subscriptionEndDate: '2025-03-18', birthDay: '1986-01-19', isAdmin: false, password: 'hashed_password8', name: 'Michael', lastName: 'Taylor', email: 'michael.taylor@example.com' },
-      { subscriptionEndDate: '2026-10-12', birthDay: '1994-08-30', isAdmin: true, password: 'hashed_password9', name: 'Sarah', lastName: 'Anderson', email: 'sarah.anderson@example.com' },
-      { subscriptionEndDate: '2024-09-05', birthDay: '1989-06-25', isAdmin: false, password: 'hashed_password10', name: 'James', lastName: 'Thomas', email: 'james.thomas@example.com' },
-      { subscriptionEndDate: '2023-10-22', birthDay: '1993-11-14', isAdmin: false, password: 'hashed_password11', name: 'Emily', lastName: 'Jackson', email: 'emily.jackson@example.com' },
-      { subscriptionEndDate: '2024-05-11', birthDay: '1996-02-15', isAdmin: true, password: 'hashed_password12', name: 'Olivia', lastName: 'White', email: 'olivia.white@example.com' },
-      { subscriptionEndDate: '2025-12-19', birthDay: '1984-05-08', isAdmin: false, password: 'hashed_password13', name: 'William', lastName: 'Harris', email: 'william.harris@example.com' },
-      { subscriptionEndDate: '2026-02-28', birthDay: '1997-03-03', isAdmin: true, password: 'hashed_password14', name: 'Sophia', lastName: 'Martin', email: 'sophia.martin@example.com' },
-      { subscriptionEndDate: '2024-03-15', birthDay: '1990-09-17', isAdmin: false, password: 'hashed_password15', name: 'Benjamin', lastName: 'Lee', email: 'benjamin.lee@example.com' },
-      { subscriptionEndDate: '2025-07-09', birthDay: '1987-10-25', isAdmin: false, password: 'hashed_password16', name: 'Isabella', lastName: 'Perez', email: 'isabella.perez@example.com' },
-      { subscriptionEndDate: '2026-11-21', birthDay: '1998-12-01', isAdmin: true, password: 'hashed_password17', name: 'Henry', lastName: 'Thompson', email: 'henry.thompson@example.com' },
-      { subscriptionEndDate: '2024-08-02', birthDay: '1991-03-10', isAdmin: false, password: 'hashed_password18', name: 'Mia', lastName: 'Garcia', email: 'mia.garcia@example.com' },
-      { subscriptionEndDate: '2025-01-16', birthDay: '1992-11-27', isAdmin: true, password: 'hashed_password19', name: 'Alexander', lastName: 'Martinez', email: 'alexander.martinez@example.com' },
-      { subscriptionEndDate: '2023-07-04', birthDay: '1989-04-02', isAdmin: false, password: 'hashed_password20', name: 'Lucas', lastName: 'Rodriguez', email: 'lucas.rodriguez@example.com' },
-    ];
+      { subscriptionEndDate: '2025-09-15', birthDay: '1990-03-25', role: Role.Superadmin, password: 'hashed_password1', name: 'John', lastName: 'Doe', email: 'john.doe@example.com' },
+      { subscriptionEndDate: '2024-11-20', birthDay: '1985-07-14', role: Role.Admin, password: 'hashed_password2', name: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com' },
+      { subscriptionEndDate: '2026-01-30', birthDay: '2000-12-05', role: Role.User, password: 'hashed_password3', name: 'Bob', lastName: 'Johnson', email: 'bob.johnson@example.com' },
+      { subscriptionEndDate: '2024-05-14', birthDay: '1995-02-18', role: Role.User, password: 'hashed_password4', name: 'Alice', lastName: 'Williams', email: 'alice.williams@example.com' },
+      { subscriptionEndDate: '2025-07-20', birthDay: '1998-08-10', role: Role.User, password: 'hashed_password5', name: 'Charlie', lastName: 'Brown', email: 'charlie.brown@example.com' },
+      { subscriptionEndDate: '2023-12-22', birthDay: '1992-11-25', role: Role.User, password: 'hashed_password6', name: 'David', lastName: 'Clark', email: 'david.clark@example.com' },
+      { subscriptionEndDate: '2026-03-03', birthDay: '1996-05-15', role: Role.User, password: 'hashed_password7', name: 'Eve', lastName: 'Turner', email: 'eve.turner@example.com' },
+      { subscriptionEndDate: '2025-11-11', birthDay: '1999-09-29', role: Role.User, password: 'hashed_password8', name: 'Frank', lastName: 'Moore', email: 'frank.moore@example.com' },
+      { subscriptionEndDate: '2024-08-08', birthDay: '1997-03-30', role: Role.User, password: 'hashed_password9', name: 'Grace', lastName: 'Taylor', email: 'grace.taylor@example.com' },
+      { subscriptionEndDate: '2025-02-17', birthDay: '1993-10-22', role: Role.User, password: 'hashed_password10', name: 'Hank', lastName: 'Anderson', email: 'hank.anderson@example.com' }
+    ];    
 
     for (const user of users) {
-      const { subscriptionEndDate, isAdmin, birthDay, ...createUserDto } = user;
+      const { subscriptionEndDate, birthDay, ...createUserDto } = user;
   
       const userBirthday: Date = new Date(birthDay); 
 

@@ -1,3 +1,4 @@
+import { Role } from 'src/auth/roles.enum';
 import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
 export declare class UserEntity {
     id: string;
@@ -7,7 +8,7 @@ export declare class UserEntity {
     name: string;
     lastName: string;
     birthDay: Date;
-    isAdmin: boolean;
+    role: Role;
     email: string;
     password: string;
     isSubscribed: boolean;
