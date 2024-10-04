@@ -23,7 +23,6 @@ let CloudfileManagerController = class CloudfileManagerController {
         this.cloudfileManagerService = cloudfileManagerService;
     }
     async uploadImages(file) {
-        console.log(file.);
         return await this.cloudfileManagerService.uploadImage(file).then(response => response.url);
     }
     async uploadVideos(file) {

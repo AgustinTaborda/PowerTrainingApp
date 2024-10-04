@@ -21,7 +21,7 @@ export class CloudfileManagerController {
   @Post('/uploadImage')
   @UseInterceptors(FileInterceptor('image'))
   async uploadImages(@UploadedFile() file: Express.Multer.File){
-    console.log(file.);
+   
     return  await this.cloudfileManagerService.uploadImage(file).then(response => response.url);
   }
 
