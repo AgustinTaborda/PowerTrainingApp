@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserEntity = void 0;
 const roles_enum_1 = require("../../auth/roles.enum");
+const routine_entity_1 = require("../../routine/entities/routine.entity");
 const subscription_entity_1 = require("../../subscriptions/entities/subscription.entity");
 const typeorm_1 = require("typeorm");
 const uuid_1 = require("uuid");
@@ -76,6 +77,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => subscription_entity_1.SubscriptionEntity, (subscription) => subscription.user),
     __metadata("design:type", Array)
 ], UserEntity.prototype, "subscriptions", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => routine_entity_1.RoutineEntity, (routine) => routine.user),
+    __metadata("design:type", Array)
+], UserEntity.prototype, "routines", void 0);
 exports.UserEntity = UserEntity = __decorate([
     (0, typeorm_1.Entity)('users')
 ], UserEntity);

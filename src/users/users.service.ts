@@ -89,9 +89,11 @@ export class UsersService {
     }
   }
     
-
-  async findOne(id: uuid) {
-    return await this.userRepository.findOneBy({id});
+  async findOne(id: string) {
+    return await this.userRepository.findOne({
+      where: { id },
+      relations: ['routines']
+    });
   }
 
   async update(id: uuid, updateUserDto: UpdateUserDto) {

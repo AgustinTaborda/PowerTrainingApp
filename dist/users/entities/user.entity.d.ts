@@ -1,4 +1,5 @@
 import { Role } from 'src/auth/roles.enum';
+import { RoutineEntity } from 'src/routine/entities/routine.entity';
 import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
 export declare class UserEntity {
     id: string;
@@ -15,4 +16,5 @@ export declare class UserEntity {
     subscriptionEndDate: Date;
     picture: string;
     subscriptions: SubscriptionEntity[];
+    routines: RoutineEntity[];
 }
