@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserRoutineLogService } from './user_routine_log.service';
-import { UserRoutineLogController } from './user_routine_log.controller';
+import { UserRoutineLogService } from './routine.service';
+import { UserRoutineLogController } from './routine.controller';
 
 @Module({
   controllers: [UserRoutineLogController],

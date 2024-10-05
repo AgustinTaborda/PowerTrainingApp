@@ -26,7 +26,7 @@ export declare class UsersService {
         data: UserEntity[];
         count: number;
     }>;
-    findOne(id: uuid): Promise<UserEntity>;
+    findOne(id: string): Promise<UserEntity>;
     update(id: uuid, updateUserDto: UpdateUserDto): Promise<import("typeorm").UpdateResult>;
     remove(id: uuid): Promise<import("typeorm").DeleteResult>;
     seedUsers(): Promise<void>;

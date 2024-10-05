@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const exercises_module_1 = require("./exercises/exercises.module");
 const user_routine_exercise_module_1 = require("./user_routine_exercise/user_routine_exercise.module");
-const user_routine_log_module_1 = require("./user_routine_log/user_routine_log.module");
+const routine_module_1 = require("./routine/routine.module");
 const users_module_1 = require("./users/users.module");
 const subscriptions_module_1 = require("./subscriptions/subscriptions.module");
 const routines_module_1 = require("./routines/routines.module");
@@ -46,7 +46,7 @@ exports.AppModule = AppModule = __decorate([
             exercises_module_1.ExercisesModule,
             auth_module_1.AuthModule,
             user_routine_exercise_module_1.UserRoutineExerciseModule,
-            user_routine_log_module_1.UserRoutineLogModule,
+            routine_module_1.UserRoutineLogModule,
             users_module_1.UsersModule,
             subscriptions_module_1.SubscriptionsModule,
             routines_module_1.RoutinesModule,

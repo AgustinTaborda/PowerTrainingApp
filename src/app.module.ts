@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ExercisesModule } from './exercises/exercises.module';
 import { UserRoutineExerciseModule } from './user_routine_exercise/user_routine_exercise.module';
-import { UserRoutineLogModule } from './user_routine_log/user_routine_log.module';
+import { UserRoutineLogModule } from './routine/routine.module';
 import { UsersModule } from './users/users.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { RoutinesModule } from './routines/routines.module';

@@ -77,7 +77,10 @@ let UsersService = class UsersService {
         }
     }
     async findOne(id) {
-        return await this.userRepository.findOneBy({ id });
+        return await this.userRepository.findOne({
+            where: { id },
+            relations: ['routines']
+        });
     }
     async update(id, updateUserDto) {
         return await this.userRepository.update(id, updateUserDto);
