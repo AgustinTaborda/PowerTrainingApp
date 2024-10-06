@@ -104,6 +104,16 @@ export class UsersService {
     return await this.userRepository.delete(id);
   }
 
+  async findAllRelated() {
+   
+    const users: UserEntity[] = await this.userRepository.find({
+      relations: ['payments','routines','subscriptions']
+    });
+    
+    return users;
+  }
+  
+
   async seedUsers() {
     const users = [
       { subscriptionEndDate: '2025-09-15', birthDay: '1990-03-25', role: Role.Superadmin, password: 'hashed_password1', name: 'John', lastName: 'Doe', email: 'john.doe@example.com' },

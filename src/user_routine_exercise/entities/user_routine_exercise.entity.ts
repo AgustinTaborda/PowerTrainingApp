@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'ty
 import { TrainingDayEntity } from 'src/training_day/entities/training_day.entity';
 import { ExerciseEntity } from 'src/exercises/entities/exercise.entity';
 import { UserProgressEntity } from 'src/user-progress/entities/user-progress.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Entity('user_routine_exercises')
 export class UserRoutineExerciseEntity {
@@ -28,4 +29,7 @@ export class UserRoutineExerciseEntity {
 
   @OneToMany(() => UserProgressEntity, (log) => log.userRoutineExercise)
   logs: UserProgressEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.userRoutineExercises)
+  user: UserEntity;
 }
