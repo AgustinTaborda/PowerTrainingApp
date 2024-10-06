@@ -4,4 +4,5 @@ export declare class CloudfileManagerController {
     constructor(cloudfileManagerService: CloudfileManagerService);
     uploadImages(file: Express.Multer.File): Promise<string>;
     uploadVideos(file: Express.Multer.File): Promise<string>;
+    listVideos(): Promise<any>;
 }

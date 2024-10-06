@@ -38,6 +38,20 @@ let CloudfileManagerService = class CloudfileManagerService {
             toStream(file.buffer).pipe(upload);
         });
     }
+    async listVideos() {
+        try {
+            const result = await cloudinary_1.v2.api.resources({
+                type: 'upload',
+                resource_type: 'video',
+            });
+            console.log(result);
+            return result.resources;
+        }
+        catch (error) {
+            console.error('Error fetching videos:', error);
+            throw error;
+        }
+    }
 };
 exports.CloudfileManagerService = CloudfileManagerService;
 exports.CloudfileManagerService = CloudfileManagerService = __decorate([

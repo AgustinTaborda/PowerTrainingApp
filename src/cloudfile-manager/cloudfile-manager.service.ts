@@ -42,5 +42,21 @@ export class CloudfileManagerService {
             toStream(file.buffer).pipe(upload); // Convierte el buffer a stream y lo sube
         });
     }
+
+    async  listVideos() {
+        try {
+            const result = await v2.api.resources({
+                type: 'upload', // O 'upload' si solo quieres los videos subidos
+                resource_type: 'video', // Filtra solo videos
+               // max_results: 30, // Máximo de resultados a recuperar (puedes ajustar)
+            });
+            
+            console.log(result); // Muestra todos los archivos
+            return result.resources; // Retorna la lista de recursos (videos)
+        } catch (error) {
+            console.error('Error fetching videos:', error);
+            throw error; // Propaga el error si es necesario
+        }
+    }
   
   }
