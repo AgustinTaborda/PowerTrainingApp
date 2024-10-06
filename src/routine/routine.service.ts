@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserRoutineLogDto } from './dto/create-user_routine_log.dto';
-import { UpdateUserRoutineLogDto } from './dto/update-user_routine_log.dto';
+import { CreateUserRoutineLogDto } from './dto/create-routine.dto';
+import { UpdateUserRoutineLogDto } from './dto/update-routine.dto';
 
 @Injectable()
 export class UserRoutineLogService {

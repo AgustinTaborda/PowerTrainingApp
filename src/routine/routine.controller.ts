@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { UserRoutineLogService } from './user_routine_log.service';
-import { CreateUserRoutineLogDto } from './dto/create-user_routine_log.dto';
-import { UpdateUserRoutineLogDto } from './dto/update-user_routine_log.dto';
+import { UserRoutineLogService } from './routine.service';
+import { CreateUserRoutineLogDto } from './dto/create-routine.dto';
+import { UpdateUserRoutineLogDto } from './dto/update-routine.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
