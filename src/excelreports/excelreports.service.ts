@@ -23,6 +23,9 @@ export class ExcelreportsService {
   }
   async genericReport(response: Response,query: string) {
     
+    if (!/^\s*SELECT\b/i.test(query)) {
+      throw new HttpException('Invalid query: Only SELECT queries are allowed', HttpStatus.BAD_REQUEST);
+    }
      
     try{ 
     await connectionSource.initialize();

@@ -15,6 +15,9 @@ export class UserProgressEntity {
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   weight: number;
 
+  @Column({ nullable: true, type: 'varchar', length: 255 })
+  photoUrl: string;
+
   @Column({ type: 'boolean', default: false })
   completed: boolean;
 
