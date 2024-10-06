@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const exercises_module_1 = require("./exercises/exercises.module");
 const user_routine_exercise_module_1 = require("./user_routine_exercise/user_routine_exercise.module");
-const user_routine_log_module_1 = require("./user_routine_log/user_routine_log.module");
+const routine_module_1 = require("./routine/routine.module");
 const users_module_1 = require("./users/users.module");
 const subscriptions_module_1 = require("./subscriptions/subscriptions.module");
 const routines_module_1 = require("./routines/routines.module");
@@ -28,6 +28,7 @@ const jwt_1 = require("@nestjs/jwt");
 const email_module_1 = require("./email/email.module");
 const schedule_1 = require("@nestjs/schedule");
 const crontask_exercise_module_1 = require("./crontask/crontask.exercise.module");
+const excelreports_module_1 = require("./excelreports/excelreports.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -45,7 +46,7 @@ exports.AppModule = AppModule = __decorate([
             exercises_module_1.ExercisesModule,
             auth_module_1.AuthModule,
             user_routine_exercise_module_1.UserRoutineExerciseModule,
-            user_routine_log_module_1.UserRoutineLogModule,
+            routine_module_1.UserRoutineLogModule,
             users_module_1.UsersModule,
             subscriptions_module_1.SubscriptionsModule,
             routines_module_1.RoutinesModule,
@@ -56,12 +57,13 @@ exports.AppModule = AppModule = __decorate([
             cloudfile_manager_module_1.CloudfileManagerModule,
             jwt_1.JwtModule.register({
                 global: true,
-                signOptions: { expiresIn: '1h' },
+                signOptions: { expiresIn: '200h' },
                 secret: process.env.JWT_SECRET
             }),
             email_module_1.EmailModule,
             schedule_1.ScheduleModule.forRoot(),
-            crontask_exercise_module_1.CronExercisesModule
+            crontask_exercise_module_1.CronExercisesModule,
+            excelreports_module_1.ExcelreportsModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [],

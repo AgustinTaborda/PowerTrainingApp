@@ -9,33 +9,47 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserRoutineExercise = void 0;
+exports.UserRoutineExerciseEntity = void 0;
 const typeorm_1 = require("typeorm");
-const uuid_1 = require("uuid");
-let UserRoutineExercise = class UserRoutineExercise {
-    constructor() {
-        this.userId = (0, uuid_1.v4)();
-        this.exerciseId = (0, uuid_1.v4)();
-    }
+const training_day_entity_1 = require("../../training_day/entities/training_day.entity");
+const exercise_entity_1 = require("../../exercises/entities/exercise.entity");
+const user_progress_entity_1 = require("../../user-progress/entities/user-progress.entity");
+let UserRoutineExerciseEntity = class UserRoutineExerciseEntity {
 };
-exports.UserRoutineExercise = UserRoutineExercise;
+exports.UserRoutineExerciseEntity = UserRoutineExerciseEntity;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
-    __metadata("design:type", String)
-], UserRoutineExercise.prototype, "userId", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
-    __metadata("design:type", String)
-], UserRoutineExercise.prototype, "exerciseId", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2, nullable: false }),
+    (0, typeorm_1.PrimaryGeneratedColumn)('increment'),
     __metadata("design:type", Number)
-], UserRoutineExercise.prototype, "repetitions", void 0);
+], UserRoutineExerciseEntity.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2, nullable: false }),
+    (0, typeorm_1.ManyToOne)(() => training_day_entity_1.TrainingDayEntity, (trainingDay) => trainingDay.exercises, { nullable: false }),
+    __metadata("design:type", training_day_entity_1.TrainingDayEntity)
+], UserRoutineExerciseEntity.prototype, "trainingDay", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => exercise_entity_1.ExerciseEntity, { nullable: false }),
+    __metadata("design:type", exercise_entity_1.ExerciseEntity)
+], UserRoutineExerciseEntity.prototype, "exercise", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', nullable: false }),
     __metadata("design:type", Number)
-], UserRoutineExercise.prototype, "wight", void 0);
-exports.UserRoutineExercise = UserRoutineExercise = __decorate([
-    (0, typeorm_1.Entity)('user_routine_exercise')
-], UserRoutineExercise);
+], UserRoutineExerciseEntity.prototype, "series", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'int', nullable: false }),
+    __metadata("design:type", Number)
+], UserRoutineExerciseEntity.prototype, "repetitions", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 5, scale: 2, nullable: true }),
+    __metadata("design:type", Number)
+], UserRoutineExerciseEntity.prototype, "weight", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'boolean', default: false }),
+    __metadata("design:type", Boolean)
+], UserRoutineExerciseEntity.prototype, "completed", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => user_progress_entity_1.UserProgressEntity, (log) => log.userRoutineExercise),
+    __metadata("design:type", Array)
+], UserRoutineExerciseEntity.prototype, "logs", void 0);
+exports.UserRoutineExerciseEntity = UserRoutineExerciseEntity = __decorate([
+    (0, typeorm_1.Entity)('user_routine_exercises')
+], UserRoutineExerciseEntity);
 //# sourceMappingURL=user_routine_exercise.entity.js.map

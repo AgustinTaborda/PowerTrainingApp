@@ -21,6 +21,7 @@ exports.ExercisesModule = ExercisesModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([exercise_entity_1.ExerciseEntity])],
         controllers: [exercises_controller_1.ExercisesController],
         providers: [exercises_service_1.ExercisesService, exercises_seed_1.ExerciseSeed],
+        exports: [exercises_service_1.ExercisesService, typeorm_1.TypeOrmModule],
     })
 ], ExercisesModule);
 //# sourceMappingURL=exercises.module.js.map

@@ -1,4 +1,5 @@
 import { Role } from 'src/auth/roles.enum';
+import { RoutineEntity } from 'src/routine/entities/routine.entity';
 import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from 'src/subscriptions/entities/subscriptionPlan.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -49,4 +50,7 @@ export class UserEntity {
 
   @OneToMany(() => SubscriptionEntity, (subscription) => subscription.user)
   subscriptions: SubscriptionEntity[];
+  
+  @OneToMany(() => RoutineEntity, (routine) => routine.user)
+  routines: RoutineEntity[];
 }

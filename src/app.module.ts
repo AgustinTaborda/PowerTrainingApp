@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ExercisesModule } from './exercises/exercises.module';
 import { UserRoutineExerciseModule } from './user_routine_exercise/user_routine_exercise.module';
-import { UserRoutineLogModule } from './user_routine_log/user_routine_log.module';
+import { UserRoutineLogModule } from './routine/routine.module';
 import { UsersModule } from './users/users.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { RoutinesModule } from './routines/routines.module';
@@ -21,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronTasksService } from './crontask/crontask.exercise.service';
 import { ExerciseEntity } from './exercises/entities/exercise.entity';
 import { CronExercisesModule } from './crontask/crontask.exercise.module';
+import { ExcelreportsModule } from './excelreports/excelreports.module';
 
 @Module({
   imports: [ 
@@ -50,12 +51,13 @@ import { CronExercisesModule } from './crontask/crontask.exercise.module';
     CloudfileManagerModule,
     JwtModule.register({
       global: true,
-      signOptions: { expiresIn: '1h'},
+      signOptions: { expiresIn: '200h'},
       secret: process.env.JWT_SECRET
     }),
     EmailModule,
     ScheduleModule.forRoot(),
-    CronExercisesModule
+    CronExercisesModule,
+    ExcelreportsModule
   ],
   controllers: [AppController],
   providers: [],
