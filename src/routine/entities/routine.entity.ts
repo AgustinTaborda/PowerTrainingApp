@@ -11,6 +11,9 @@ export class RoutineEntity {
   @ManyToOne(() => UserEntity, (user) => user.routines, { nullable: false })
   user: UserEntity;
 
+  @Column({ type: 'text', nullable: true })
+  description: string;
+  
   @Column({ type: 'date', nullable: false })
   startDate: Date;
 
