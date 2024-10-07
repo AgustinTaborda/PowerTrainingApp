@@ -29,6 +29,7 @@ const schedule_1 = require("@nestjs/schedule");
 const crontask_exercise_module_1 = require("./crontask/crontask.exercise.module");
 const excelreports_module_1 = require("./excelreports/excelreports.module");
 const training_day_module_1 = require("./training_day/training_day.module");
+const notificationschedule_module_1 = require("./notificationschedule/notificationschedule.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -65,6 +66,7 @@ exports.AppModule = AppModule = __decorate([
             schedule_1.ScheduleModule.forRoot(),
             crontask_exercise_module_1.CronExercisesModule,
             excelreports_module_1.ExcelreportsModule,
+            notificationschedule_module_1.NotificationscheduleModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [],
