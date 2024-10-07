@@ -33,4 +33,5 @@ export class Notificationschedule {
 
     @Column({ type: 'date' })
     nextSendDate: Date;
+    
 }
