@@ -1,10 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificationscheduleDto } from './dto/create-notificationschedule.dto';
-import { UpdateNotificationscheduleDto } from './dto/update-notificationschedule.dto';
+import { dailyNotificationDto } from './dto/daily.dto.notification';
+import { weeklyNotificationDto } from './dto/weekly.dto.notification';
+import { MonthlyNotificationDto } from './dto/monthly.dto.notification';
+import { YearlyNotificationDto } from './dto/yearly.dto.notification';
+
 
 @Injectable()
 export class NotificationscheduleService {
-  create(createNotificationscheduleDto: CreateNotificationscheduleDto) {
+  createYearly(createYearlyNotificationscheduleDto: YearlyNotificationDto) {
+    throw new Error('Method not implemented.');
+  }
+  createMonthly(createMonthlyNotificationscheduleDto: MonthlyNotificationDto) {
+    throw new Error('Method not implemented.');
+  }
+  createWeekly(createNotificationscheduleDto: weeklyNotificationDto) {
+    throw new Error('Method not implemented.');
+  }
+  createDaily(createdailyNotificationDto: dailyNotificationDto) {
     return 'This action adds a new notificationschedule';
   }
 
@@ -14,10 +26,6 @@ export class NotificationscheduleService {
 
   findOne(id: number) {
     return `This action returns a #${id} notificationschedule`;
-  }
-
-  update(id: number, updateNotificationscheduleDto: UpdateNotificationscheduleDto) {
-    return `This action updates a #${id} notificationschedule`;
   }
 
   remove(id: number) {
