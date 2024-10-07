@@ -85,6 +85,16 @@ export class UsersController {
     return this.usersService.findAll(limit, page);
   }
 
+
+  @ApiBearerAuth('access-token')
+  //@Roles(Role.Admin, Role.Superadmin)
+  @UseGuards(CombinedAuthGuard, RolesGuard)
+  @Get('/related')
+  @ApiOperation({ summary: 'Retrieve all users with their relations' })
+  findAllRelated() {
+    return this.usersService.findAllRelated();
+  }
+
   @ApiBearerAuth('access-token')
   @UseGuards(CombinedAuthGuard)
   @Get('/byFilters')

@@ -37,6 +37,7 @@ export class CronTasksService {
       .execute();
      console.log('Exercises moved to inactive');
     
+    
   }catch(error){
     console.log(error)
   }
