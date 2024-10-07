@@ -90,6 +90,7 @@ export class CloudfileManagerController {
   async databaseFiles(){
     return  await this.cloudfileManagerService.databaseFiles();
   }
+  
 
 }
 
