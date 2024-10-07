@@ -22,6 +22,7 @@ import { CronTasksService } from './crontask/crontask.exercise.service';
 import { ExerciseEntity } from './exercises/entities/exercise.entity';
 import { CronExercisesModule } from './crontask/crontask.exercise.module';
 import { ExcelreportsModule } from './excelreports/excelreports.module';
+import { NotificationscheduleModule } from './notificationschedule/notificationschedule.module';
 
 @Module({
   imports: [ 
@@ -57,7 +58,8 @@ import { ExcelreportsModule } from './excelreports/excelreports.module';
     EmailModule,
     ScheduleModule.forRoot(),
     CronExercisesModule,
-    ExcelreportsModule
+    ExcelreportsModule,
+    NotificationscheduleModule
   ],
   controllers: [AppController],
   providers: [],
