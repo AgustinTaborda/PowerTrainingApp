@@ -1,4 +1,5 @@
 import { Role } from 'src/auth/roles.enum';
+import { Notificationschedule } from 'src/notificationschedule/entities/notificationschedule.entity';
 import { PaymentEntity } from 'src/payments/entities/payment.entity';
 import { RoutineEntity } from 'src/routine/entities/routine.entity';
 import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
@@ -61,5 +62,8 @@ export class UserEntity {
 
   @OneToMany(() => PaymentEntity, (payments) => payments.user)
   payments: PaymentEntity[]
+
+  @OneToMany(()=> Notificationschedule, (notificationschedule) => notificationschedule.user)
+  notificationschedules: Notificationschedule[]
 
 }

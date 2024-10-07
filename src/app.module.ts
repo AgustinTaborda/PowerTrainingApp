@@ -22,6 +22,7 @@ import { ExerciseEntity } from './exercises/entities/exercise.entity';
 import { CronExercisesModule } from './crontask/crontask.exercise.module';
 import { ExcelreportsModule } from './excelreports/excelreports.module';
 import { TrainingDayModule } from './training_day/training_day.module';
+import { NotificationscheduleModule } from './notificationschedule/notificationschedule.module';
 
 @Module({
   imports: [ 
@@ -35,8 +36,6 @@ import { TrainingDayModule } from './training_day/training_day.module';
         useFactory: (configService : ConfigService) => 
         configService.get('typeorm'),//esta es la clave creada en el config en typeorm.ts
       }),
-      
-      
       AuthModule, 
       ExercisesModule, 
       UserRoutineExerciseModule, 
@@ -54,11 +53,12 @@ import { TrainingDayModule } from './training_day/training_day.module';
         global: true,
         signOptions: { expiresIn: '200h'},
         secret: process.env.JWT_SECRET
-    }),
-    EmailModule,
-    ScheduleModule.forRoot(),
-    CronExercisesModule,
-    ExcelreportsModule,
+      }),
+      EmailModule,
+      ScheduleModule.forRoot(),
+      CronExercisesModule,
+      ExcelreportsModule,
+      NotificationscheduleModule
   ],
   controllers: [AppController],
   providers: [],
