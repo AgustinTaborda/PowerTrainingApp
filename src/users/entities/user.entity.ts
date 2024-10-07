@@ -56,8 +56,8 @@ export class UserEntity {
   @OneToMany(() => RoutineEntity, (routine) => routine.user)
   routines: RoutineEntity[];
 
-  @OneToMany(()=> UserRoutineExerciseEntity, (userRoutineExercise) => userRoutineExercise.user)
-  userRoutineExercises: UserRoutineExerciseEntity[]
+  // @OneToMany(()=> UserRoutineExerciseEntity, (userRoutineExercise) => userRoutineExercise.user)
+  // userRoutineExercises: UserRoutineExerciseEntity[]
 
   @OneToMany(() => PaymentEntity, (payments) => payments.user)
   payments: PaymentEntity[]

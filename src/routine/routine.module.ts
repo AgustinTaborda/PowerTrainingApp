@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
-import { UserRoutineLogService } from './routine.service';
-import { UserRoutineLogController } from './routine.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RoutineService } from './routine.service';
+import { RoutineEntity } from './entities/routine.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { RoutineController } from './routine.controller'; 
 
 @Module({
-  controllers: [UserRoutineLogController],
-  providers: [UserRoutineLogService],
+  imports: [
+    TypeOrmModule.forFeature([RoutineEntity, UserEntity]), 
+  ],
+  providers: [RoutineService],
+  controllers: [RoutineController], 
 })
-export class UserRoutineLogModule {}
+export class RoutineModule {}

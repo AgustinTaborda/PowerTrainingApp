@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ExercisesModule } from './exercises/exercises.module';
 import { UserRoutineExerciseModule } from './user_routine_exercise/user_routine_exercise.module';
-import { UserRoutineLogModule } from './routine/routine.module';
+import { RoutineModule } from './routine/routine.module';
 import { UsersModule } from './users/users.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
-import { RoutinesModule } from './routines/routines.module';
 import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MessagesModule } from './messages/messages.module';
@@ -22,6 +21,7 @@ import { CronTasksService } from './crontask/crontask.exercise.service';
 import { ExerciseEntity } from './exercises/entities/exercise.entity';
 import { CronExercisesModule } from './crontask/crontask.exercise.module';
 import { ExcelreportsModule } from './excelreports/excelreports.module';
+import { TrainingDayModule } from './training_day/training_day.module';
 
 @Module({
   imports: [ 
@@ -33,31 +33,32 @@ import { ExcelreportsModule } from './excelreports/excelreports.module';
       TypeOrmModule.forRootAsync({
         inject: [ConfigService],
         useFactory: (configService : ConfigService) => 
-          configService.get('typeorm'),//esta es la clave creada en el config en typeorm.ts
+        configService.get('typeorm'),//esta es la clave creada en el config en typeorm.ts
       }),
-    
-    
-    ExercisesModule, 
-    AuthModule, 
-    UserRoutineExerciseModule, 
-    UserRoutineLogModule, 
-    UsersModule, 
-    SubscriptionsModule, 
-    RoutinesModule, 
-    PaymentsModule, 
-    NotificationsModule, 
-    MessagesModule, 
-    UserProgressModule,
-    CloudfileManagerModule,
-    JwtModule.register({
-      global: true,
-      signOptions: { expiresIn: '200h'},
-      secret: process.env.JWT_SECRET
+      
+      
+      AuthModule, 
+      ExercisesModule, 
+      UserRoutineExerciseModule, 
+      RoutineModule, 
+      TrainingDayModule,
+      UsersModule, 
+      SubscriptionsModule, 
+      RoutineModule, 
+      PaymentsModule, 
+      NotificationsModule, 
+      MessagesModule, 
+      UserProgressModule,
+      CloudfileManagerModule,
+      JwtModule.register({
+        global: true,
+        signOptions: { expiresIn: '200h'},
+        secret: process.env.JWT_SECRET
     }),
     EmailModule,
     ScheduleModule.forRoot(),
     CronExercisesModule,
-    ExcelreportsModule
+    ExcelreportsModule,
   ],
   controllers: [AppController],
   providers: [],
