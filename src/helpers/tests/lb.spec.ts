@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DateManager } from '../helpers/datemanager'
+import { DateManager } from '../datemanager'
 
 describe('DateManager', () => {
   let service: DateManager;
@@ -40,3 +40,6 @@ describe('DateManager', () => {
     expect(() => service.encodeToHourSchedule(24,10)).toThrow('Max hours to 23 and minutes to 59 and no negative numbers');
   });
 });
+
+// ejecutar así que lo encuentra  "npm run test lb.spec.ts"
+

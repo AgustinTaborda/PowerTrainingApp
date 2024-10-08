@@ -50,7 +50,7 @@ export class NotificationscheduleService {
       user,
       message,
       nextSendDate:nextSendDate,
-      periodParam:'********0800',
+      periodParam:encodedHour,
       periodType: PeriodType.DAY,
 
     } );
