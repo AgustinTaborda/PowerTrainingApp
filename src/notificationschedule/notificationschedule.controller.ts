@@ -81,7 +81,7 @@ export class NotificationscheduleController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.notificationscheduleService.findOne(+id);
+    return this.notificationscheduleService.findOne(id);
   }
 /*
   @Patch(':id')

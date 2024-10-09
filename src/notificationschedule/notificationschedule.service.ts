@@ -127,12 +127,12 @@ async createWeekly(createNotificationscheduleDto: WeeklyNotificationDto) {
 
 
 
-  findAll() {
-    return `This action returns all notificationschedule`;
+  async findAll() {
+    return await this.notificationScheduleRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notificationschedule`;
+  async findOne(id: string) {
+    return await this.notificationScheduleRepository.findOne({ where: { notificationScheduleId: id } });
   }
 
   remove(id: number) {
