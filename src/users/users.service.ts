@@ -55,6 +55,7 @@ export class UsersService {
       take: limit,
       skip: (page - 1) * limit,
       order: { name: 'ASC' },
+      relations: ['routines'],
     });
 
     return users;
@@ -73,6 +74,7 @@ export class UsersService {
   ): Promise<{ data: UserEntity[]; count: number }> {
     try {
       const qb = this.userRepository.createQueryBuilder('users');
+      qb.leftJoinAndSelect('users.routines', 'routines');
 
       // Aplicar filtros dinámicos
       if (filters.name) {
@@ -117,8 +119,11 @@ export class UsersService {
     }
   }
 
-  async findOne(id: uuid) {
-    return await this.userRepository.findOneBy({ id });
+  async findOne(id: string) {
+    return await this.userRepository.findOne({
+      where: { id },
+      relations: ['routines'],
+    });
   }
 
   async update(id: uuid, updateUserDto: UpdateUserDto) {
@@ -127,6 +132,14 @@ export class UsersService {
 
   async remove(id: uuid) {
     return await this.userRepository.delete(id);
+  }
+
+  async findAllRelated() {
+    const users: UserEntity[] = await this.userRepository.find({
+      relations: ['payments', 'routines', 'subscriptions'],
+    });
+
+    return users;
   }
 
   async seedUsers() {

@@ -1,6 +1,10 @@
 import { Role } from 'src/auth/roles.enum';
+import { NotificationscheduleEntity } from '../../notificationschedule/entities/notificationschedule.entity';
+import { PaymentEntity } from 'src/payments/entities/payment.entity';
+import { RoutineEntity } from 'src/routine/entities/routine.entity';
 import { SubscriptionEntity } from 'src/subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from 'src/subscriptions/entities/subscriptionPlan.entity';
+import { UserRoutineExerciseEntity } from 'src/user_routine_exercise/entities/user_routine_exercise.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -49,4 +53,17 @@ export class UserEntity {
 
   @OneToMany(() => SubscriptionEntity, (subscription) => subscription.user)
   subscriptions: SubscriptionEntity[];
+  
+  @OneToMany(() => RoutineEntity, (routine) => routine.user)
+  routines: RoutineEntity[];
+
+  // @OneToMany(()=> UserRoutineExerciseEntity, (userRoutineExercise) => userRoutineExercise.user)
+  // userRoutineExercises: UserRoutineExerciseEntity[]
+
+  @OneToMany(() => PaymentEntity, (payments) => payments.user)
+  payments: PaymentEntity[]
+
+  @OneToMany(()=> NotificationscheduleEntity, (notificationschedule) => notificationschedule.user)
+  notificationschedules: NotificationscheduleEntity[]
+
 }
