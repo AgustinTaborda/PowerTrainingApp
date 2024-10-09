@@ -3,6 +3,14 @@ import { IsDate, IsNotEmpty, IsOptional, IsString, IsUUID, IsBoolean, ValidateNe
 
 export class CreateRoutineDto {
   @ApiProperty({
+    description: 'Nombre de la rutina',
+    example: 'Pecho y hombros',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({
     description: 'ID del usuario al que está asociada la rutina',
     example: 'e9b1b6e0-5117-4f70-82a8-1a34de9f9d38',
   })
