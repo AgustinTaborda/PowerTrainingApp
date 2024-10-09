@@ -28,11 +28,8 @@ const jwt_1 = require("@nestjs/jwt");
 const email_module_1 = require("./email/email.module");
 const schedule_1 = require("@nestjs/schedule");
 const crontask_exercise_module_1 = require("./crontask/crontask.exercise.module");
-<<<<<<< HEAD
-const gateway_module_1 = require("./gateway/gateway.module");
-=======
 const excelreports_module_1 = require("./excelreports/excelreports.module");
->>>>>>> d1d1d935cd37fc1a051a00368fdd263315ca9bf0
+const chat_module_1 = require("./chat/chat.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -47,7 +44,7 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: (configService) => configService.get('typeorm'),
             }),
-            gateway_module_1.Gateway,
+            chat_module_1.ChatModule,
             exercises_module_1.ExercisesModule,
             auth_module_1.AuthModule,
             user_routine_exercise_module_1.UserRoutineExerciseModule,
@@ -62,21 +59,13 @@ exports.AppModule = AppModule = __decorate([
             cloudfile_manager_module_1.CloudfileManagerModule,
             jwt_1.JwtModule.register({
                 global: true,
-<<<<<<< HEAD
-                signOptions: { expiresIn: '1h' },
-                secret: process.env.JWT_SECRET,
-=======
                 signOptions: { expiresIn: '200h' },
-                secret: process.env.JWT_SECRET
->>>>>>> d1d1d935cd37fc1a051a00368fdd263315ca9bf0
+                secret: process.env.JWT_SECRET,
             }),
             email_module_1.EmailModule,
             schedule_1.ScheduleModule.forRoot(),
             crontask_exercise_module_1.CronExercisesModule,
-<<<<<<< HEAD
-=======
-            excelreports_module_1.ExcelreportsModule
->>>>>>> d1d1d935cd37fc1a051a00368fdd263315ca9bf0
+            excelreports_module_1.ExcelreportsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [],

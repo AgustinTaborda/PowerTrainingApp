@@ -22,7 +22,7 @@ import { CronTasksService } from './crontask/crontask.exercise.service';
 import { ExerciseEntity } from './exercises/entities/exercise.entity';
 import { CronExercisesModule } from './crontask/crontask.exercise.module';
 import { ExcelreportsModule } from './excelreports/excelreports.module';
-import { Gateway } from './gateway/gateway.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { Gateway } from './gateway/gateway.module';
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm'), //esta es la clave creada en el config en typeorm.ts
     }),
-    Gateway,
+    ChatModule,
     ExercisesModule,
     AuthModule,
     UserRoutineExerciseModule,
@@ -50,16 +50,13 @@ import { Gateway } from './gateway/gateway.module';
     CloudfileManagerModule,
     JwtModule.register({
       global: true,
-      signOptions: { expiresIn: '200h'},
-      secret: process.env.JWT_SECRET
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '200h' },
       secret: process.env.JWT_SECRET,
     }),
     EmailModule,
     ScheduleModule.forRoot(),
     CronExercisesModule,
-    ExcelreportsModule
-    CronExercisesModule,
+    ExcelreportsModule,
   ],
   controllers: [AppController],
   providers: [],
