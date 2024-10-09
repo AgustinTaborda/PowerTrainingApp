@@ -30,11 +30,14 @@ export class NotificationscheduleEntity {
 
     @Column({ type: 'boolean', default: false })
     sended: boolean;
+    
+    @Column({ type: 'timestamp', nullable: true, default: null })
+    lastSendedDate: Date;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp', nullable: true, default: null })
     nextSendDate: Date;
     
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @Column({ type: 'timestamp',nullable: true, default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
     
 }

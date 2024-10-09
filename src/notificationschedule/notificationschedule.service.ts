@@ -41,17 +41,17 @@ export class NotificationscheduleService {
    
     createdailyNotificationDto.hour
     createdailyNotificationDto.minute
-    const encodedHour = this.dateManager.encodeToHourSchedule(createdailyNotificationDto.hour,createdailyNotificationDto.minute)
-    const nextSendDate = this.dateManager.calculateNextSendDate(encodedHour,PeriodType.DAY);
-
     
-
+    const encodedHour = this.dateManager.encodeToHourSchedule(createdailyNotificationDto.hour,createdailyNotificationDto.minute)
+    const nextSendDate = this.dateManager.calculateFirstSendDateDay(encodedHour);
+   
     const dailyNotification = this.notificationScheduleRepository.create({
-      user,
-      message,
+      user:user,
+      message:message,
       nextSendDate:nextSendDate,
       periodParam:encodedHour,
       periodType: PeriodType.DAY,
+      sended:false
 
     } );
 

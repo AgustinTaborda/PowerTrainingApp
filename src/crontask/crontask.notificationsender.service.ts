@@ -1,56 +1,76 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { NotificationscheduleEntity } from '../notificationschedule/entities/notificationschedule.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { MailService } from '../mailer/mailer.service';
+import { DateManager } from '../helpers/datemanager';
 
 
 @Injectable()
 export class CronTasksNotificationSender {
  
     constructor(
-      @InjectRepository(NotificationscheduleEntity) private notificationScheduleRepository: Repository<NotificationscheduleEntity>
+      @InjectRepository(NotificationscheduleEntity) private notificationScheduleRepository: Repository<NotificationscheduleEntity>,
+      @Inject(MailService) private mailService: MailService,
+      @Inject(DateManager) private dateManager: DateManager
     ) {}
  
  
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_10_SECONDS)
 
   handleCron() {
    
    this.sendNotifications();
   }
 
- /*  async sendNotifications() {
-      await this.notificationScheduleRepository.find({
-        where:{
-            sended:false
-        }
-    })
-}*/
 
 async sendNotifications() {
     // Busca las notificaciones que no se han enviado
     const notifications = await this.notificationScheduleRepository.find({
-      where: { sended: false },
+      where: { sended: false , nextSendDate: LessThan(new Date()) },
+      relations: ['user','message'],
     });
 
-    // Itera sobre cada notificación
+    if (notifications.length > 0) {
+     
+    
     for (const notification of notifications) {
       const { nextSendDate } = notification;
 
       // Verifica si la fecha de envío es correcta
       if (this.isSendDateValid(nextSendDate)) {
-        // Envía el correo
-        await this.mailService.sendEmail(notification);
+        console.log(notification.user.email)
+        console.log(notification.message.subject)
+        console.log(notification.message.body)
 
-        // Marca la notificación como enviada
-        notification.sended = true;
+        const nextSendDate = this.dateManager.calculateNextSendDate(notification.periodParam,notification.periodType)
+        console.log(nextSendDate)
+
+       
+
+          this.mailService.sendEmail(
+
+          notification.user.email,
+          notification.message.subject,
+          notification.message.body
+
+        );
+    
+          notification.sended = true;
+          notification.lastSendedDate = new Date();
+          notification.nextSendDate = nextSendDate;
         
-        // Actualiza la notificación en la base de datos
-        await this.notificationScheduleRepository.save(notification);
+     
+          await this.notificationScheduleRepository.save(notification);
+          
       }
     }
+  }else{
+    console.log('No hay notificaciones que enviar');
+  }
   }
 
   // Método para verificar si la fecha de envío es válida
