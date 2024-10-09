@@ -6,6 +6,14 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 export class UpdateRoutineDto extends PartialType(CreateRoutineDto) {
   
   @ApiPropertyOptional({
+    description: 'Nombre descriptivo de la rutina',
+    example: 'Pecho y triceps',
+  })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @ApiPropertyOptional({
     description: 'Descripción o comentarios adicionales sobre la rutina',
     example: 'Actualización: Añadido un enfoque en cardio para los días de descanso.',
   })
