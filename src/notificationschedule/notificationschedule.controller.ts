@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { NotificationscheduleService } from './notificationschedule.service';
 import { dailyNotificationDto } from './dto/daily.dto.notification';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { weeklyNotificationDto } from './dto/weekly.dto.notification';
 import { MonthlyNotificationDto } from './dto/monthly.dto.notification';
 import { YearlyNotificationDto } from './dto/yearly.dto.notification';
+import { WeeklyNotificationDto } from './dto/weekly.dto.notification';
 
 @ApiTags('NOTIFICATIONS SCHEDULE')
 @Controller('notificationschedule')
@@ -33,7 +33,7 @@ export class NotificationscheduleController {
 
    }) 
   @Post('/create/weekly')
-  createWeekly(@Body() createWeeklyNotificationscheduleDto: weeklyNotificationDto) {
+  createWeekly(@Body() createWeeklyNotificationscheduleDto: WeeklyNotificationDto) {
     return this.notificationscheduleService.createWeekly(createWeeklyNotificationscheduleDto);
   }
 

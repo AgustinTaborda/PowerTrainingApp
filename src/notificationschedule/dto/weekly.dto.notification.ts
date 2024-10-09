@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { v4 as uuid } from "uuid";
 
-export class weeklyNotificationDto {
+export class WeeklyNotificationDto {
     @ApiProperty(
         {
             example: 'c471c07a-2354-4f31-908b-f181679753f1'

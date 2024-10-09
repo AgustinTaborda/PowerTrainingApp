@@ -23,6 +23,8 @@ import { CronExercisesModule } from './crontask/crontask.exercise.module';
 import { ExcelreportsModule } from './excelreports/excelreports.module';
 import { TrainingDayModule } from './training_day/training_day.module';
 import { NotificationscheduleModule } from './notificationschedule/notificationschedule.module';
+import { CronTasksNotificationSender } from './crontask/crontask.notificationsender.service';
+import { CronNotificationsenderModule } from './crontask/crontask.notificationsender.module';
 
 @Module({
   imports: [ 
@@ -56,7 +58,7 @@ import { NotificationscheduleModule } from './notificationschedule/notifications
       }),
       EmailModule,
       ScheduleModule.forRoot(),
-      CronExercisesModule,
+      CronExercisesModule,CronNotificationsenderModule,
       ExcelreportsModule,
       NotificationscheduleModule
   ],
