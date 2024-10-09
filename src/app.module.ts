@@ -28,40 +28,6 @@ import { CronNotificationsenderModule } from './crontask/crontask.notificationse
 import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [ 
-   
-      ConfigModule.forRoot({
-        isGlobal: true,
-        load: [typeOrmConfig] // através de este import se trae la clave typeorm creada en el config
-      }),
-      TypeOrmModule.forRootAsync({
-        inject: [ConfigService],
-        useFactory: (configService : ConfigService) => 
-        configService.get('typeorm'),//esta es la clave creada en el config en typeorm.ts
-      }),
-      AuthModule, 
-      ExercisesModule, 
-      UserRoutineExerciseModule, 
-      RoutineModule, 
-      TrainingDayModule,
-      UsersModule, 
-      SubscriptionsModule, 
-      RoutineModule, 
-      PaymentsModule, 
-      NotificationsModule, 
-      MessagesModule, 
-      UserProgressModule,
-      CloudfileManagerModule,
-      JwtModule.register({
-        global: true,
-        signOptions: { expiresIn: '200h'},
-        secret: process.env.JWT_SECRET
-      }),
-      EmailModule,
-      ScheduleModule.forRoot(),
-      CronExercisesModule,CronNotificationsenderModule,
-      ExcelreportsModule,
-      NotificationscheduleModule
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -73,13 +39,14 @@ import { ChatModule } from './chat/chat.module';
         configService.get('typeorm'), //esta es la clave creada en el config en typeorm.ts
     }),
     ChatModule,
-    ExercisesModule,
     AuthModule,
+    ExercisesModule,
     UserRoutineExerciseModule,
-    UserRoutineLogModule,
+    RoutineModule,
+    TrainingDayModule,
     UsersModule,
     SubscriptionsModule,
-    RoutinesModule,
+    RoutineModule,
     PaymentsModule,
     NotificationsModule,
     MessagesModule,
@@ -93,7 +60,9 @@ import { ChatModule } from './chat/chat.module';
     EmailModule,
     ScheduleModule.forRoot(),
     CronExercisesModule,
+    CronNotificationsenderModule,
     ExcelreportsModule,
+    NotificationscheduleModule,
   ],
   controllers: [AppController],
   providers: [],

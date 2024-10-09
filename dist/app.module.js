@@ -11,10 +11,9 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const exercises_module_1 = require("./exercises/exercises.module");
 const user_routine_exercise_module_1 = require("./user_routine_exercise/user_routine_exercise.module");
-const user_routine_log_module_1 = require("./user_routine_log/user_routine_log.module");
+const routine_module_1 = require("./routine/routine.module");
 const users_module_1 = require("./users/users.module");
 const subscriptions_module_1 = require("./subscriptions/subscriptions.module");
-const routines_module_1 = require("./routines/routines.module");
 const payments_module_1 = require("./payments/payments.module");
 const notifications_module_1 = require("./notifications/notifications.module");
 const messages_module_1 = require("./messages/messages.module");
@@ -29,6 +28,9 @@ const email_module_1 = require("./email/email.module");
 const schedule_1 = require("@nestjs/schedule");
 const crontask_exercise_module_1 = require("./crontask/crontask.exercise.module");
 const excelreports_module_1 = require("./excelreports/excelreports.module");
+const training_day_module_1 = require("./training_day/training_day.module");
+const notificationschedule_module_1 = require("./notificationschedule/notificationschedule.module");
+const crontask_notificationsender_module_1 = require("./crontask/crontask.notificationsender.module");
 const chat_module_1 = require("./chat/chat.module");
 let AppModule = class AppModule {
 };
@@ -45,13 +47,14 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: (configService) => configService.get('typeorm'),
             }),
             chat_module_1.ChatModule,
-            exercises_module_1.ExercisesModule,
             auth_module_1.AuthModule,
+            exercises_module_1.ExercisesModule,
             user_routine_exercise_module_1.UserRoutineExerciseModule,
-            user_routine_log_module_1.UserRoutineLogModule,
+            routine_module_1.RoutineModule,
+            training_day_module_1.TrainingDayModule,
             users_module_1.UsersModule,
             subscriptions_module_1.SubscriptionsModule,
-            routines_module_1.RoutinesModule,
+            routine_module_1.RoutineModule,
             payments_module_1.PaymentsModule,
             notifications_module_1.NotificationsModule,
             messages_module_1.MessagesModule,
@@ -65,7 +68,9 @@ exports.AppModule = AppModule = __decorate([
             email_module_1.EmailModule,
             schedule_1.ScheduleModule.forRoot(),
             crontask_exercise_module_1.CronExercisesModule,
+            crontask_notificationsender_module_1.CronNotificationsenderModule,
             excelreports_module_1.ExcelreportsModule,
+            notificationschedule_module_1.NotificationscheduleModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [],

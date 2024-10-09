@@ -50,12 +50,14 @@ let UsersService = class UsersService {
             take: limit,
             skip: (page - 1) * limit,
             order: { name: 'ASC' },
+            relations: ['routines'],
         });
         return users;
     }
     async findAllByFilters(filters, page = 1, limit = 10) {
         try {
             const qb = this.userRepository.createQueryBuilder('users');
+            qb.leftJoinAndSelect('users.routines', 'routines');
             if (filters.name) {
                 qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', {
                     name: filters.name,
@@ -90,13 +92,22 @@ let UsersService = class UsersService {
         }
     }
     async findOne(id) {
-        return await this.userRepository.findOneBy({ id });
+        return await this.userRepository.findOne({
+            where: { id },
+            relations: ['routines'],
+        });
     }
     async update(id, updateUserDto) {
         return await this.userRepository.update(id, updateUserDto);
     }
     async remove(id) {
         return await this.userRepository.delete(id);
+    }
+    async findAllRelated() {
+        const users = await this.userRepository.find({
+            relations: ['payments', 'routines', 'subscriptions'],
+        });
+        return users;
     }
     async seedUsers() {
         const users = [
