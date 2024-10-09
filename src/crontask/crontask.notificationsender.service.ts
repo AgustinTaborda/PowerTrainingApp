@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
-import { NotificationscheduleEntity } from '../notificationschedule/entities/notificationschedule.entity';
+import { NotificationscheduleEntity, PeriodType } from '../notificationschedule/entities/notificationschedule.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { MailService } from '../mailer/mailer.service';
 import { DateManager } from '../helpers/datemanager';
@@ -46,7 +46,29 @@ async sendNotifications() {
         console.log(notification.message.subject)
         console.log(notification.message.body)
 
-        const nextSendDate = this.dateManager.calculateNextSendDate(notification.periodParam,notification.periodType)
+        let  nextSendDate:Date;
+        switch (notification.periodType){
+          case PeriodType.DAY:
+            console.log('DAY')
+             nextSendDate = this.dateManager.calculateNextSendDate(notification.periodParam,notification.periodType)
+            break;
+          case PeriodType.WEEK:
+            console.log('WEEK')
+             nextSendDate = this.dateManager.calculateNextSendDateWeekly(notification.periodParam)
+            break;
+          case PeriodType.MONTH:
+            console.log('MONTH')
+            nextSendDate = this.dateManager.calculateNextSendDateMonthly(notification.periodParam)
+            break;
+          case PeriodType.YEAR:
+            console.log('YEAR')
+            nextSendDate = this.dateManager.calculateNextSendDateYearly(notification.periodParam)
+            break;
+        }
+
+        
+
+       
         console.log(nextSendDate)
 
        

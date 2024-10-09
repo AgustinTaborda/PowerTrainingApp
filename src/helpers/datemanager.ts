@@ -84,18 +84,107 @@ export class DateManager{
 
   }
 
-  calculateNextSendDateWeekly(periodParam: string): Date {
-    const dayOfWeek = parseInt(periodParam.substring(0, 2), 10); // Extrae el día de la semana
-    const hours = parseInt(periodParam.substring(2, 4), 10);
-    const minutes = parseInt(periodParam.substring(4, 6), 10);
+  encodeToYearSchedule = (day: number, month: number, hour: number, minute: number): string => {
+    if (day < 1 || day > 31 || month < 1 || month > 12 || hour > 23 || minute > 59) {
+        throw new Error('Day must be between 1 and 31, month between 1 and 12, hours to 23 and minutes to 59');
+    }
 
+    let parsedDay = day.toString();
+    let parsedMonth = month.toString();
+    let parsedHour = hour.toString();
+    let parsedMinute = minute.toString();
+
+    // Asegurarse de que el día y el mes tengan dos dígitos
+    if (day < 10) {
+        parsedDay = '0' + parsedDay;
+    }
+    if (month < 10) {
+        parsedMonth = '0' + parsedMonth;
+    }
+    if (hour < 10) {
+        parsedHour = '0' + parsedHour;
+    }
+    if (minute < 10) {
+        parsedMinute = '0' + parsedMinute;
+    }
+
+    return `${parsedDay}${parsedMonth}****${parsedHour}${parsedMinute}`;
+}
+
+encodeToMonthSchedule = (day: number, hour: number, minute: number): string => {
+  if (day < 1 || day > 31 || hour > 23 || minute > 59) {
+      throw new Error('Day must be between 1 and 31, hours to 23 and minutes to 59');
+  }
+
+  let parsedDay = day.toString();
+  let parsedHour = hour.toString();
+  let parsedMinute = minute.toString();
+
+  // Asegurarse de que el día tenga dos dígitos
+  if (day < 10) {
+      parsedDay = '0' + parsedDay;
+  }
+  if (hour < 10) {
+      parsedHour = '0' + parsedHour;
+  }
+  if (minute < 10) {
+      parsedMinute = '0' + parsedMinute;
+  }
+
+  return `${parsedDay}******${parsedHour}${parsedMinute}`;
+}
+
+encodeToWeekSchedule = (dayOfWeek: number, hour: number, minute: number): string => {
+  if (dayOfWeek < 0 || dayOfWeek > 6 || hour > 23 || minute > 59) {
+      throw new Error('Day of the week must be between 0 (Sunday) and 6 (Saturday), hours to 23 and minutes to 59');
+  }
+
+  let parsedHour = hour.toString();
+  let parsedMinute = minute.toString();
+
+  // Asegurarse de que la hora y los minutos tengan dos dígitos
+  if (hour < 10) {
+      parsedHour = '0' + parsedHour;
+  }
+  if (minute < 10) {
+      parsedMinute = '0' + parsedMinute;
+  }
+
+  // Representación del día de la semana como un único dígito
+  return `0${dayOfWeek}******${parsedHour}${parsedMinute}`;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  calculateNextSendDateWeekly(periodParam: string): Date {
+    //01******0830
+    console.log(periodParam);
+    const dayOfWeek = parseInt(periodParam.substring(0, 2), 10); // Extrae el día de la semana
+    const hours = parseInt(periodParam.substring(8, 10), 10);
+    const minutes = parseInt(periodParam.substring(10, 12), 10);
+    console.log(dayOfWeek);
+    console.log(hours);
+    console.log(minutes);
     const now = new Date();
     const nextSendDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
-
+    
     // Calcula el próximo día de la semana
     const daysUntilNext = (dayOfWeek + 7 - now.getDay()) % 7;
     nextSendDate.setDate(nextSendDate.getDate() + daysUntilNext);
-
+    
     return nextSendDate;
 }
 
