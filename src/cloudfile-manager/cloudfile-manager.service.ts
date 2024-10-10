@@ -21,7 +21,7 @@ export class CloudfileManagerService {
 
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
-        { resource_type: 'image' },
+        { resource_type: 'image' ,secure: true},
         async (error, result) => {
           if (error) {
             reject(error);
@@ -43,12 +43,13 @@ export class CloudfileManagerService {
   async uploadVideo(file: Express.Multer.File): Promise<UploadApiResponse> {
     return new Promise((resolve, reject) => {
       const upload = v2.uploader.upload_stream(
-        { resource_type: 'video' }, // Cambia el resource_type a 'video'
+        { resource_type: 'video',secure: true }, // Cambia el resource_type a 'video'
         async (error, result) => {
           if (error) {
             reject(error);
           } else {
-            await this.saveToDatabase(result);
+           await this.saveToDatabase(result);
+        
             resolve(result);
           }
         },
