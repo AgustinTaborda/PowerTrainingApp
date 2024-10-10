@@ -66,4 +66,10 @@ export class UserEntity {
   @OneToMany(()=> NotificationscheduleEntity, (notificationschedule) => notificationschedule.user)
   notificationschedules: NotificationscheduleEntity[]
 
+  @Column({ nullable: true })
+  resetOtp: string; 
+
+  @Column({ type: 'timestamp', nullable: true })
+  otpExpiresAt: Date; 
+
 }
