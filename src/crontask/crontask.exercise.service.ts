@@ -20,7 +20,7 @@ export class CronTasksService {
   
  
 
-  @Cron(CronTasksService.EVERY_3_MINUTES)
+  @Cron(CronExpression.EVERY_HOUR)
 
   handleCron() {
    // this.logger.debug('Called every 30 seconds');
