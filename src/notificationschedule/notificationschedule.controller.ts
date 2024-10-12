@@ -64,16 +64,6 @@ export class NotificationscheduleController {
   }
 
   
-
-
-
-
-
-
-
-
-
-
   @Get()
   findAll() {
     return this.notificationscheduleService.findAll();
@@ -83,15 +73,11 @@ export class NotificationscheduleController {
   findOne(@Param('id') id: string) {
     return this.notificationscheduleService.findOne(id);
   }
-/*
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNotificationscheduleDto: ) {
-    return this.notificationscheduleService.update(+id, updateNotificationscheduleDto);
-  }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.notificationscheduleService.remove(+id);
+    return this.notificationscheduleService.remove(id);
   }
-    */
+    
 }
