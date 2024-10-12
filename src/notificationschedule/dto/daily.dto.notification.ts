@@ -9,6 +9,7 @@ export class dailyNotificationDto extends PartialType(NotificationscheduleEntity
             example: '03578b28-9b12-451d-b6da-23934ed85bce'
         })
     userId: string= uuid();
+    
 
     @ApiProperty(
         {
