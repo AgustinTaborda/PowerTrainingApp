@@ -98,7 +98,31 @@ let UsersService = class UsersService {
         });
     }
     async update(id, updateUserDto) {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) {
+            throw new common_1.BadRequestException('User not found');
+        }
+        if (updateUserDto.password) {
+            const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+            user.password = hashedPassword;
+            return await this.userRepository.save(user);
+        }
         return await this.userRepository.update(id, updateUserDto);
+    }
+    async changeOtp(email, otp, newPassword) {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) {
+            throw new common_1.BadRequestException('User not found');
+        }
+        if (user.resetOtp !== otp || user.otpExpiresAt < new Date()) {
+            throw new common_1.BadRequestException('Invalid or expired OTP');
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.resetOtp = null;
+        user.otpExpiresAt = null;
+        await this.userRepository.save(user);
+        return 'Password changed successfully';
     }
     async remove(id) {
         return await this.userRepository.delete(id);

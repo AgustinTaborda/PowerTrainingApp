@@ -6,6 +6,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleAuthGuard } from '../guards/google.guard';
+import { MailService } from 'src/mailer/mailer.service';
 //import { JwtAuthGuard } from '../guards/jwtauth.guard';
 
 @Module({
@@ -13,7 +14,12 @@ import { GoogleAuthGuard } from '../guards/google.guard';
     TypeOrmModule.forFeature([UserEntity])
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService,GoogleAuthGuard ],
+  providers: [
+    AuthService, 
+    UsersService,
+    GoogleAuthGuard,
+    MailService
+   ],
   exports: []
 })
 export class AuthModule {}

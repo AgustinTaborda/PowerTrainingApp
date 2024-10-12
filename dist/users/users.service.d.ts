@@ -27,7 +27,8 @@ export declare class UsersService {
         count: number;
     }>;
     findOne(id: string): Promise<UserEntity>;
-    update(id: uuid, updateUserDto: UpdateUserDto): Promise<import("typeorm").UpdateResult>;
+    update(id: uuid, updateUserDto: UpdateUserDto): Promise<import("typeorm").UpdateResult | UserEntity>;
+    changeOtp(email: string, otp: string, newPassword: string): Promise<string>;
     remove(id: uuid): Promise<import("typeorm").DeleteResult>;
     findAllRelated(): Promise<UserEntity[]>;
     seedUsers(): Promise<void>;
