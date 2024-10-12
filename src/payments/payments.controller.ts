@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { PaymentService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import {
@@ -9,7 +9,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('Payments')
+@ApiTags('PAYMENTS')
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentService: PaymentService) {}
@@ -23,5 +23,9 @@ export class PaymentsController {
       cartItems,
     );
     return paymentPreference;
+  }
+  @Get()
+  async getAllPayments() {
+    return await this.paymentService.getAllPayments();
   }
 }

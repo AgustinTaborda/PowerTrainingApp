@@ -60,7 +60,11 @@ async createMonthly(createMonthlyNotificationscheduleDto: MonthlyNotificationDto
       createMonthlyNotificationscheduleDto.minute
   );
 
+  //console.log('Encoded date for create monthly:'+encodedDate);
+
   const nextSendDate = this.dateManager.calculateNextSendDateMonthly(encodedDate);
+
+  //console.log('Next send date for create monthly:'+nextSendDate);
 
   const monthlyNotification = this.notificationScheduleRepository.create({
       user: user,
@@ -95,7 +99,7 @@ async createWeekly(createNotificationscheduleDto: WeeklyNotificationDto) {
       sended: false,
   });
 
-  console.log(weeklyNotification);
+//  console.log(weeklyNotification);
   return await this.notificationScheduleRepository.save(weeklyNotification);
 }
 
@@ -128,14 +132,55 @@ async createWeekly(createNotificationscheduleDto: WeeklyNotificationDto) {
 
 
   async findAll() {
-    return await this.notificationScheduleRepository.find();
-  }
+    const objetoRelacionado = await this.notificationScheduleRepository.find({
+     
+      relations: ['user', 'message']
+    });
 
+    const nuevoarray =   objetoRelacionado.map((objetoRelacionado) => {
+        return {
+          notificationScheduleid: objetoRelacionado.notificationScheduleId,
+          nextsenddate: objetoRelacionado.nextSendDate,
+          period:objetoRelacionado.periodType,
+          periodparam:objetoRelacionado.periodParam, 
+          email : objetoRelacionado.user.email,
+          name : objetoRelacionado.user.name,
+          messagename: objetoRelacionado.message.name,
+          messagesubject: objetoRelacionado.message.subject,
+          messagebody: objetoRelacionado.message.body
+        }
+
+        
+      })
+      return nuevoarray;
+    }
+     /* notificationScheduleid: objetoRelacionado.notificationScheduleId,
+      nextsenddate: objetoRelacionado.nextSendDate, 
+      email : objetoRelacionado.user.email,
+      name : objetoRelacionado.user.name,
+      messagename: objetoRelacionado.message.name,
+      messagesubject: objetoRelacionado.message.subject,
+      messagebody: objetoRelacionado.message.body*/
+ 
   async findOne(id: string) {
-    return await this.notificationScheduleRepository.findOne({ where: { notificationScheduleId: id } });
+    const objetoRelacionado = await this.notificationScheduleRepository.findOne({
+      where: { notificationScheduleId: id },
+      relations: ['user', 'message']
+    });
+
+    return {
+      notificationScheduleid: objetoRelacionado.notificationScheduleId,
+      nextsenddate: objetoRelacionado.nextSendDate, 
+      email : objetoRelacionado.user.email,
+      name : objetoRelacionado.user.name,
+      messagename: objetoRelacionado.message.name,
+      messagesubject: objetoRelacionado.message.subject,
+      messagebody: objetoRelacionado.message.body
+    }
+   
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notificationschedule`;
+  async remove(id: string) {
+    return await this.notificationScheduleRepository.delete(id);
   }
 }

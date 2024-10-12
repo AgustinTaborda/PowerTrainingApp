@@ -21,15 +21,20 @@ const user_entity_1 = require("../users/entities/user.entity");
 const subscription_entity_1 = require("../subscriptions/entities/subscription.entity");
 const subscriptionPlan_entity_1 = require("../subscriptions/entities/subscriptionPlan.entity");
 const mailer_service_1 = require("../mailer/mailer.service");
+const payment_entity_1 = require("./entities/payment.entity");
 let PaymentService = class PaymentService {
-    constructor(userRepository, subscriptionRepository, subscriptionPlanRepository, mailService) {
+    constructor(userRepository, subscriptionRepository, subscriptionPlanRepository, paymentRepository, mailService) {
         this.userRepository = userRepository;
         this.subscriptionRepository = subscriptionRepository;
         this.subscriptionPlanRepository = subscriptionPlanRepository;
+        this.paymentRepository = paymentRepository;
         this.mailService = mailService;
         this.mercadoPagoClient = new mercadopago_1.MercadoPagoConfig({
             accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
         });
+    }
+    async getAllPayments() {
+        return await this.paymentRepository.find();
     }
     async createPayment(userId, planId, cartItems) {
         const subscriptionPlan = await this.subscriptionPlanRepository.findOne({
@@ -102,7 +107,9 @@ exports.PaymentService = PaymentService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __param(1, (0, typeorm_1.InjectRepository)(subscription_entity_1.SubscriptionEntity)),
     __param(2, (0, typeorm_1.InjectRepository)(subscriptionPlan_entity_1.SubscriptionPlan)),
+    __param(3, (0, typeorm_1.InjectRepository)(payment_entity_1.PaymentEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         mailer_service_1.MailService])
