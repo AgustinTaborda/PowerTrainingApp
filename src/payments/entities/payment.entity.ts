@@ -13,14 +13,18 @@ export class PaymentEntity {
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     payment: number;
 
-    @Column({ type: 'varchar',length: 255,nullable: true})
+  /*  @Column({ type: 'varchar',length: 255,nullable: true})
     userId: string = uuid();
+    */
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     subscriptionid: number;
 
     @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
     discount: number;
+
+    @ManyToOne(() => UserEntity, user => user.payments)
+    user: UserEntity
 
    
    

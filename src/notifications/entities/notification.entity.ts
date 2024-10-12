@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { MessageEntity } from 'src/messages/entities/message.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { v4 as uuid } from "uuid";
 
 export enum ProcessedState {
@@ -32,5 +33,8 @@ export class NotificationEntity {
     methodToSend: string;
     @Column()
     userId: string = uuid();
+
+    @ManyToOne(() => MessageEntity, (message) => message.notification)
+    message: MessageEntity
        
 }
