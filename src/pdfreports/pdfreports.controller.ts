@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { PdfreportsService } from './pdfreports.service';
 import { Response } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
-@ApiTags('PDFREPORTS')
+
+@ApiTags('REPORTS')
 @Controller('pdfreports')
 export class PdfreportsController {
   constructor(
@@ -13,8 +14,8 @@ export class PdfreportsController {
 
   ) {}
 
- 
-  @Get('/pdf')
+  @ApiOperation({ summary: 'Customers report PDF, downloads a reports directly' })
+  @Get('/pdfCustomersAttached')
   async getPDF(
     @Res() res: Response,
   ): Promise<void> {
@@ -28,7 +29,8 @@ export class PdfreportsController {
 
     res.end(buffer)
   }
-  @Get('/pdfinline')
+  @ApiOperation({ summary: 'Customers report PDF, it´s opens in browser directly' })
+  @Get('/pdfCustomersInline')
   async getPDFinline(
     @Res() res: Response,
   ): Promise<void> {
