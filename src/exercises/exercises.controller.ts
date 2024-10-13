@@ -11,7 +11,7 @@ import { ChangeStatusDto } from './dto/change-status.dto';
 import { JWTAuthGuard } from 'src/guards/jwtauth.guard';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
-@ApiTags('exercises')
+@ApiTags('EXERCISES')
 @Controller('exercises')
 @ApiBearerAuth('access-token')
 @UseGuards(CombinedAuthGuard) 

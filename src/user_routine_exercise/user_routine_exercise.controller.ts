@@ -5,7 +5,7 @@ import { CreateUserRoutineExerciseDto } from './dto/create-user_routine_exercise
 import { UserRoutineExerciseEntity } from './entities/user_routine_exercise.entity';
 import { UpdateUserRoutineExerciseDto } from './dto/update-user_routine_exercise.dto';
 
-@ApiTags('user-routine-exercises') 
+@ApiTags('USER ROUTINE EXERCISE') 
 @Controller('user-routine-exercises')
 export class UserRoutineExerciseController {
   constructor(private readonly userRoutineExerciseService: UserRoutineExerciseService) {}

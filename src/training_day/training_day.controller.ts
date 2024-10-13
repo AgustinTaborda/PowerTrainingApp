@@ -5,7 +5,7 @@ import { UpdateTrainingDayDto } from './dto/update-trainingday.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { TrainingDayEntity } from './entities/training_day.entity';
 
-@ApiTags('Training Days')
+@ApiTags('TRAINING DAYS')
 @Controller('training-days')
 export class TrainingDayController {
   constructor(private readonly trainingDayService: TrainingDayService) {}

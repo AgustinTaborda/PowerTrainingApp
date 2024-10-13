@@ -7,6 +7,7 @@ import { YearlyNotificationDto } from './dto/yearly.dto.notification';
 import { WeeklyNotificationDto } from './dto/weekly.dto.notification';
 
 @ApiTags('NOTIFICATIONS SCHEDULE')
+
 @Controller('notificationschedule')
 export class NotificationscheduleController {
   constructor(private readonly notificationscheduleService: NotificationscheduleService) {}

@@ -20,7 +20,10 @@ const config = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
-  dropSchema: false, //para recrear todas las tablas
+  dropSchema: false, //para recrear todas las tablas,
+  ssl: {
+    rejectUnauthorized: false, // para conectar con render desde local
+  },
 };
 
 export const connectionSource = new DataSource(config as DataSourceOptions);

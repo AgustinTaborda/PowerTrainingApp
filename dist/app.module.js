@@ -32,6 +32,7 @@ const training_day_module_1 = require("./training_day/training_day.module");
 const notificationschedule_module_1 = require("./notificationschedule/notificationschedule.module");
 const crontask_notificationsender_module_1 = require("./crontask/crontask.notificationsender.module");
 const chat_module_1 = require("./chat/chat.module");
+const pdfreports_module_1 = require("./pdfreports/pdfreports.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -71,6 +72,7 @@ exports.AppModule = AppModule = __decorate([
             crontask_notificationsender_module_1.CronNotificationsenderModule,
             excelreports_module_1.ExcelreportsModule,
             notificationschedule_module_1.NotificationscheduleModule,
+            pdfreports_module_1.PdfreportsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [],
