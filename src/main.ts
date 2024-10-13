@@ -35,7 +35,7 @@ async function bootstrap() {
   };
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Api Backend PowerTrainingApp, PF Henry 07102024')
+    .setTitle('Api Backend PowerTrainingApp, PF Henry 12102024')
     .setDescription(
       'Api con la documentación de cada endpoint disponible en la aplicación',
     )

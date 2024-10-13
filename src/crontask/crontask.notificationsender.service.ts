@@ -66,12 +66,7 @@ async sendNotifications() {
             break;
         }
 
-        
-
-       
-        console.log(nextSendDate)
-
-       
+          
 
           this.mailService.sendEmail(
 

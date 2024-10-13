@@ -34,7 +34,7 @@ export class UserEntity {
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.User, 
+    default: Role.User,
   })
   role: Role;
 
@@ -65,5 +65,11 @@ export class UserEntity {
 
   @OneToMany(()=> NotificationscheduleEntity, (notificationschedule) => notificationschedule.user)
   notificationschedules: NotificationscheduleEntity[]
+
+  @Column({ nullable: true })
+  resetOtp: string; 
+
+  @Column({ type: 'timestamp', nullable: true })
+  otpExpiresAt: Date; 
 
 }

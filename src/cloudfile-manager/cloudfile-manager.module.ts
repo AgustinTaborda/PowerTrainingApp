@@ -8,6 +8,6 @@ import { CloudfileManager } from './entities/cloudfile-manager.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([CloudfileManager])],
   controllers: [CloudfileManagerController],
-  providers: [CloudfileManagerService,CloudinaryConfig],
+  providers: [CloudfileManagerService, CloudinaryConfig],
 })
 export class CloudfileManagerModule {}

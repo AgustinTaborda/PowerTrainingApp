@@ -6,7 +6,7 @@ import { Response } from 'express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { queryDto } from './dto/querydto';
 
-@ApiTags('excelreports')
+@ApiTags('EXCEL REPORTS')
 @Controller('excelreports')
 export class ExcelreportsController {
   constructor(private readonly excelreportsService: ExcelreportsService) {}

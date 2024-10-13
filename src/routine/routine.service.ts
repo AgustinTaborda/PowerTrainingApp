@@ -31,6 +31,7 @@ export class RoutineService {
       startDate,
       endDate,
       description,
+      name,
       completed: false, 
     });
 
