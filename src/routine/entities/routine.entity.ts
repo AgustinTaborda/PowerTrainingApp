@@ -12,6 +12,9 @@ export class RoutineEntity {
   user: UserEntity;
 
   @Column({ type: 'text', nullable: true })
+  name: string;
+
+  @Column({ type: 'text', nullable: true })
   description: string;
   
   @Column({ type: 'date', nullable: false })

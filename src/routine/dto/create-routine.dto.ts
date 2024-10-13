@@ -10,6 +10,14 @@ export class CreateRoutineDto {
   @IsNotEmpty()
   userId: string;
 
+  @ApiPropertyOptional({
+    description: 'Indica el nombre de la rutina',
+    example: 'Rutina de ejemplo',
+  })
+  @IsString()
+  @IsOptional()
+  name?: string;
+
   @ApiProperty({
     description: 'Fecha de inicio de la rutina',
     example: '2024-10-01',
