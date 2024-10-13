@@ -15,9 +15,6 @@ export class RoutineEntity {
   name: string;
 
   @Column({ type: 'text', nullable: true })
-  name: string;
-
-  @Column({ type: 'text', nullable: true })
   description: string;
   
   @Column({ type: 'date', nullable: false })
