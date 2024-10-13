@@ -32,7 +32,7 @@ import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 
-@ApiTags('users')
+@ApiTags('USERS')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

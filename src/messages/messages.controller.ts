@@ -4,7 +4,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('MESSAGES SETTINGS')
+@ApiTags('MESSAGES SETTINGS: All meesages you can set for schedule sending, will be displayed here')
 @Controller('messages')
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}

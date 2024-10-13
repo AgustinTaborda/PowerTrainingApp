@@ -26,6 +26,7 @@ import { NotificationscheduleModule } from './notificationschedule/notifications
 import { CronTasksNotificationSender } from './crontask/crontask.notificationsender.service';
 import { CronNotificationsenderModule } from './crontask/crontask.notificationsender.module';
 import { ChatModule } from './chat/chat.module';
+import { PdfreportsModule } from './pdfreports/pdfreports.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { ChatModule } from './chat/chat.module';
     CronNotificationsenderModule,
     ExcelreportsModule,
     NotificationscheduleModule,
+    PdfreportsModule,
   ],
   controllers: [AppController],
   providers: [],

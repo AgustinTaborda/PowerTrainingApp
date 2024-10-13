@@ -5,7 +5,7 @@ import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
-@ApiTags('Routine')
+@ApiTags('ROUTINE')
 @ApiBearerAuth('access-token')
 @UseGuards(CombinedAuthGuard)
 @Controller('routine')
