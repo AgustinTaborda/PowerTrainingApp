@@ -30,12 +30,12 @@ export class MailService {
     this.transporter = createTransport(data2);
   }
 
-  async sendEmail(to: string, subject: string, text: string): Promise<void> {
+  async sendEmail(to: string, subject: string, html: string): Promise<void> {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: to,
       subject: subject,
-      text: text,
+      html: html,
     };
 
     try {

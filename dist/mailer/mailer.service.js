@@ -35,12 +35,12 @@ let MailService = class MailService {
         };
         this.transporter = (0, nodemailer_1.createTransport)(data2);
     }
-    async sendEmail(to, subject, text) {
+    async sendEmail(to, subject, html) {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: to,
             subject: subject,
-            text: text,
+            html: html,
         };
         try {
             return await this.transporter.sendMail(mailOptions);

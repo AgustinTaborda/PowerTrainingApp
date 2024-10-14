@@ -79,7 +79,6 @@ export class AuthService {
 
   private generateToken(user: UserEntity) {
     const userPayload = {
-      sub: user.id,
       id: user.id,
       email: user.email,
       role: user.role,
@@ -91,7 +90,6 @@ export class AuthService {
       success: 'User logged in successfully',
       token,
       userData: {
-        sud: user.id,
         id: user.id,
         email: user.email,
         name: user.name,
