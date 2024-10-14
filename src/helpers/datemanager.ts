@@ -175,9 +175,7 @@ encodeToWeekSchedule = (dayOfWeek: number, hour: number, minute: number): string
     const dayOfWeek = parseInt(periodParam.substring(0, 2), 10); // Extrae el día de la semana
     const hours = parseInt(periodParam.substring(8, 10), 10);
     const minutes = parseInt(periodParam.substring(10, 12), 10);
-    console.log(dayOfWeek);
-    console.log(hours);
-    console.log(minutes);
+    
     const now = new Date();
     const nextSendDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
     
@@ -190,9 +188,13 @@ encodeToWeekSchedule = (dayOfWeek: number, hour: number, minute: number): string
 
 calculateNextSendDateMonthly(periodParam: string): Date {
   const dayOfMonth = parseInt(periodParam.substring(0, 2), 10);
-  const hours = parseInt(periodParam.substring(2, 4), 10);
-  const minutes = parseInt(periodParam.substring(4, 6), 10);
-
+  const hours = parseInt(periodParam.substring(8, 10), 10);
+  const minutes = parseInt(periodParam.substring(10, 12), 10);
+  /*console.log("this.calculateNextSendDateMonthly notig service line 195")
+  console.log(periodParam);
+  console.log(dayOfMonth);
+  console.log(hours);
+  console.log(minutes);*/
   const now = new Date();
   const nextSendDate = new Date(now.getFullYear(), now.getMonth(), dayOfMonth, hours, minutes);
 
@@ -207,9 +209,10 @@ calculateNextSendDateMonthly(periodParam: string): Date {
 calculateNextSendDateYearly(periodParam: string): Date {
   const dayOfMonth = parseInt(periodParam.substring(0, 2), 10);
   const month = parseInt(periodParam.substring(2, 4), 10) - 1; // Meses van de 0 a 11
-  const hours = parseInt(periodParam.substring(4, 6), 10);
-  const minutes = parseInt(periodParam.substring(6, 8), 10);
+  const hours = parseInt(periodParam.substring(8, 10), 10);
+  const minutes = parseInt(periodParam.substring(10, 12), 10);
 
+  
   const now = new Date();
   const nextSendDate = new Date(now.getFullYear(), month, dayOfMonth, hours, minutes);
 

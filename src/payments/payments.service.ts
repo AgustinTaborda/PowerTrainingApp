@@ -6,6 +6,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from '../subscriptions/entities/subscriptionPlan.entity';
 import { MailService } from '../mailer/mailer.service';
+import { PaymentEntity } from './entities/payment.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -20,11 +21,17 @@ export class PaymentService {
     private subscriptionRepository: Repository<SubscriptionEntity>,
     @InjectRepository(SubscriptionPlan)
     private subscriptionPlanRepository: Repository<SubscriptionPlan>,
+    @InjectRepository(PaymentEntity)
+    private paymentRepository: Repository<PaymentEntity>,
     public mailService: MailService,
   ) {
     this.mercadoPagoClient = new MercadoPagoConfig({
       accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
     });
+  }
+
+  async getAllPayments() {
+    return await this.paymentRepository.find();
   }
 
   async createPayment(userId: string, planId: string, cartItems: any[]) {

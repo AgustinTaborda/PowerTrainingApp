@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
     path: './.env',
   });
 }
-
+// deploy on docker hub docker buildx build -t lbaini/powertraining2:version1 --push .
 const config = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -20,7 +20,10 @@ const config = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
-  dropSchema: false, //para recrear todas las tablas
+  dropSchema: false, //para recrear todas las tablas,
+  ssl: {
+    rejectUnauthorized: false, // para conectar con render desde local
+  },
 };
 
 export const connectionSource = new DataSource(config as DataSourceOptions);

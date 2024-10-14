@@ -126,8 +126,38 @@ export class UsersService {
     });
   }
 
-  async update(id: uuid, updateUserDto: UpdateUserDto) {
+  async update(id: uuid, updateUserDto: UpdateUserDto) {    
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    if (updateUserDto.password) {
+      const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+      user.password = hashedPassword;
+
+      return await this.userRepository.save(user);
+    }
+    
     return await this.userRepository.update(id, updateUserDto);
+  }
+
+  async changeOtp(email: string, otp: string, newPassword: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    if (user.resetOtp !== otp || user.otpExpiresAt < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetOtp = null; 
+    user.otpExpiresAt = null;
+    await this.userRepository.save(user);
+
+    return 'Password changed successfully';
   }
 
   async remove(id: uuid) {

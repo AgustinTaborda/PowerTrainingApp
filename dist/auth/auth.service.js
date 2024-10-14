@@ -19,10 +19,13 @@ const user_entity_1 = require("../users/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
 const jwt_1 = require("@nestjs/jwt");
+const uuid_1 = require("uuid");
+const mailer_service_1 = require("../mailer/mailer.service");
 let AuthService = class AuthService {
-    constructor(userRepository, jwtService) {
+    constructor(userRepository, jwtService, mailService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
+        this.mailService = mailService;
     }
     async authSignIn(email, password) {
         const user = await this.userRepository.findOne({
@@ -102,12 +105,25 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('Token no válido');
         }
     }
+    async generateOtp(email) {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with email ${email} not found`);
+        }
+        const otp = (0, uuid_1.v4)().slice(0, 6);
+        user.resetOtp = otp;
+        user.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+        await this.userRepository.save(user);
+        await this.mailService.sendEmail(email, 'One time password', `This is your one-time password: ${otp}, then you will have to choose your new password.`);
+        return 'OTP sent';
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        mailer_service_1.MailService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

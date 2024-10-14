@@ -18,7 +18,7 @@ export class RoutineService {
 
   // Crear una nueva rutina
   async create(createRoutineDto: CreateRoutineDto) {
-    const { userId, startDate, endDate, description, name } = createRoutineDto;
+    const { userId, name, startDate, endDate, description } = createRoutineDto;
 
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {
@@ -27,10 +27,10 @@ export class RoutineService {
 
     const routine = this.routineRepository.create({
       user,
+      name,
       startDate,
       endDate,
       description,
-      name,
       completed: false, 
     });
 

@@ -19,7 +19,7 @@ export class CronTasksNotificationSender {
  
  
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_HOUR)
 
   handleCron() {
    
@@ -66,12 +66,7 @@ async sendNotifications() {
             break;
         }
 
-        
-
-       
-        console.log(nextSendDate)
-
-       
+          
 
           this.mailService.sendEmail(
 

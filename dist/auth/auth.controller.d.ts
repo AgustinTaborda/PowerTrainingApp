@@ -1,9 +1,13 @@
 import { AuthService } from './auth.service';
 import { CredentialsDto } from './dto/credentials.dto';
 import { Request } from 'express';
+import { UsersService } from 'src/users/users.service';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { RequestOtp } from './dto/requestOtp.dto';
 export declare class AuthController {
     private readonly authService;
-    constructor(authService: AuthService);
+    private readonly userService;
+    constructor(authService: AuthService, userService: UsersService);
     authSignIn(credentials: CredentialsDto): Promise<{
         success: string;
         token: string;
@@ -32,4 +36,6 @@ export declare class AuthController {
         userdata: Record<string, any>;
         token: string;
     };
+    requestOtp(requestOtp: RequestOtp): Promise<string>;
+    resetPassword(resetPasswordDto: ResetPasswordDto): Promise<string>;
 }

@@ -61,7 +61,7 @@ export class CloudfileManagerController {
     // Definición del tipo de retorno
     try {
       const response = await this.cloudfileManagerService.uploadImage(file);
-      return response.url; // Retorna la URL de la imagen
+      return response.secure_url; // Retorna la URL de la imagen
     } catch (error) {
       // Manejo de errores: lanza una excepción si la carga falla
       throw new HttpException(
@@ -97,7 +97,7 @@ export class CloudfileManagerController {
 
     return await this.cloudfileManagerService
       .uploadVideo(file)
-      .then((response) => response.url);
+      .then((response) => response.secure_url);
   }
 
   @Get('/listVideos')

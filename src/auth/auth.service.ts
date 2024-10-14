@@ -1,10 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from './roles.enum';
+import { v4 as uuidv4} from 'uuid';
+import { MailService } from 'src/mailer/mailer.service';
+import { RequestOtp } from './dto/requestOtp.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +15,7 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async authSignIn(email: string, password: string) {
@@ -103,5 +107,25 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Token no válido');
     }
+  }
+
+  async generateOtp(email: string): Promise<string> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+
+    const otp = uuidv4().slice(0, 6); 
+    user.resetOtp = otp; 
+    user.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); 
+    await this.userRepository.save(user);
+
+    await this.mailService.sendEmail(
+      email, 
+      'One time password',
+      `This is your one-time password: ${otp}, then you will have to choose your new password.`
+    );
+
+    return 'OTP sent';
   }
 }
