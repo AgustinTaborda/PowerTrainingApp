@@ -21,12 +21,9 @@ const user_entity_1 = require("../users/entities/user.entity");
 const subscription_entity_1 = require("../subscriptions/entities/subscription.entity");
 const subscriptionPlan_entity_1 = require("../subscriptions/entities/subscriptionPlan.entity");
 const mailer_service_1 = require("../mailer/mailer.service");
-<<<<<<< HEAD
+const payment_entity_1 = require("./entities/payment.entity");
 const fs = require("fs");
 const path = require("path");
-=======
-const payment_entity_1 = require("./entities/payment.entity");
->>>>>>> 6a756ea458be2c89953e2c797dbe556a0f1f12f5
 let PaymentService = class PaymentService {
     constructor(userRepository, subscriptionRepository, subscriptionPlanRepository, paymentRepository, mailService) {
         this.userRepository = userRepository;

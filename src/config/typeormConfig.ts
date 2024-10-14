@@ -21,9 +21,7 @@ const config = {
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
   dropSchema: false, //para recrear todas las tablas,
-  ssl: {
-    rejectUnauthorized: false, // para conectar con render desde local
-  },
+  ssl: process.env.NODE_ENV === 'local' ? { rejectUnauthorized: false } : false, // SSL solo en producción
 };
 
 export const connectionSource = new DataSource(config as DataSourceOptions);
