@@ -14,56 +14,64 @@ export class RoutineService {
     
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
-
-  // Crear una nueva rutina
-  async create(createRoutineDto: CreateRoutineDto) {
-    const { userId, name, startDate, endDate, description } = createRoutineDto;
-
-    const user = await this.userRepository.findOneBy({ id: userId });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+    ) {}
+    
+    // Crear una nueva rutina
+    async create(createRoutineDto: CreateRoutineDto) {
+      const { userId, name, startDate, endDate, description } = createRoutineDto;
+      
+      const user = await this.userRepository.findOneBy({ id: userId });
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+      
+      const routine = this.routineRepository.create({
+        user,
+        name,
+        startDate,
+        endDate,
+        description,
+        completed: false, 
+      });
+      
+      await this.routineRepository.save(routine);
+      return routine;
+    }
+    
+    // Obtener todas las rutinas con paginación y relaciones
+    async findAll(limit: number, page: number) {
+      const [routines, total] = await this.routineRepository.findAndCount({
+        relations: ['user', 'trainingDays', 'trainingDays.exercises', 'trainingDays.exercises.exercise'],
+        select: {
+          user: {
+            id: true,
+          },
+        },
+        take: limit,          // Limitar el número de resultados
+        skip: (page - 1) * limit, // Calcular el offset para la paginación
+      });
+      
+      const totalPages = Math.ceil(total / limit); // Calcular el número total de páginas
+      
+      return {
+        totalItems: total,
+        totalPages,
+        currentPage: page,
+        items: routines,
+      };
+    }
+    
+    // Obtener rutinas por ID de usuario
+    async findAllByUser(userId: string): Promise<RoutineEntity[]> {      
+      const user: UserEntity = await this.userRepository.findOne({where: {id: userId}})
+      return this.routineRepository.find({
+        where: { user }, 
+        relations: ['trainingDays', 'trainingDays.exercises'],
+      });
     }
 
-    const routine = this.routineRepository.create({
-      user,
-      name,
-      startDate,
-      endDate,
-      description,
-      completed: false, 
-    });
-
-    await this.routineRepository.save(routine);
-    return routine;
-  }
-
-  // Obtener todas las rutinas con paginación y relaciones
-  async findAll(limit: number, page: number) {
-    const [routines, total] = await this.routineRepository.findAndCount({
-      // relations: ['user', 'trainingDays', 'userRoutineExercises', 'userRoutineExercises.exercise'],
-      relations: ['user', 'trainingDays', 'trainingDays.exercises', 'trainingDays.exercises.exercise'],
-      select: {
-        user: {
-          id: true,
-        },
-      },
-      take: limit,          // Limitar el número de resultados
-      skip: (page - 1) * limit, // Calcular el offset para la paginación
-    });
-
-    const totalPages = Math.ceil(total / limit); // Calcular el número total de páginas
-
-    return {
-      totalItems: total,
-      totalPages,
-      currentPage: page,
-      items: routines,
-    };
-  }
-
-  // Obtener una rutina por ID
-  async findOne(id: number) {
+    // Obtener una rutina por ID
+    async findOne(id: number) {
     const routine = await this.routineRepository.findOne({ 
       where: { id },
       relations: ['user', 'trainingDays', 'trainingDays.exercises', 'trainingDays.exercises.exercise']

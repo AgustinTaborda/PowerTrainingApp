@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query, ParseUUIDPipe } from '@nestjs/common';
 import { RoutineService } from './routine.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
@@ -44,6 +44,18 @@ export class RoutineController {
       return await this.routineService.findOne(+id);
     } catch (error) {
       throw new BadRequestException(error.message || `Failed to fetch routine with ID ${id}`);
+    }
+  }
+  
+  @Get('/user/:userId')
+  @ApiOperation({ summary: 'Get routines by User ID' })
+  async findAllByUser(
+    @Param('userId', new ParseUUIDPipe()) userId: string
+  ) {
+    try {
+      return await this.routineService.findAllByUser(userId);
+    } catch (error) {
+      throw new BadRequestException(error.message || `Failed to fetch routines for the user ID ${userId}`);
     }
   }
 
