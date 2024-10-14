@@ -22,4 +22,8 @@ export class SubscriptionEntity {
 
   @Column({ type: 'date' })
   subscriptionEndDate: Date; // Fecha de fin de la suscripción
+
+  // Agrega esta línea para almacenar el paymentId
+  @Column({ nullable: true })
+  paymentId: string; // Asegúrate de que sea del tipo adecuado
 }

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmación de Compra - Suscripción</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        padding-bottom: 20px;
+      }
+      h1 {
+        color: #4caf50;
+      }
+      p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .info {
+        margin: 20px 0;
+      }
+      .info p {
+        margin: 5px 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>¡Gracias por tu compra, {{name}}!</h1>
+        <p>Tu suscripción ha sido activada exitosamente.</p>
+      </div>
+
+      <div class="info">
+        <p><strong>Nombre del plan:</strong> {{planName}}</p>
+        <p><strong>Duración:</strong> {{duration}} meses</p>
+        <p><strong>Precio:</strong> ${{price}} ARS</p>
+        <p><strong>Fecha de inicio:</strong> {{startDate}}</p>
+        <p><strong>Fecha de fin:</strong> {{endDate}}</p>
+      </div>
+
+      <div class="info">
+        <h3>Detalles del pago:</h3>
+        <p><strong>ID de Pago:</strong> {{paymentId}}</p>
+      </div>
+
+      <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+
+      <div class="footer">
+        <p>© 2024 Power Training. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </body>
+</html>

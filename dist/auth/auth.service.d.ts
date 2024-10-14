@@ -10,7 +10,6 @@ export declare class AuthService {
         success: string;
         token: string;
         userData: {
-            sud: string;
             id: string;
             email: string;
             name: string;
@@ -23,7 +22,6 @@ export declare class AuthService {
         success: string;
         token: string;
         userData: {
-            sud: string;
             id: string;
             email: string;
             name: string;

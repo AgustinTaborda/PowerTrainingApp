@@ -53,7 +53,7 @@ export class UserEntity {
 
   @OneToMany(() => SubscriptionEntity, (subscription) => subscription.user)
   subscriptions: SubscriptionEntity[];
-  
+
   @OneToMany(() => RoutineEntity, (routine) => routine.user)
   routines: RoutineEntity[];
 
@@ -61,9 +61,11 @@ export class UserEntity {
   // userRoutineExercises: UserRoutineExerciseEntity[]
 
   @OneToMany(() => PaymentEntity, (payments) => payments.user)
-  payments: PaymentEntity[]
+  payments: PaymentEntity[];
 
-  @OneToMany(()=> NotificationscheduleEntity, (notificationschedule) => notificationschedule.user)
-  notificationschedules: NotificationscheduleEntity[]
-
+  @OneToMany(
+    () => NotificationscheduleEntity,
+    (notificationschedule) => notificationschedule.user,
+  )
+  notificationschedules: NotificationscheduleEntity[];
 }

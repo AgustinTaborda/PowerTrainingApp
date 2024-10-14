@@ -7,6 +7,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
 import { SubscriptionPlan } from '../subscriptions/entities/subscriptionPlan.entity';
 import { MailService } from 'src/mailer/mailer.service';
+import { WebhookController } from './webhook.controller';
 
 @Module({
   imports: [
@@ -16,8 +17,9 @@ import { MailService } from 'src/mailer/mailer.service';
       SubscriptionEntity,
       SubscriptionPlan,
     ]), // Incluir todas las entidades necesarias
-  ],  
-  controllers: [PaymentsController],
-  providers: [PaymentService,MailService],
+  ],
+  controllers: [PaymentsController, WebhookController],
+  // controllers: [PaymentsController],
+  providers: [PaymentService, MailService],
 })
 export class PaymentsModule {}

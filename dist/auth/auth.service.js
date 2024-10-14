@@ -75,7 +75,6 @@ let AuthService = class AuthService {
     }
     generateToken(user) {
         const userPayload = {
-            sub: user.id,
             id: user.id,
             email: user.email,
             role: user.role,
@@ -85,7 +84,6 @@ let AuthService = class AuthService {
             success: 'User logged in successfully',
             token,
             userData: {
-                sud: user.id,
                 id: user.id,
                 email: user.email,
                 name: user.name,

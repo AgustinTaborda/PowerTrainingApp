@@ -47,11 +47,8 @@ export class PaymentService {
     }));
 
     const preference = new Preference(this.mercadoPagoClient);
-    const subscription = new SubscriptionEntity();
-
     const body = {
       items: items,
-      external_reference: subscription.id,
       back_urls: {
         success: `${process.env.FRONTEND_URL}/notification/success`,
         failure: `${process.env.FRONTEND_URL}/pricing`,
@@ -93,8 +90,14 @@ export class PaymentService {
 
       await this.userRepository.save(user);
 
-      // NOTA: Ya no se envía el correo en este punto.
-      // El correo se enviará cuando se reciba la notificación de Mercado Pago.
+      // Llamada a la función que gestiona el envío de emails
+      await this.sendEmailBasedOnStatus(
+        user,
+        subscriptionPlan,
+        startDate,
+        endDate,
+        'pending',
+      ); // Por defecto en estado pending
 
       return result; // Devuelve la preferencia de pago a la aplicación frontend
     } catch (error) {
@@ -111,7 +114,6 @@ export class PaymentService {
     startDate: Date,
     endDate: Date,
     status: string,
-    paymentId: string, // Agregado
   ) {
     let templatePath: string;
     let subject: string;
@@ -149,13 +151,6 @@ export class PaymentService {
     // Cargar la plantilla HTML
     let emailContent = fs.readFileSync(templatePath, 'utf8');
 
-    if (!(startDate instanceof Date)) {
-      startDate = new Date(startDate); // Intenta convertir a Date
-    }
-    if (!(endDate instanceof Date)) {
-      endDate = new Date(endDate); // Intenta convertir a Date
-    }
-
     // Reemplazar variables en la plantilla HTML
     emailContent = emailContent
       .replace('{{name}}', user.name)
@@ -163,60 +158,9 @@ export class PaymentService {
       .replace('{{duration}}', subscriptionPlan.durationInMonths.toString())
       .replace('{{price}}', subscriptionPlan.price.toString())
       .replace('{{startDate}}', startDate.toDateString())
-      .replace('{{endDate}}', endDate.toDateString())
-      .replace('{{paymentId}}', paymentId); // Agregado aquí
+      .replace('{{endDate}}', endDate.toDateString());
 
     // Enviar correo con contenido HTML
     await this.mailService.sendEmail(user.email, subject, emailContent);
-  }
-
-  async processPaymentNotification(paymentId: string) {
-    try {
-      const payment = await new Payment(this.mercadoPagoClient).get({
-        id: paymentId,
-      });
-      const paymentStatus = payment.status;
-      const externalReference = payment.external_reference;
-
-      // Busca la suscripción asociada al ID externo (external_reference)
-      const subscription = await this.subscriptionRepository.findOne({
-        where: { id: externalReference },
-        relations: ['user'],
-      });
-
-      if (!subscription) {
-        throw new Error('Suscripción no encontrada');
-      }
-
-      // Actualizar el estado de la suscripción según el estado del pago
-      if (paymentStatus === 'approved') {
-        subscription.paymentStatus = 'approved';
-        subscription.user.isSubscribed = true;
-      } else if (paymentStatus === 'pending') {
-        subscription.paymentStatus = 'pending';
-      } else if (paymentStatus === 'rejected') {
-        subscription.paymentStatus = 'rejected';
-        subscription.user.isSubscribed = false;
-      }
-
-      // Almacena el paymentId en la suscripción
-      subscription.paymentId = paymentId; // Agregar esta línea para guardar el paymentId
-
-      await this.subscriptionRepository.save(subscription);
-      await this.userRepository.save(subscription.user);
-
-      // Enviar correo al usuario basado en el estado del pago
-      await this.sendEmailBasedOnStatus(
-        subscription.user,
-        subscription.subscriptionPlan,
-        subscription.subscriptionStartDate,
-        subscription.subscriptionEndDate,
-        paymentStatus,
-        paymentId, // Agregado aquí
-      );
-    } catch (error) {
-      console.error('Error al procesar la notificación de pago:', error);
-      throw new Error('Error al procesar la notificación de pago');
-    }
   }
 }

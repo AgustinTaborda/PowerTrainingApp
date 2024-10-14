@@ -21,6 +21,8 @@ const user_entity_1 = require("../users/entities/user.entity");
 const subscription_entity_1 = require("../subscriptions/entities/subscription.entity");
 const subscriptionPlan_entity_1 = require("../subscriptions/entities/subscriptionPlan.entity");
 const mailer_service_1 = require("../mailer/mailer.service");
+const fs = require("fs");
+const path = require("path");
 let PaymentService = class PaymentService {
     constructor(userRepository, subscriptionRepository, subscriptionPlanRepository, mailService) {
         this.userRepository = userRepository;
@@ -46,12 +48,14 @@ let PaymentService = class PaymentService {
             currency_id: 'ARS',
         }));
         const preference = new mercadopago_1.Preference(this.mercadoPagoClient);
+        const subscription = new subscription_entity_1.SubscriptionEntity();
         const body = {
             items: items,
+            external_reference: subscription.id,
             back_urls: {
-                success: `${process.env.FRONTEND_URL}/dashboard/order/success`,
-                failure: `${process.env.FRONTEND_URL}/dashboard/order/failure`,
-                pending: `${process.env.FRONTEND_URL}/dashboard/order/pending`,
+                success: `${process.env.FRONTEND_URL}/notification/success`,
+                failure: `${process.env.FRONTEND_URL}/pricing`,
+                pending: `${process.env.FRONTEND_URL}/dashboard/notification/pending`,
             },
             auto_return: 'approved',
         };
@@ -67,32 +71,84 @@ let PaymentService = class PaymentService {
             const subscription = new subscription_entity_1.SubscriptionEntity();
             subscription.user = user;
             subscription.subscriptionPlan = subscriptionPlan;
-            subscription.paymentStatus = 'approved';
+            subscription.paymentStatus = 'pending';
             subscription.subscriptionStartDate = startDate;
             subscription.subscriptionEndDate = endDate;
             await this.subscriptionRepository.save(subscription);
             user.isSubscribed = true;
             user.subscriptionEndDate = endDate;
             await this.userRepository.save(user);
-            const emailContent = `
-        Hola ${user.name},
-
-        Gracias por tu compra. A continuación te dejamos los detalles de tu suscripción:
-
-        - Plan: ${subscriptionPlan.name}
-        - Duración: ${subscriptionPlan.durationInMonths} meses
-        - Precio total: ${subscriptionPlan.price}
-
-        Fecha de inicio de la suscripción: ${startDate.toDateString()}
-        Fecha de finalización de la suscripción: ${endDate.toDateString()}
-
-        ¡Gracias por confiar en nosotros!
-      `;
-            await this.mailService.sendEmail(user.email, 'Confirmación de Compra - Suscripción', emailContent);
             return result;
         }
         catch (error) {
             throw new Error('Error al crear el pago con Mercado Pago: ' + error.message);
+        }
+    }
+    async sendEmailBasedOnStatus(user, subscriptionPlan, startDate, endDate, status, paymentId) {
+        let templatePath;
+        let subject;
+        if (status === 'approved') {
+            templatePath = path.resolve(__dirname, '..', 'payments', 'templates', 'success.html');
+            subject = 'Confirmación de Compra - Suscripción Exitosa';
+        }
+        else if (status === 'failure') {
+            templatePath = path.resolve(__dirname, '..', 'payments', 'templates', 'failure.html');
+            subject = 'Error en la Compra - Intenta Nuevamente';
+        }
+        else {
+            templatePath = path.resolve(__dirname, '..', 'payments', 'templates', 'pending.html');
+            subject = 'Pago Pendiente - En Proceso';
+        }
+        let emailContent = fs.readFileSync(templatePath, 'utf8');
+        if (!(startDate instanceof Date)) {
+            startDate = new Date(startDate);
+        }
+        if (!(endDate instanceof Date)) {
+            endDate = new Date(endDate);
+        }
+        emailContent = emailContent
+            .replace('{{name}}', user.name)
+            .replace('{{planName}}', subscriptionPlan.name)
+            .replace('{{duration}}', subscriptionPlan.durationInMonths.toString())
+            .replace('{{price}}', subscriptionPlan.price.toString())
+            .replace('{{startDate}}', startDate.toDateString())
+            .replace('{{endDate}}', endDate.toDateString())
+            .replace('{{paymentId}}', paymentId);
+        await this.mailService.sendEmail(user.email, subject, emailContent);
+    }
+    async processPaymentNotification(paymentId) {
+        try {
+            const payment = await new mercadopago_1.Payment(this.mercadoPagoClient).get({
+                id: paymentId,
+            });
+            const paymentStatus = payment.status;
+            const externalReference = payment.external_reference;
+            const subscription = await this.subscriptionRepository.findOne({
+                where: { id: externalReference },
+                relations: ['user'],
+            });
+            if (!subscription) {
+                throw new Error('Suscripción no encontrada');
+            }
+            if (paymentStatus === 'approved') {
+                subscription.paymentStatus = 'approved';
+                subscription.user.isSubscribed = true;
+            }
+            else if (paymentStatus === 'pending') {
+                subscription.paymentStatus = 'pending';
+            }
+            else if (paymentStatus === 'rejected') {
+                subscription.paymentStatus = 'rejected';
+                subscription.user.isSubscribed = false;
+            }
+            subscription.paymentId = paymentId;
+            await this.subscriptionRepository.save(subscription);
+            await this.userRepository.save(subscription.user);
+            await this.sendEmailBasedOnStatus(subscription.user, subscription.subscriptionPlan, subscription.subscriptionStartDate, subscription.subscriptionEndDate, paymentStatus, paymentId);
+        }
+        catch (error) {
+            console.error('Error al procesar la notificación de pago:', error);
+            throw new Error('Error al procesar la notificación de pago');
         }
     }
 };
