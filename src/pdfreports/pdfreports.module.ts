@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { ExerciseEntity } from '../exercises/entities/exercise.entity';
 import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
+import { PDFToolkitService } from './pdfreports.tutorial';
 
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity,ExerciseEntity,SubscriptionEntity])],
   controllers: [PdfreportsController],
-  providers: [PdfreportsService],
+  providers: [PdfreportsService,PDFToolkitService],
 })
 export class PdfreportsModule {}
