@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { Role } from 'src/auth/roles.enum';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @Injectable()
 export class UsersService {
@@ -45,6 +46,34 @@ export class UsersService {
     }
 
     return dbUser;
+  }
+  async createAdmin(createAdminDto: CreateAdminDto) {
+    const user = await this.userRepository.findOne({
+      where: { email: createAdminDto.email },
+    });
+    if (user) {
+      throw new BadRequestException('Email already in use');
+    }
+
+    const hashedPassword: string = await bcrypt.hash(
+      createAdminDto.password,
+      10,
+    );
+    if (!hashedPassword) {
+      throw new BadRequestException('Password could not be hashed');
+    }
+
+    const dbAdmin = await this.userRepository.save({
+      ...createAdminDto,
+      password: hashedPassword,
+      role: Role.Admin
+    });
+
+    if (!dbAdmin) {
+      throw new BadRequestException('User could not be register correctly');
+    }
+
+    return dbAdmin;
   }
 
   async findAll(limit: number, page: number) {
@@ -131,14 +160,15 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    if (updateUserDto.password) {
+ //   if (updateUserDto.password) {
       const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
       user.password = hashedPassword;
 
-      return await this.userRepository.save(user);
-    }
+  //    return await this.userRepository.save(user);
+  //  }
     
-    return await this.userRepository.update(id, updateUserDto);
+            await this.userRepository.update(id, updateUserDto);
+    return  await this.userRepository.findOne({ where: { id } });
   }
 
   async changeOtp(email: string, otp: string, newPassword: string) {
