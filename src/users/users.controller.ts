@@ -85,7 +85,6 @@ export class UsersController {
     return this.usersService.findAll(limit, page);
   }
 
-
   @ApiBearerAuth('access-token')
   //@Roles(Role.Admin, Role.Superadmin)
   @UseGuards(CombinedAuthGuard, RolesGuard)
@@ -159,8 +158,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(CombinedAuthGuard)
+  // @ApiBearerAuth('access-token')
+  // @UseGuards(CombinedAuthGuard)
   @Delete(':id')
   @ApiOperation({
     summary:

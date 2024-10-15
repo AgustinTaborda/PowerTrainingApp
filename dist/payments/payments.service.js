@@ -59,8 +59,9 @@ let PaymentService = class PaymentService {
             external_reference: subscription.id,
             back_urls: {
                 success: `${process.env.FRONTEND_URL}/notification/success`,
-                failure: `${process.env.FRONTEND_URL}/pricing`,
-                pending: `${process.env.FRONTEND_URL}/dashboard/notification/pending`,
+                failure: `${process.env.FRONTEND_URL}/pricing/`,
+                rejected: `${process.env.FRONTEND_URL}/notification/rejected`,
+                pending: `${process.env.FRONTEND_URL}/notification/pending`,
             },
             auto_return: 'approved',
         };
@@ -96,7 +97,7 @@ let PaymentService = class PaymentService {
             templatePath = path.resolve(__dirname, '..', 'payments', 'templates', 'success.html');
             subject = 'Confirmación de Compra - Suscripción Exitosa';
         }
-        else if (status === 'failure') {
+        else if (status === 'rejected') {
             templatePath = path.resolve(__dirname, '..', 'payments', 'templates', 'failure.html');
             subject = 'Error en la Compra - Intenta Nuevamente';
         }
@@ -144,6 +145,10 @@ let PaymentService = class PaymentService {
             }
             else if (paymentStatus === 'rejected') {
                 subscription.paymentStatus = 'rejected';
+                subscription.user.isSubscribed = false;
+            }
+            else if (paymentStatus === 'null') {
+                subscription.paymentStatus = 'null';
                 subscription.user.isSubscribed = false;
             }
             subscription.paymentId = paymentId;
