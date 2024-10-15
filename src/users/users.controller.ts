@@ -31,6 +31,7 @@ import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @ApiTags('USERS')
 @Controller('users')
@@ -54,6 +55,12 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+  @Post('/admin')
+  @ApiOperation({ summary: 'Create a new Admin' })
+  async createAdmin(@Body() createAdminDto: CreateAdminDto) {
+    return await this.usersService.createAdmin(createAdminDto);
+  }
+
   @Get('/logout')
   logout(@Res() res: Response) {
     // Redirigir al usuario al logout de Auth0
