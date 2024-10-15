@@ -102,12 +102,10 @@ let UsersService = class UsersService {
         if (!user) {
             throw new common_1.BadRequestException('User not found');
         }
-        if (updateUserDto.password) {
-            const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-            user.password = hashedPassword;
-            return await this.userRepository.save(user);
-        }
-        return await this.userRepository.update(id, updateUserDto);
+        const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+        user.password = hashedPassword;
+        await this.userRepository.update(id, updateUserDto);
+        return await this.userRepository.findOne({ where: { id } });
     }
     async changeOtp(email, otp, newPassword) {
         const user = await this.userRepository.findOne({ where: { email } });
