@@ -131,14 +131,15 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    if (updateUserDto.password) {
+ //   if (updateUserDto.password) {
       const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
       user.password = hashedPassword;
 
-      return await this.userRepository.save(user);
-    }
+  //    return await this.userRepository.save(user);
+  //  }
     
-    return await this.userRepository.update(id, updateUserDto);
+            await this.userRepository.update(id, updateUserDto);
+    return  await this.userRepository.findOne({ where: { id } });
   }
 
   async changeOtp(email: string, otp: string, newPassword: string) {
