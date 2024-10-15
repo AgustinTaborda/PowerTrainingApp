@@ -31,6 +31,7 @@ import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { notificationSender } from '../mailer/routinesender.service';
 
 @ApiTags('USERS')
 @Controller('users')
@@ -169,4 +170,17 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id); // dato interesante, si se le coloca +id, el "+" lo convierte a number
   }
+
+  @Post('receiveroutinesByEmail/:email')
+  async receiveRoutineByemail(@Param('email') email: string) {
+   
+    return await this.usersService.receiveRoutineByemail(email);
+  }
+  
+  @Post('receiveroutinesByUuid/:uuid')
+  async receiveRoutineByUuid(@Param('uuid') uuid: string) {
+   
+    return await this.usersService.receiveRoutineByUUID(uuid);
+  }
+    
 }

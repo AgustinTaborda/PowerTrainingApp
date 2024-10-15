@@ -6,6 +6,8 @@ import { NotificationscheduleEntity, PeriodType } from '../notificationschedule/
 import { UserEntity } from '../users/entities/user.entity';
 import { MailService } from '../mailer/mailer.service';
 import { DateManager } from '../helpers/datemanager';
+import { RoutineEntity } from 'src/routine/entities/routine.entity';
+import { UsersService } from 'src/users/users.service';
 
 
 @Injectable()
@@ -13,6 +15,8 @@ export class CronTasksNotificationSender {
  
     constructor(
       @InjectRepository(NotificationscheduleEntity) private notificationScheduleRepository: Repository<NotificationscheduleEntity>,
+      @Inject(UsersService) private userService: UsersService,
+      @InjectRepository(RoutineEntity) private routineRepository: Repository<RoutineEntity>,
       @Inject(MailService) private mailService: MailService,
       @Inject(DateManager) private dateManager: DateManager
     ) {}
@@ -24,6 +28,22 @@ export class CronTasksNotificationSender {
   handleCron() {
    
    this.sendNotifications();
+  }
+
+  @Cron('0 0 * * 0') // Esto se ejecuta todos los domingos a las 00:00 (medianoche)
+
+  async handleSundayMidnightTask() {
+    const routines: RoutineEntity[] = await this.routineRepository.find({
+      relations: ['user']
+    });
+    for (const routine of routines) {
+      console.log(routine.user)
+     
+      this.userService.receiveRoutineByUUID(routine.user.id)
+      console.log('Routine sent to ' + routine.user.email)
+
+    }
+    
   }
 
 

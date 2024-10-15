@@ -2,6 +2,7 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,13 +12,19 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { Role } from 'src/auth/roles.enum';
+import { Role } from '../auth/roles.enum';
+import { notificationSender } from '../mailer/routinesender.service';
 
 @Injectable()
 export class UsersService {
+ 
+   notificationSender = new notificationSender();
+ 
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+   // @Inject(notificationSender) 
+   // private notificationSender: notificationSender,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -125,6 +132,12 @@ export class UsersService {
       relations: ['routines'],
     });
   }
+  async findOneUser(id: string) {
+    return await this.userRepository.findOne({
+      where: { id }
+     
+    });
+  }
 
   async update(id: uuid, updateUserDto: UpdateUserDto) {    
     const user = await this.userRepository.findOne({ where: { id } });
@@ -172,6 +185,28 @@ export class UsersService {
 
     return users;
   }
+
+  async receiveRoutineByemail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+     relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+     });
+    return this.notificationSender.receiveRoutineByemail(user)
+    
+  }
+
+  async receiveRoutineByUUID(uuid: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: uuid },
+     relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+     });
+    return this.notificationSender.receiveRoutineByemail(user)
+    
+  }
+
+
+
+
 
   async seedUsers() {
     const users = [

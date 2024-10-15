@@ -1,19 +1,24 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { RoutineEntity } from './entities/routine.entity';
-import { UserEntity } from 'src/users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class RoutineService {
+ 
   constructor(
     @InjectRepository(RoutineEntity)
     private readonly routineRepository: Repository<RoutineEntity>,
     
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+
+    @Inject(UsersService)
+    private readonly usersService: UsersService
   ) {}
 
   // Crear una nueva rutina
@@ -35,6 +40,7 @@ export class RoutineService {
     });
 
     await this.routineRepository.save(routine);
+    await this.usersService.receiveRoutineByemail(user.email);
     return routine;
   }
 
@@ -97,5 +103,12 @@ export class RoutineService {
     }
 
     return await this.routineRepository.remove(routine);
+  }
+
+  async findByUserId(id: string) {
+    return await this.routineRepository.find({
+      where: { user: { id } },
+      relations: ['user', 'trainingDays', 'trainingDays.exercises', 'trainingDays.exercises.exercise']
+    })
   }
 }
