@@ -44,9 +44,10 @@ export class ExercisesService {
    
   }
 
+  constructor(
+    @InjectRepository(ExerciseEntity) private exercisesRepository: Repository<ExerciseEntity>
+    ) {}
 
-
-  constructor(@InjectRepository(ExerciseEntity) private exercisesRepository: Repository<ExerciseEntity>) {}
   async create(createExerciseDto: CreateExerciseDto) {
     const exercise = this.exercisesRepository.create(createExerciseDto)
     return await this.exercisesRepository.save(exercise)
