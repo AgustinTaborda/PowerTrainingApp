@@ -17,6 +17,14 @@ export declare class UsersService {
         email: string;
         role: Role;
     } & UserEntity>;
+    createAdmin(createAdminDto: CreateAdminDto): Promise<{
+        password: string;
+        role: Role.Admin;
+        name: string;
+        lastName: string;
+        birthDay: Date;
+        email: string;
+    } & UserEntity>;
     findAll(limit: number, page: number): Promise<UserEntity[]>;
     findAllByFilters(filters: {
         name?: string;
