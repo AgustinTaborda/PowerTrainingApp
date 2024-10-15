@@ -6,6 +6,7 @@ import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { RoutineEntity } from './entities/routine.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
+import { ExerciseEntity } from 'src/exercises/entities/exercise.entity';
 
 @Injectable()
 export class RoutineService {
@@ -18,7 +19,11 @@ export class RoutineService {
     private readonly userRepository: Repository<UserEntity>,
 
     @Inject(UsersService)
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+
+    @InjectRepository(ExerciseEntity) 
+    private readonly exerciseRepository: Repository<ExerciseEntity>
+
   ) {}
 
   // Crear una nueva rutina
@@ -47,7 +52,6 @@ export class RoutineService {
   // Obtener todas las rutinas con paginación y relaciones
   async findAll(limit: number, page: number) {
     const [routines, total] = await this.routineRepository.findAndCount({
-      // relations: ['user', 'trainingDays', 'userRoutineExercises', 'userRoutineExercises.exercise'],
       relations: ['user', 'trainingDays', 'trainingDays.exercises', 'trainingDays.exercises.exercise'],
       select: {
         user: {
@@ -110,5 +114,29 @@ export class RoutineService {
       where: { user: { id } },
       relations: ['user', 'trainingDays', 'trainingDays.exercises', 'trainingDays.exercises.exercise']
     })
+  }
+
+  async getStatistics() {
+    console.log('estoy en el getstatistics service');
+    
+    try {
+    
+      const totalUsers = await this.userRepository.count();
+      const totalRoutines = await this.routineRepository.count();
+      const totalExercises = await this.exerciseRepository.count();
+  
+      console.log('Total Users:', totalUsers);
+      console.log('Total Routines:', totalRoutines);
+      console.log('Total Exercises:', totalExercises);
+  
+      return {
+        users: totalUsers,
+        routines: totalRoutines,
+        exercises: totalExercises
+      };
+    } catch (error) {
+      console.error('Error in getStatistics:', error);
+      throw new Error('Failed to retrieve statistics');
+    }
   }
 }
