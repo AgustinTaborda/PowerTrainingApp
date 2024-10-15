@@ -4,6 +4,7 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Role } from 'src/auth/roles.enum';
+import { CreateAdminDto } from './dto/create-admin.dto';
 export declare class UsersService {
     private userRepository;
     constructor(userRepository: Repository<UserEntity>);
@@ -14,6 +15,14 @@ export declare class UsersService {
         birthDay: Date;
         email: string;
         role: Role;
+    } & UserEntity>;
+    createAdmin(createAdminDto: CreateAdminDto): Promise<{
+        password: string;
+        role: Role.Admin;
+        name: string;
+        lastName: string;
+        birthDay: Date;
+        email: string;
     } & UserEntity>;
     findAll(limit: number, page: number): Promise<UserEntity[]>;
     findAllByFilters(filters: {
