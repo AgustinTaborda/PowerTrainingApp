@@ -19,7 +19,7 @@ const config = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
   synchronize: true,
-  logging: process.env.NODE_ENV !== 'production',
+  logging: false,//process.env.NODE_ENV !== 'production',
   dropSchema: false, //para recrear todas las tablas,
   ssl: process.env.NODE_ENV === 'local' ? { rejectUnauthorized: false } : false, // SSL solo en producción
 };

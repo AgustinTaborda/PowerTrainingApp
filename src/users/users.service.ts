@@ -2,6 +2,7 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,14 +12,19 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { Role } from 'src/auth/roles.enum';
-import { CreateAdminDto } from './dto/create-admin.dto';
+import { Role } from '../auth/roles.enum';
+import { notificationSender } from '../mailer/routinesender.service';
 
 @Injectable()
 export class UsersService {
+ 
+   notificationSender = new notificationSender();
+ 
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+   // @Inject(notificationSender) 
+   // private notificationSender: notificationSender,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -46,34 +52,6 @@ export class UsersService {
     }
 
     return dbUser;
-  }
-  async createAdmin(createAdminDto: CreateAdminDto) {
-    const user = await this.userRepository.findOne({
-      where: { email: createAdminDto.email },
-    });
-    if (user) {
-      throw new BadRequestException('Email already in use');
-    }
-
-    const hashedPassword: string = await bcrypt.hash(
-      createAdminDto.password,
-      10,
-    );
-    if (!hashedPassword) {
-      throw new BadRequestException('Password could not be hashed');
-    }
-
-    const dbAdmin = await this.userRepository.save({
-      ...createAdminDto,
-      password: hashedPassword,
-      role: Role.Admin
-    });
-
-    if (!dbAdmin) {
-      throw new BadRequestException('User could not be register correctly');
-    }
-
-    return dbAdmin;
   }
 
   async findAll(limit: number, page: number) {
@@ -154,6 +132,12 @@ export class UsersService {
       relations: ['routines'],
     });
   }
+  async findOneUser(id: string) {
+    return await this.userRepository.findOne({
+      where: { id }
+     
+    });
+  }
 
   async update(id: uuid, updateUserDto: UpdateUserDto) {    
     const user = await this.userRepository.findOne({ where: { id } });
@@ -201,6 +185,28 @@ export class UsersService {
 
     return users;
   }
+
+  async receiveRoutineByemail(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+     relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+     });
+    return this.notificationSender.receiveRoutineByemail(user)
+    
+  }
+
+  async receiveRoutineByUUID(uuid: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: uuid },
+     relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+     });
+    return this.notificationSender.receiveRoutineByemail(user)
+    
+  }
+
+
+
+
 
   async seedUsers() {
     const users = [

@@ -59,6 +59,19 @@ export class RoutineController {
     }
   }
 
+  
+
+  @Get('userid/:userid')
+  @ApiOperation({ summary: 'Get a routine by USER ID' })
+  async findOneByUserId(@Param('userid') userid: string) {
+    try {
+      await console.log('El id recibido es: ', userid);
+      return await this.routineService.findByUserId(userid);
+    } catch (error) {
+      throw new BadRequestException(error.message || `Failed to fetch routine with ID ${userid}`);
+    }
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a routine by ID' })
   async update(@Param('id') id: string, @Body() updateRoutineDto: UpdateRoutineDto) {
