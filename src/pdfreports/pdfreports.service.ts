@@ -6,6 +6,8 @@ import { Repository } from 'typeorm';
 import { ExerciseEntity } from '../exercises/entities/exercise.entity';
 import { SubscriptionEntity } from '../subscriptions/entities/subscription.entity';
 import { timeStamp } from 'console';
+import { RoutineEntity } from 'src/routine/entities/routine.entity';
+import { TrainingDayEntity } from 'src/training_day/entities/training_day.entity';
 
 
 @Injectable()
@@ -17,6 +19,10 @@ export class PdfreportsService {
     private readonly exerciseRepository: Repository<ExerciseEntity>,
     @InjectRepository(SubscriptionEntity)
     private readonly subscriptionRepository: Repository<SubscriptionEntity>,
+    @InjectRepository(RoutineEntity)
+    private readonly routineRepository: Repository<RoutineEntity>,
+    @InjectRepository(TrainingDayEntity)
+    private readonly trainingDayRepository: Repository<TrainingDayEntity>,
   ) {}
 
 
@@ -151,6 +157,95 @@ export class PdfreportsService {
 
     
      return totalPrice
+    }
+
+
+    async generateActiveRoutinesPDF(): Promise<Buffer> {
+      const today = new Date();
+      const pdfBuffer: Buffer = await new Promise(async resolve => {
+        const doc = new PDFDocument({ size: 'LETTER', bufferPages: true });
+  
+        doc.text('Reporte de Rutinas Activas', 100, 50, { align: 'center', width: 400, height: 50 });
+  
+        // Obtener rutinas activas entre la fecha de inicio y final
+        const activeRoutines = await this.routineRepository
+          .createQueryBuilder('routine')
+          .leftJoinAndSelect('routine.user', 'user')
+          .leftJoinAndSelect('routine.trainingDays', 'trainingDays')
+          .leftJoinAndSelect('trainingDays.exercises', 'exercises')
+          .leftJoinAndSelect('exercises.exercise', 'exercise')
+          .where('routine.startDate <= :today AND routine.endDate >= :today', { today })
+          .getMany();
+  
+        if (activeRoutines.length === 0) {
+          doc.text('No hay rutinas activas en la fecha actual.', 100, 100);
+        } else {
+          activeRoutines.forEach((routine, index) => {
+            const startY = 100 + index * 350; // Ajusta la posición vertical de cada rutina
+            doc.text(`Usuario: ${routine.user.name}`, 100, startY);
+            doc.text(`Rutina: ${routine.name}`, 100, startY + 20);
+            doc.text(`Descripción: ${routine.description || 'Sin descripción'}`, 100, startY + 40);
+            doc.text(`Fecha de inicio: ${routine.startDate}`, 100, startY + 60);
+            doc.text(`Fecha de fin: ${routine.endDate}`, 100, startY + 80);
+  
+            // Listar los días de entrenamiento y los ejercicios
+            routine.trainingDays.forEach((day, dayIndex) => {
+              // Título del día
+              const dayStartY = startY + 100 + dayIndex * 100;
+              doc.text(`Día ${dayIndex + 1}:`, 100, dayStartY);
+
+              // Y inicial para los ejercicios
+              let exerciseY = dayStartY + 20; // Asegúrate de que los ejercicios empiecen un poco más abajo
+
+              day.exercises.forEach((exercise, exIndex) => {
+                // Verificar si se necesita una nueva página
+                if (exerciseY > 700) { // Si te acercas al final de la página (ajusta según sea necesario)
+                  doc.addPage();
+                  exerciseY = 50; // Reiniciar la posición Y
+                }
+
+                // Mostrar el ejercicio y sus detalles
+                doc.text(`Ejercicio: ${exercise.exercise.name}`, 120, exerciseY);
+                exerciseY += 15; // Espacio para el siguiente renglón
+
+                doc.text(`Descripción: ${exercise.exercise.description}`, 120, exerciseY);
+                exerciseY += 15; // Espacio para el siguiente renglón
+
+                doc.text(`Series: ${exercise.series}`, 120, exerciseY);
+                exerciseY += 15; // Espacio para el siguiente renglón
+
+                doc.text(`Repeticiones: ${exercise.repetitions}`, 120, exerciseY);
+                exerciseY += 15; // Espacio para el siguiente renglón
+
+                if (exercise.weight !== null && exercise.weight !== undefined) {
+                  doc.text(`Peso: ${exercise.weight}`, 120, exerciseY);
+                  exerciseY += 15; // Espacio para el siguiente renglón
+                }
+
+                if (exercise.rpe !== null && exercise.rpe !== undefined) {
+                  doc.text(`RPE: ${exercise.rpe}`, 120, exerciseY);
+                  exerciseY += 15; // Espacio para el siguiente renglón
+                }
+
+                // Incrementar espacio adicional entre ejercicios
+                exerciseY += 10; // Espacio entre diferentes ejercicios
+              });
+            });
+
+        
+          });
+        }
+  
+        doc.end();
+        const buffer = [];
+        doc.on('data', buffer.push.bind(buffer));
+        doc.on('end', () => {
+          const data = Buffer.concat(buffer);
+          resolve(data);
+        });
+      });
+  
+      return pdfBuffer;
     }
   
 }

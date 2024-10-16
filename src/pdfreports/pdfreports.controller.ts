@@ -64,4 +64,21 @@ export class PdfreportsController {
   }
 
 
+  @ApiOperation({ summary: 'Reporte de rutinas activas de los usuarios para admins en PDF' })
+  // @Roles('admin') 
+  // @UseGuards(RolesGuard)
+  @Get('/active-routines')
+  async getActiveRoutinesPDF(@Res() res: Response): Promise<void> {
+    const buffer = await this.pdfreportsService.generateActiveRoutinesPDF();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename=active_routines.pdf',
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
+  }
+
+
 }
