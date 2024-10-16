@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query, ParseUUIDPipe } from '@nestjs/common';
 import { RoutineService } from './routine.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
@@ -46,17 +46,16 @@ export class RoutineController {
       throw new BadRequestException(error.message || `Failed to fetch routine with ID ${id}`);
     }
   }
-
   
-
-  @Get('userid/:userid')
-  @ApiOperation({ summary: 'Get a routine by USER ID' })
-  async findOneByUserId(@Param('userid') userid: string) {
-    try {
-      await console.log('El id recibido es: ', userid);
-      return await this.routineService.findByUserId(userid);
+  @Get('/user/:userId')
+  @ApiOperation({ summary: 'Get routines by User ID' })
+  async findAllByUser(
+    @Param('userId', new ParseUUIDPipe()) userId: string
+  ) {
+    try {      
+      return await this.routineService.findByUserId(userId);
     } catch (error) {
-      throw new BadRequestException(error.message || `Failed to fetch routine with ID ${userid}`);
+      throw new BadRequestException(error.message || `Failed to fetch routines for the user ID ${userId}`);
     }
   }
 
@@ -78,5 +77,18 @@ export class RoutineController {
     } catch (error) {
       throw new BadRequestException(error.message || `Failed to delete routine with ID ${id}`);
     }
+  }
+
+  @Get('/statistics')
+  // @ApiOperation({ summary: 'Count routines, exercises and users' })
+  async getStatistics() {
+    console.log('estoy en el getstatistics controller');
+    return await this.routineService.getStatistics();
+  }
+
+  @Get('/test')
+  async testEndpoint() {
+    console.log('Este es un simple test');
+    return { message: 'Endpoint de prueba' };
   }
 }
