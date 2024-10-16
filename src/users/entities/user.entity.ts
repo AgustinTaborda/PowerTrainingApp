@@ -74,4 +74,7 @@ export class UserEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   otpExpiresAt: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastMessageTimestamp: Date | null;
 }

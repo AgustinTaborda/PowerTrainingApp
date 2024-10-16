@@ -18,6 +18,7 @@ export declare class AuthController {
             lastName: string;
             birthDay: Date;
             role: import("./roles.enum").Role;
+            isSubscribed: boolean;
         };
     }>;
     signInWithProvider(profile: any): Promise<{
@@ -30,6 +31,7 @@ export declare class AuthController {
             lastName: string;
             birthDay: Date;
             role: import("./roles.enum").Role;
+            isSubscribed: boolean;
         };
     }>;
     handleAuthRedirect2(req: Request): string | {

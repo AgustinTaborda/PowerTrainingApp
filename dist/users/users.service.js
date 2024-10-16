@@ -57,7 +57,7 @@ let UsersService = class UsersService {
         const dbAdmin = await this.userRepository.save({
             ...createAdminDto,
             password: hashedPassword,
-            role: roles_enum_1.Role.Admin
+            role: roles_enum_1.Role.Admin,
         });
         if (!dbAdmin) {
             throw new common_1.BadRequestException('User could not be register correctly');

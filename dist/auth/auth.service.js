@@ -93,6 +93,7 @@ let AuthService = class AuthService {
                 lastName: user.lastName,
                 birthDay: user.birthDay,
                 role: user.role,
+                isSubscribed: user.isSubscribed,
             },
         };
     }

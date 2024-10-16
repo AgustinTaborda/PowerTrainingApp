@@ -59,6 +59,10 @@ export class ChatService {
       sender,
       receiver,
     });
+    // Actualizar el timestamp del último mensaje del sender
+    sender.lastMessageTimestamp = new Date();
+    await this.userRepository.save(sender);
+
     return this.messageRepository.save(message);
   }
 
@@ -75,6 +79,14 @@ export class ChatService {
     });
 
     return status;
+  }
+
+  async getUsersOrderedByLastMessage(): Promise<UserEntity[]> {
+    return this.userRepository.find({
+      order: {
+        lastMessageTimestamp: 'DESC', // Ordenar por el último mensaje en orden descendente
+      },
+    });
   }
 
   // Marcar mensajes como leídos

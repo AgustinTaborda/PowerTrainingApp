@@ -66,7 +66,7 @@ export class UsersService {
     const dbAdmin = await this.userRepository.save({
       ...createAdminDto,
       password: hashedPassword,
-      role: Role.Admin
+      role: Role.Admin,
     });
 
     if (!dbAdmin) {
@@ -155,20 +155,20 @@ export class UsersService {
     });
   }
 
-  async update(id: uuid, updateUserDto: UpdateUserDto) {    
+  async update(id: uuid, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new BadRequestException('User not found');
     }
- //   if (updateUserDto.password) {
-      const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-      user.password = hashedPassword;
+    //   if (updateUserDto.password) {
+    const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+    user.password = hashedPassword;
 
-  //    return await this.userRepository.save(user);
-  //  }
-    
-            await this.userRepository.update(id, updateUserDto);
-    return  await this.userRepository.findOne({ where: { id } });
+    //    return await this.userRepository.save(user);
+    //  }
+
+    await this.userRepository.update(id, updateUserDto);
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async changeOtp(email: string, otp: string, newPassword: string) {
@@ -183,7 +183,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
-    user.resetOtp = null; 
+    user.resetOtp = null;
     user.otpExpiresAt = null;
     await this.userRepository.save(user);
 

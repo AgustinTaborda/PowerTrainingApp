@@ -18,6 +18,7 @@ export declare class AuthService {
             lastName: string;
             birthDay: Date;
             role: Role;
+            isSubscribed: boolean;
         };
     }>;
     authSignInWithProvider(profile: any): Promise<{
@@ -30,6 +31,7 @@ export declare class AuthService {
             lastName: string;
             birthDay: Date;
             role: Role;
+            isSubscribed: boolean;
         };
     }>;
     private generateToken;

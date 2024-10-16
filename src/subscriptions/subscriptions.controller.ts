@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Param, Body } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Delete } from '@nestjs/common';
 import { SubscriptionService } from './subscriptions.service';
 import { SubscriptionEntity } from './entities/subscription.entity';
 import { ApiTags } from '@nestjs/swagger';
@@ -32,5 +32,10 @@ export class SubscriptionController {
   @Get()
   async getAllSubscriptions(): Promise<SubscriptionEntity[]> {
     return await this.subscriptionService.getAllSubscriptions();
+  }
+
+  @Delete(':id')
+  async deleteSubscription(@Param('id') id: string): Promise<void> {
+    await this.subscriptionService.delete(id);
   }
 }

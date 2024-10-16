@@ -10,7 +10,7 @@ import { ChatService } from './chat.service';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: '*',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -20,7 +20,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
 
   private adminConnected = false;
-  private clientIdMap: { [key: string]: string } = {}; // Mapa para rastrear las conexiones de los clientes
 
   constructor(private chatService: ChatService) {}
 
@@ -29,7 +28,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const userRole = client.handshake.query.role as string;
 
     client.join(userId);
-    this.clientIdMap[client.id] = userId; // Almacena el ID del usuario en el mapa
     console.log(`User connected: ${userId}`);
 
     if (userRole === 'Admin') {
@@ -48,9 +46,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.adminConnected = false;
       this.server.emit('adminStatus', { online: false });
     }
-
-    // Eliminar el cliente del mapa al desconectarse
-    delete this.clientIdMap[client.id];
   }
 
   @SubscribeMessage('message')
@@ -74,6 +69,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (payload.senderId === admin.id && payload.receiverId) {
       this.server.to(payload.receiverId).emit('message', message);
     }
+
+    this.server.emit('updateUserList');
   }
 
   @SubscribeMessage('typing')
@@ -82,11 +79,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     payload: { senderId: string; isTyping: boolean; receiverId: string },
   ) {
     const admin = await this.chatService.getAdminUser();
-    if (payload.senderId === admin.id) {
-      // Emitir el evento adminTyping solo al cliente específico
-      const receiverId = payload.receiverId; // Usar el ID del receptor de la carga útil
+    if (payload.senderId === admin.id && payload.receiverId) {
       this.server
-        .to(receiverId)
+        .to(payload.receiverId)
         .emit('adminTyping', { isTyping: payload.isTyping });
     }
   }

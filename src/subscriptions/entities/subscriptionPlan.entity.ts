@@ -16,6 +16,12 @@ export class SubscriptionPlan {
   @Column('int')
   durationInMonths: number; // Duración del plan en meses (3, 6, 12)
 
-  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.subscriptionPlan)
+  @Column('text', { array: true, nullable: true })
+  features: string[];
+
+  @OneToMany(
+    () => SubscriptionEntity,
+    (subscription) => subscription.subscriptionPlan,
+  )
   subscriptions: SubscriptionEntity[];
 }
