@@ -116,18 +116,12 @@ export class RoutineService {
     })
   }
 
-  async getStatistics() {
-    console.log('estoy en el getstatistics service');
-    
+  async getStatistics() {    
     try {
     
       const totalUsers = await this.userRepository.count();
       const totalRoutines = await this.routineRepository.count();
       const totalExercises = await this.exerciseRepository.count();
-  
-      console.log('Total Users:', totalUsers);
-      console.log('Total Routines:', totalRoutines);
-      console.log('Total Exercises:', totalExercises);
   
       return {
         users: totalUsers,
