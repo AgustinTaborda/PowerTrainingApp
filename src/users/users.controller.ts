@@ -157,6 +157,7 @@ export class UsersController {
       'Update an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9 in param, and body, see example value below',
   })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    console.log(id)
     return this.usersService.update(id, updateUserDto);
   }
 

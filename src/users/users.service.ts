@@ -191,6 +191,7 @@ export class UsersService {
       where: { email: email },
      relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
      });
+     console.log(user);
     return this.notificationSender.receiveRoutineByemail(user)
     
   }
