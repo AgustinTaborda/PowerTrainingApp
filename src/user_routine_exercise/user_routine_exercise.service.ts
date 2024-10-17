@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TrainingDayEntity } from 'src/training_day/entities/training_day.entity';
@@ -26,75 +26,93 @@ export class UserRoutineExerciseService {
 
   // Crear un nuevo UserRoutineExercise
   async create(createUserRoutineExerciseDto: CreateUserRoutineExerciseDto): Promise<UserRoutineExerciseEntity> {
-    const { trainingDayId, exerciseId, ...rest } = createUserRoutineExerciseDto;
+    try {
+      const { trainingDayId, exerciseId, ...rest } = createUserRoutineExerciseDto;
 
-    const trainingDay = await this.trainingDayRepository.findOne({ where: { id: trainingDayId } });
-    const exercise = await this.exerciseRepository.findOne({ where: { id: exerciseId } });    
+      const trainingDay = await this.trainingDayRepository.findOne({ where: { id: trainingDayId } });
+      const exercise = await this.exerciseRepository.findOne({ where: { id: exerciseId } });
 
-    if (!trainingDay || !exercise) {
-      throw new NotFoundException('TrainingDay o Exercise no encontrados');
+      if (!trainingDay || !exercise) {
+        throw new NotFoundException('TrainingDay o Exercise no encontrados');
+      }
+
+      const userRoutineExercise = this.userRoutineExerciseRepository.create({
+        trainingDay,
+        exercise,
+        ...rest,
+      });
+
+      return await this.userRoutineExerciseRepository.save(userRoutineExercise);
+    } catch (error) {
+      throw new BadRequestException(`Error al crear UserRoutineExercise: ${error.message}`);
     }
-
-    const userRoutineExercise = this.userRoutineExerciseRepository.create({
-      trainingDay,
-      exercise,
-      ...rest,
-    });
-
-    return await this.userRoutineExerciseRepository.save(userRoutineExercise);
   }
 
   // Obtener todos los ejercicios de rutina de usuario con paginación
   async findAll(limit: number, page: number): Promise<{ totalItems: number; totalPages: number; currentPage: number; items: UserRoutineExerciseEntity[] }> {
-    const [items, total] = await this.userRoutineExerciseRepository.findAndCount({
-      relations: ['trainingDay', 'exercise'],
-      take: limit,
-      skip: (page - 1) * limit,
-    });
+    try {
+      const [items, total] = await this.userRoutineExerciseRepository.findAndCount({
+        relations: ['trainingDay', 'exercise'],
+        take: limit,
+        skip: (page - 1) * limit,
+      });
 
-    const totalPages = Math.ceil(total / limit);
-    
-    return {
-      totalItems: total,
-      totalPages,
-      currentPage: page,
-      items,
-    };
+      const totalPages = Math.ceil(total / limit);
+
+      return {
+        totalItems: total,
+        totalPages,
+        currentPage: page,
+        items,
+      };
+    } catch (error) {
+      throw new BadRequestException(`Error al obtener todos los UserRoutineExercises: ${error.message}`);
+    }
   }
 
   // Obtener un UserRoutineExercise por su ID
   async findOne(id: number): Promise<UserRoutineExerciseEntity> {
-    const userRoutineExercise = await this.userRoutineExerciseRepository.findOne({
-      where: { id },
-      relations: ['trainingDay', 'exercise'],
-    });
-    console.log(userRoutineExercise);
-    
+    try {
+      const userRoutineExercise = await this.userRoutineExerciseRepository.findOne({
+        where: { id },
+        relations: ['trainingDay', 'exercise'],
+      });
 
-    if (!userRoutineExercise) {
-      throw new NotFoundException(`UserRoutineExercise con ID ${id} no encontrado`);
+      if (!userRoutineExercise) {
+        throw new NotFoundException(`UserRoutineExercise con ID ${id} no encontrado`);
+      }
+
+      return userRoutineExercise;
+    } catch (error) {
+      throw new BadRequestException(`Error al obtener UserRoutineExercise con ID ${id}: ${error.message}`);
     }
-
-    return userRoutineExercise;
   }
 
   // Actualizar un UserRoutineExercise
   async update(id: number, updateUserRoutineExerciseDto: UpdateUserRoutineExerciseDto): Promise<UserRoutineExerciseEntity> {
-    const userRoutineExercise = await this.userRoutineExerciseRepository.preload({
-      id,
-      ...updateUserRoutineExerciseDto,
-    });
+    try {
+      const userRoutineExercise = await this.userRoutineExerciseRepository.preload({
+        id,
+        ...updateUserRoutineExerciseDto,
+      });
 
-    if (!userRoutineExercise) {
-      throw new NotFoundException(`UserRoutineExercise con ID ${id} no encontrado`);
+      if (!userRoutineExercise) {
+        throw new NotFoundException(`UserRoutineExercise con ID ${id} no encontrado`);
+      }
+
+      return await this.userRoutineExerciseRepository.save(userRoutineExercise);
+    } catch (error) {
+      throw new BadRequestException(`Error al actualizar UserRoutineExercise con ID ${id}: ${error.message}`);
     }
-
-    return await this.userRoutineExerciseRepository.save(userRoutineExercise);
   }
 
   // Eliminar un UserRoutineExercise
   async remove(id: number): Promise<void> {
-    const userRoutineExercise = await this.findOne(id);
-    await this.userRoutineExerciseRepository.remove(userRoutineExercise);
+    try {
+      const userRoutineExercise = await this.findOne(id);
+      await this.userRoutineExerciseRepository.remove(userRoutineExercise);
+    } catch (error) {
+      throw new BadRequestException(`Error al eliminar UserRoutineExercise con ID ${id}: ${error.message}`);
+    }
   }
 }
