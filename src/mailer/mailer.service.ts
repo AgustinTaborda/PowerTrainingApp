@@ -31,12 +31,22 @@ export class MailService {
   }
 
   async sendEmail(to: string, subject: string, html: string): Promise<void> {
-    const mailOptions = {
+    const cc_email = process.env.EMAIL_CC
+    let  mailOptions = {
       from: process.env.EMAIL_USER,
       to: to,
       subject: subject,
-      html: html,
-    };
+      html: html,      
+    }
+
+    if (cc_email) {    // si está seteada la variable de entorno, lo ponemos en el email como copia para test
+      mailOptions["cc"] = cc_email;
+    }
+    
+   
+   
+
+
 
     try {
       return await this.transporter.sendMail(mailOptions);
