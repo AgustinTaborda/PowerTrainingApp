@@ -14,17 +14,17 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../auth/roles.enum';
 import { notificationSender } from '../mailer/routinesender.service';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @Injectable()
 export class UsersService {
- 
-   notificationSender = new notificationSender();
- 
+  notificationSender = new notificationSender();
+
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-   // @Inject(notificationSender) 
-   // private notificationSender: notificationSender,
+    // @Inject(notificationSender)
+    // private notificationSender: notificationSender,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -52,6 +52,31 @@ export class UsersService {
     }
 
     return dbUser;
+  }
+
+  async createAdmin(createAdminDto: CreateAdminDto) {
+    const user = await this.userRepository.findOne({
+      where: { email: createAdminDto.email },
+    });
+    if (user) {
+      throw new BadRequestException('Email already in use');
+    }
+    const hashedPassword: string = await bcrypt.hash(
+      createAdminDto.password,
+      10,
+    );
+    if (!hashedPassword) {
+      throw new BadRequestException('Password could not be hashed');
+    }
+    const dbAdmin = await this.userRepository.save({
+      ...createAdminDto,
+      password: hashedPassword,
+      role: Role.Admin
+    });
+    if (!dbAdmin) {
+      throw new BadRequestException('User could not be register correctly');
+    }
+    return dbAdmin;
   }
 
   async findAll(limit: number, page: number) {
@@ -134,25 +159,24 @@ export class UsersService {
   }
   async findOneUser(id: string) {
     return await this.userRepository.findOne({
-      where: { id }
-     
+      where: { id },
     });
   }
 
-  async update(id: uuid, updateUserDto: UpdateUserDto) {    
+  async update(id: uuid, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new BadRequestException('User not found');
     }
- //   if (updateUserDto.password) {
-      const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-      user.password = hashedPassword;
+    //   if (updateUserDto.password) {
+    const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+    user.password = hashedPassword;
 
-  //    return await this.userRepository.save(user);
-  //  }
-    
-            await this.userRepository.update(id, updateUserDto);
-    return  await this.userRepository.findOne({ where: { id } });
+    //    return await this.userRepository.save(user);
+    //  }
+
+    await this.userRepository.update(id, updateUserDto);
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   async changeOtp(email: string, otp: string, newPassword: string) {
@@ -167,7 +191,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
-    user.resetOtp = null; 
+    user.resetOtp = null;
     user.otpExpiresAt = null;
     await this.userRepository.save(user);
 
@@ -189,25 +213,28 @@ export class UsersService {
   async receiveRoutineByemail(email: string) {
     const user = await this.userRepository.findOne({
       where: { email: email },
-     relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
-     });
-     console.log(user);
-    return this.notificationSender.receiveRoutineByemail(user)
-    
+      relations: [
+        'routines',
+        'routines.trainingDays',
+        'routines.trainingDays.exercises',
+        'routines.trainingDays.exercises.exercise',
+      ],
+    });
+    return this.notificationSender.receiveRoutineByemail(user);
   }
 
   async receiveRoutineByUUID(uuid: string) {
     const user = await this.userRepository.findOne({
       where: { id: uuid },
-     relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
-     });
-    return this.notificationSender.receiveRoutineByemail(user)
-    
+      relations: [
+        'routines',
+        'routines.trainingDays',
+        'routines.trainingDays.exercises',
+        'routines.trainingDays.exercises.exercise',
+      ],
+    });
+    return this.notificationSender.receiveRoutineByemail(user);
   }
-
-
-
-
 
   async seedUsers() {
     const users = [

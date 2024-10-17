@@ -32,6 +32,7 @@ import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { notificationSender } from '../mailer/routinesender.service';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @ApiTags('USERS')
 @Controller('users')
@@ -54,6 +55,11 @@ export class UsersController {
   @ApiOperation({ summary: 'Create a new user' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+  @Post('/admin')
+  @ApiOperation({ summary: 'Create a new Admin' })
+  async createAdmin(@Body() createAdminDto: CreateAdminDto) {
+    return await this.usersService.createAdmin(createAdminDto);
   }
   @Get('/logout')
   logout(@Res() res: Response) {
@@ -85,7 +91,6 @@ export class UsersController {
   findAll(@Query('limit') limit: number = 5, @Query('page') page: number = 1) {
     return this.usersService.findAll(limit, page);
   }
-
 
   @ApiBearerAuth('access-token')
   //@Roles(Role.Admin, Role.Superadmin)
@@ -161,8 +166,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(CombinedAuthGuard)
+  // @ApiBearerAuth('access-token')
+  // @UseGuards(CombinedAuthGuard)
   @Delete(':id')
   @ApiOperation({
     summary:

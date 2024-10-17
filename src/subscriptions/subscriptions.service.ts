@@ -52,4 +52,8 @@ export class SubscriptionService {
       relations: ['subscriptionPlan'],
     });
   }
+
+  async delete(id: string): Promise<void> {
+    await this.subscriptionRepository.delete(id);
+  }
 }

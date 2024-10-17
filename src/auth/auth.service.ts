@@ -1,11 +1,15 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from './roles.enum';
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { MailService } from 'src/mailer/mailer.service';
 import { RequestOtp } from './dto/requestOtp.dto';
 
@@ -96,6 +100,7 @@ export class AuthService {
         lastName: user.lastName,
         birthDay: user.birthDay,
         role: user.role,
+        isSubscribed: user.isSubscribed,
       },
     };
   }
@@ -115,15 +120,15 @@ export class AuthService {
       throw new NotFoundException(`User with email ${email} not found`);
     }
 
-    const otp = uuidv4().slice(0, 6); 
-    user.resetOtp = otp; 
-    user.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); 
+    const otp = uuidv4().slice(0, 6);
+    user.resetOtp = otp;
+    user.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
     await this.userRepository.save(user);
 
     await this.mailService.sendEmail(
-      email, 
+      email,
       'One time password',
-      `This is your one-time password: ${otp}, then you will have to choose your new password.`
+      `This is your one-time password: ${otp}, then you will have to choose your new password.`,
     );
 
     return 'OTP sent';

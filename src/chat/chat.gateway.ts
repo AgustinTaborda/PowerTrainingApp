@@ -10,7 +10,7 @@ import { ChatService } from './chat.service';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: '*',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -69,16 +69,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (payload.senderId === admin.id && payload.receiverId) {
       this.server.to(payload.receiverId).emit('message', message);
     }
+
+    this.server.emit('updateUserList');
   }
 
   @SubscribeMessage('typing')
   async handleTyping(
     client: Socket,
-    payload: { senderId: string; isTyping: boolean },
+    payload: { senderId: string; isTyping: boolean; receiverId: string },
   ) {
-    const admin = await this.chatService.getAdminUser(); // Asegúrate de usar await aquí también
-    if (payload.senderId === admin.id) {
-      this.server.emit('adminTyping', { isTyping: payload.isTyping });
+    const admin = await this.chatService.getAdminUser();
+    if (payload.senderId === admin.id && payload.receiverId) {
+      this.server
+        .to(payload.receiverId)
+        .emit('adminTyping', { isTyping: payload.isTyping });
     }
   }
 }

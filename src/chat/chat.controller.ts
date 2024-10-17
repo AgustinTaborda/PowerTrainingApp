@@ -21,4 +21,9 @@ export class ChatController {
     const admin = await this.chatService.getAdminUser();
     return this.chatService.markMessagesAsRead(userId, admin.id);
   }
+
+  @Get('/users-ordered-by-last-message')
+  async getUsersOrderedByLastMessage() {
+    return this.chatService.getUsersOrderedByLastMessage();
+  }
 }
