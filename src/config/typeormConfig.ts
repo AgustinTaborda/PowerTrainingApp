@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
     path: './.env',
   });
 }
-// deploy on docker hub docker buildx build -t lbaini/powertraining2:version1 --push .
+// deploy on docker hub docker buildx build -t lbaini/powertraining2:version2 --push .
 const config = {
   type: 'postgres',
   host: process.env.DB_HOST,

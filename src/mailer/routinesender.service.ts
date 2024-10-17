@@ -53,7 +53,7 @@ bodyHtml += `
   <p>Atentamente,<br>el equipo PowerTraining</p>
 `;
 
-console.log(bodyHtml);
+//console.log(bodyHtml);
 
 // Envía el email con el cuerpo en formato HTML
 await this.mailService.sendEmail(user.email, 'Envío de rutina semanal', bodyHtml);
