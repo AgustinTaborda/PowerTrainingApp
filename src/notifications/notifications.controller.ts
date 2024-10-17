@@ -6,7 +6,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MailService } from '../mailer/mailer.service';
 import { SendEmailDto } from './dto/sendemaildto';
 
-@ApiTags('notifications')
+@ApiTags('NOTIFICATIONS')
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService,
