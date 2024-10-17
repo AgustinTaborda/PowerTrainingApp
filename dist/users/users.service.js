@@ -45,8 +45,6 @@ let UsersService = class UsersService {
         }
         return dbUser;
     }
-<<<<<<< HEAD
-=======
     async createAdmin(createAdminDto) {
         const user = await this.userRepository.findOne({
             where: { email: createAdminDto.email },
@@ -68,7 +66,6 @@ let UsersService = class UsersService {
         }
         return dbAdmin;
     }
->>>>>>> 3faaad9a2633744909f6a02315a1a54cf26a7135
     async findAll(limit, page) {
         page = Math.max(1, Math.round(page));
         limit = Math.max(1, Math.round(limit));
