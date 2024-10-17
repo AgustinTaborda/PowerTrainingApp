@@ -35,13 +35,14 @@ async function bootstrap() {
   };
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Api Backend PowerTrainingApp, PF Henry 17/10/2024 00:19')
+    .setTitle('Api Backend PowerTrainingApp, PF Henry 17/10/2024 02:24')
     .setDescription(
       'Api con la documentación de cada endpoint disponible en la aplicación <br><ul>'+
       '<li>[DOCUMENTO PROPUESTA](https://docs.google.com/document/d/1wvy5_HF3dLqiopC9N9y4wPnM6jVAU-wKj5h8ycFf-xQ/edit?tab=t.0)<BR>'+
       '<li>[DER Diagram](https://drawdb.vercel.app/editor?shareId=3795549dae1456ea02680344f6d28ca4) <br>'+
       '<li>[TRELLO](https://trello.com/b/BG1dJjcf/powertrainingapp) <br>'+
       '<li>[MIRO](https://miro.com/app/board/uXjVKgcW6ok=/) <br>'+
+      '<li>[ESTE COMMIT](https://github.com/AgustinTaborda/PowerTrainingApp/commit/149e25307dde5909783f55b6b983ce8f1e7be922) <br>'+
       '</ul>',
      
     )

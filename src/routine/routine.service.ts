@@ -45,7 +45,7 @@ export class RoutineService {
     });
 
     await this.routineRepository.save(routine);
-    await this.usersService.receiveRoutineByemail(user.email);
+   // await this.usersService.receiveRoutineByemail(user.email);
     return routine;
   }
 
