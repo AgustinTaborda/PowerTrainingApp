@@ -1,14 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { join, resolve } from 'path';
 import { UserEntity } from '../users/entities/user.entity';
 import { user } from './mockuser';
 import axios from 'axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 const PDFDocument = require('pdfkit-table');
 //import PDFDocument from 'pdfkit-table';
 
 
 @Injectable()
 export class PDFToolkitService2 {
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
   writeCentrered(doc: PDFKit.PDFDocument, text: string) {
     doc.text(text, {
@@ -28,6 +34,9 @@ export class PDFToolkitService2 {
   }
 
   async generarPDF(userEntity: UserEntity): Promise<Buffer> {
+    if (!userEntity) {
+     throw new Error('User not found');
+    }
     const pdfBuffer: Buffer = await new Promise(async resolve => {
       const doc = new PDFDocument(
         {
@@ -156,6 +165,151 @@ export class PDFToolkitService2 {
 
   }
 
+  async getpdfUserroutine(email: string): Promise<Buffer> {
+    
+    const userEntity = await this.userRepository.findOne({
+      where: {
+        email: email
+      },
+      relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise']
+    })
+
+    if (!userEntity) {
+     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+
+    const pdfBuffer: Buffer = await new Promise(async resolve => {
+      const doc = new PDFDocument(
+        {
+          size: "LETTER",
+          bufferPages: true,
+          autoFirstPage: false,
+        })
+
+      let pageNumber = 0;
+      doc.on('pageAdded', () => {
+        pageNumber++
+        let bottom = doc.page.margins.bottom;
+
+        if (pageNumber > 1) {
+          doc.image(join(process.cwd(), "uploads/logoPower.png"), doc.page.width - 100, 5, { fit: [45, 45], align: 'center' })
+          doc.moveTo(50, 55)
+            .lineTo(doc.page.width - 50, 55)
+            .stroke();
+        }
+
+        doc.page.margins.bottom = 0;
+        doc.font("Helvetica").fontSize(14);
+        doc.text(
+          'Page ' + pageNumber,
+          0.5 * (doc.page.width - 100),
+          doc.page.height - 50,
+          {
+            width: 100,
+            align: 'center',
+            lineBreak: false,
+          })
+        doc.page.margins.bottom = bottom;
+      })
+
+      
+
+      doc.addPage()
+      doc.image(join(process.cwd(), "uploads/logoPower.png"), doc.page.width / 2 - 100, 150, { width: 200, })
+      doc.text('', 0, 400)
+      doc.font("Helvetica-Bold").fontSize(24);
+
+      this.writeCentrered(doc, "Routines Report"); 
+      this.writeCentrered(doc, userEntity.name+" "+userEntity.lastName);
+      
+      
+
+      doc.addPage();
+      doc.text('', 50, 70)
+      doc.fontSize(24);
+      doc.moveDown();
+      doc.font("Helvetica").fontSize(20);
+      doc.text("This is your graphic status", {
+        width: doc.page.width - 100,
+        align: 'center'
+      });
+
+
+
+      let rows = [];
+      let completedCount = 0;
+      const rutinas = userEntity.routines;
+      // Recorremos cada rutina
+      rutinas.forEach(rutina => {
+        // Recorremos cada día de entrenamiento
+        rutina.trainingDays.forEach(trainingDay => {
+          // Recorremos cada ejercicio en el día de entrenamiento
+          trainingDay.exercises.forEach(exercise => {
+            // Agregamos una fila por cada ejercicio con el formato correcto
+            rows.push([
+              rutina.name,
+              trainingDay.date,
+              trainingDay.description,
+              exercise.exercise.name, // Nombre del ejercicio
+              exercise.series, // Series
+              exercise.repetitions, // Repeticiones
+              exercise.weight, // Peso
+              exercise.rpe ? exercise.rpe : 'N/A', // RPE (si no hay, poner N/A)
+              exercise.completed ? 'YES' : 'NO' // Completado (YES/NO)
+            ]);
+
+            if (exercise.completed) {
+              completedCount++;
+            }
+
+          });
+        });
+      });
+      const completedPercentage = (completedCount * 100) / rows.length ;
+
+      const table = {
+        title: "Routines Account: " + rutinas.length,
+        subtitle: "Exercises Summary: " + rows.length,
+        headers: ["RUT.NAME","DATE","TRAIN.DESCR","EXERC.NAME", "SERIES", "REPET", "WEIGHT", "RPE", "COMPLETED"],
+        rows: rows, // Aquí están todas las filas generadas
+      };
+
+      doc.table(table, {
+       // columnsSize: [150, 350],
+      });
+
+    
+      this.addNewPage(doc);
+       // Generar la URL del gráfico con QuickChart
+       const chartUrl : string = await this.getGraphics(completedPercentage);
+      
+  
+      
+       const response =  await axios.get(chartUrl, { responseType: 'arraybuffer' });
+       const chartImageBuffer = Buffer.from(response.data, 'binary');
+   
+       // Añadir el gráfico al PDF
+       doc.image(chartImageBuffer, { fit: [500, 300], align: 'center', valign: 'center' });
+
+      const buffer = []
+      doc.on('data', buffer.push.bind(buffer))
+      doc.on('end', () => {
+        const data = Buffer.concat(buffer)
+        resolve(data)
+      })
+      doc.end()
+
+
+    })
+
+    return pdfBuffer;
+
+  }
+
+
+
+
 async   getGraphics(value:number): Promise<string> {
 
 const QuickChart = require('quickchart-js');
@@ -173,7 +327,7 @@ chart.setConfig({
     datasets: [
       {
         data: [20, 40, 60, 80, 100],
-        value: value,
+        value: value.toPrecision(3),
         minValue: 0,
         backgroundColor: ['red', 'orange', 'green', 'blue', 'purple'],
         borderWidth: 2,
