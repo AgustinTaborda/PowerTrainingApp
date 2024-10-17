@@ -45,30 +45,6 @@ let UsersService = class UsersService {
         }
         return dbUser;
     }
-<<<<<<< HEAD
-    async createAdmin(createAdminDto) {
-        const user = await this.userRepository.findOne({
-            where: { email: createAdminDto.email },
-        });
-        if (user) {
-            throw new common_1.BadRequestException('Email already in use');
-        }
-        const hashedPassword = await bcrypt.hash(createAdminDto.password, 10);
-        if (!hashedPassword) {
-            throw new common_1.BadRequestException('Password could not be hashed');
-        }
-        const dbAdmin = await this.userRepository.save({
-            ...createAdminDto,
-            password: hashedPassword,
-            role: roles_enum_1.Role.Admin,
-        });
-        if (!dbAdmin) {
-            throw new common_1.BadRequestException('User could not be register correctly');
-        }
-        return dbAdmin;
-    }
-=======
->>>>>>> 769590450248c501bb94c5d173f3bf3fa0add1e0
     async findAll(limit, page) {
         page = Math.max(1, Math.round(page));
         limit = Math.max(1, Math.round(limit));
@@ -125,7 +101,7 @@ let UsersService = class UsersService {
     }
     async findOneUser(id) {
         return await this.userRepository.findOne({
-            where: { id }
+            where: { id },
         });
     }
     async update(id, updateUserDto) {
@@ -165,14 +141,24 @@ let UsersService = class UsersService {
     async receiveRoutineByemail(email) {
         const user = await this.userRepository.findOne({
             where: { email: email },
-            relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+            relations: [
+                'routines',
+                'routines.trainingDays',
+                'routines.trainingDays.exercises',
+                'routines.trainingDays.exercises.exercise',
+            ],
         });
         return this.notificationSender.receiveRoutineByemail(user);
     }
     async receiveRoutineByUUID(uuid) {
         const user = await this.userRepository.findOne({
             where: { id: uuid },
-            relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+            relations: [
+                'routines',
+                'routines.trainingDays',
+                'routines.trainingDays.exercises',
+                'routines.trainingDays.exercises.exercise',
+            ],
         });
         return this.notificationSender.receiveRoutineByemail(user);
     }
