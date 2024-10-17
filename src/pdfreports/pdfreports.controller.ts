@@ -71,19 +71,13 @@ export class PdfreportsController {
   }
 
   
-  @ApiOperation({ summary: 'User PDF report , attached format, @Param = email' })
-  @Get('userroutine/pdf')
-  async getpdfUserroutine(@Param('email') email: string,
-    @Res() res: Response,
-  ): Promise<void> {
-    const user : UserEntity = await this.userRepository.findOne({
-      where: {
-        email: email,
-      },
-      relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+  @ApiOperation({ summary: 'User PDF report , attached format, @Param = email, example http://localhost:3000/pdfreports/userroutine/marianodanielbrandolini@gmail.com' })
+  @Get('userroutine/:email')
+   async getpdfUserroutine(@Param('email') email: string, @Res() res: Response) {
+  
     
-    })
-    const buffer = await this.pdfToolkitService2.generarPDF(user)  
+  
+   const buffer = await this.pdfToolkitService2.getpdfUserroutine(email)  
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'attachment; filename=PowerTrainingUserRoutines.pdf',
@@ -91,7 +85,9 @@ export class PdfreportsController {
     })
 
     res.end(buffer)
+    
   }
+
 
 
 
