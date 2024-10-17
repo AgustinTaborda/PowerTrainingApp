@@ -54,4 +54,11 @@ export class ExcelreportsController {
     const query = "SELECT users.\"name\",users.\"lastName\",users.\"birthDay\",users.\"email\",users.\"subscriptionEndDate\",users.\"isSubscribed\",users.\"role\" FROM public.\"users\";"
     return await this.excelreportsService.genericReport(response,query);
   }
+  @ApiOperation({ summary: 'All database users routines Report' })
+  @Get('AllRoutines')
+  async  AllRoutines(@Res() response: Response) {
+    
+    const query = "SELECT * FROM public.reporte_rutine;"
+    return await this.excelreportsService.genericReport(response,query);
+  }
 }

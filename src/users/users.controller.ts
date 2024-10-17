@@ -32,6 +32,7 @@ import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { notificationSender } from '../mailer/routinesender.service';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 @ApiTags('USERS')
 @Controller('users')
@@ -54,6 +55,11 @@ export class UsersController {
   @ApiOperation({ summary: 'Create a new user' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+  @Post('/admin')
+  @ApiOperation({ summary: 'Create a new Admin' })
+  async createAdmin(@Body() createAdminDto: CreateAdminDto) {
+    return await this.usersService.createAdmin(createAdminDto);
   }
   @Get('/logout')
   logout(@Res() res: Response) {
@@ -156,6 +162,7 @@ export class UsersController {
       'Update an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9 in param, and body, see example value below',
   })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    console.log(id)
     return this.usersService.update(id, updateUserDto);
   }
 

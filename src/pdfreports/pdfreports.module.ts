@@ -8,6 +8,7 @@ import { SubscriptionEntity } from '../subscriptions/entities/subscription.entit
 import { PDFToolkitService } from './pdfreports.tutorial';
 import { RoutineEntity } from 'src/routine/entities/routine.entity';
 import { TrainingDayEntity } from 'src/training_day/entities/training_day.entity';
+import { PDFToolkitService2 } from './pdfreport.user.routines';
 
 
 @Module({
@@ -19,6 +20,6 @@ import { TrainingDayEntity } from 'src/training_day/entities/training_day.entity
     TrainingDayEntity
   ])],
   controllers: [PdfreportsController],
-  providers: [PdfreportsService,PDFToolkitService],
+  providers: [PdfreportsService,PDFToolkitService,PDFToolkitService2],
 })
 export class PdfreportsModule {}

@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Inject } from '@nestjs/common';
 import { PdfreportsService } from './pdfreports.service';
 import { Response } from 'express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PDFToolkitService } from './pdfreports.tutorial';
+import { PDFToolkitService2 } from './pdfreport.user.routines';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from '../users/entities/user.entity';
+import { Repository } from 'typeorm';
 
 
 
@@ -11,7 +15,10 @@ import { PDFToolkitService } from './pdfreports.tutorial';
 export class PdfreportsController {
   constructor(
     private readonly pdfreportsService: PdfreportsService,
-    private readonly pdfToolkitService: PDFToolkitService
+    private readonly pdfToolkitService: PDFToolkitService,
+    private readonly pdfToolkitService2: PDFToolkitService2,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
    
 
   ) {}
@@ -62,6 +69,30 @@ export class PdfreportsController {
 
     res.end(buffer)
   }
+
+  
+  @ApiOperation({ summary: 'User PDF report , attached format, @Param = email' })
+  @Get('userroutine/pdf')
+  async getpdfUserroutine(@Param('email') email: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const user : UserEntity = await this.userRepository.findOne({
+      where: {
+        email: email,
+      },
+      relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+    
+    })
+    const buffer = await this.pdfToolkitService2.generarPDF(user)  
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=PowerTrainingUserRoutines.pdf',
+      'Content-Length': buffer.length,
+    })
+
+    res.end(buffer)
+  }
+
 
 
   @ApiOperation({ summary: 'Reporte de rutinas activas de los usuarios para admins en PDF' })

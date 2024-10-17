@@ -45,7 +45,6 @@ let UsersService = class UsersService {
         }
         return dbUser;
     }
-<<<<<<< HEAD
     async createAdmin(createAdminDto) {
         const user = await this.userRepository.findOne({
             where: { email: createAdminDto.email },
@@ -60,15 +59,13 @@ let UsersService = class UsersService {
         const dbAdmin = await this.userRepository.save({
             ...createAdminDto,
             password: hashedPassword,
-            role: roles_enum_1.Role.Admin,
+            role: roles_enum_1.Role.Admin
         });
         if (!dbAdmin) {
             throw new common_1.BadRequestException('User could not be register correctly');
         }
         return dbAdmin;
     }
-=======
->>>>>>> 769590450248c501bb94c5d173f3bf3fa0add1e0
     async findAll(limit, page) {
         page = Math.max(1, Math.round(page));
         limit = Math.max(1, Math.round(limit));
@@ -125,18 +122,28 @@ let UsersService = class UsersService {
     }
     async findOneUser(id) {
         return await this.userRepository.findOne({
-            where: { id }
+            where: { id },
         });
     }
     async update(id, updateUserDto) {
-        const user = await this.userRepository.findOne({ where: { id } });
-        if (!user) {
-            throw new common_1.BadRequestException('User not found');
+        try {
+            let user = await this.userRepository.findOne({ where: { id } });
+            if (!user) {
+                throw new common_1.BadRequestException('User not found');
+            }
+            if (updateUserDto.password) {
+                const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+                user.password = hashedPassword;
+            }
+            user = { ...user, ...updateUserDto };
+            return await this.userRepository.update(id, user);
         }
-        const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-        user.password = hashedPassword;
-        await this.userRepository.update(id, updateUserDto);
-        return await this.userRepository.findOne({ where: { id } });
+        catch (error) {
+            return {
+                success: false,
+                message: error.message
+            };
+        }
     }
     async changeOtp(email, otp, newPassword) {
         const user = await this.userRepository.findOne({ where: { email } });
@@ -165,14 +172,24 @@ let UsersService = class UsersService {
     async receiveRoutineByemail(email) {
         const user = await this.userRepository.findOne({
             where: { email: email },
-            relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+            relations: [
+                'routines',
+                'routines.trainingDays',
+                'routines.trainingDays.exercises',
+                'routines.trainingDays.exercises.exercise',
+            ],
         });
         return this.notificationSender.receiveRoutineByemail(user);
     }
     async receiveRoutineByUUID(uuid) {
         const user = await this.userRepository.findOne({
             where: { id: uuid },
-            relations: ['routines', 'routines.trainingDays', 'routines.trainingDays.exercises', 'routines.trainingDays.exercises.exercise'],
+            relations: [
+                'routines',
+                'routines.trainingDays',
+                'routines.trainingDays.exercises',
+                'routines.trainingDays.exercises.exercise',
+            ],
         });
         return this.notificationSender.receiveRoutineByemail(user);
     }
