@@ -11,6 +11,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         })
         id : string = uuid();
         */
+       /*
        @ApiProperty({
         description : "Nombre del usuario",
         example : "Luis"
@@ -53,6 +54,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
             example : "2022-01-01"
         })
         subscriptionEndDate: Date;
-        
+        */
 
 }

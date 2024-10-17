@@ -126,14 +126,24 @@ let UsersService = class UsersService {
         });
     }
     async update(id, updateUserDto) {
-        const user = await this.userRepository.findOne({ where: { id } });
-        if (!user) {
-            throw new common_1.BadRequestException('User not found');
+        try {
+            let user = await this.userRepository.findOne({ where: { id } });
+            if (!user) {
+                throw new common_1.BadRequestException('User not found');
+            }
+            if (updateUserDto.password) {
+                const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+                user.password = hashedPassword;
+            }
+            user = { ...user, ...updateUserDto };
+            return await this.userRepository.update(id, user);
         }
-        const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-        user.password = hashedPassword;
-        await this.userRepository.update(id, updateUserDto);
-        return await this.userRepository.findOne({ where: { id } });
+        catch (error) {
+            return {
+                success: false,
+                message: error.message
+            };
+        }
     }
     async changeOtp(email, otp, newPassword) {
         const user = await this.userRepository.findOne({ where: { email } });

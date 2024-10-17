@@ -164,19 +164,28 @@ export class UsersService {
   }
 
   async update(id: uuid, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    try {
+      
+    
+    let user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    //   if (updateUserDto.password) {
+     if (updateUserDto.password) {
     const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
     user.password = hashedPassword;
-
+     }
     //    return await this.userRepository.save(user);
     //  }
-
-    await this.userRepository.update(id, updateUserDto);
-    return await this.userRepository.findOne({ where: { id } });
+    user = { ...user, ...updateUserDto };
+    
+    return  await this.userRepository.update(id, user);
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message
+    }
+  }
   }
 
   async changeOtp(email: string, otp: string, newPassword: string) {
