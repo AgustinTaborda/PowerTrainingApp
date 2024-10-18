@@ -7,6 +7,7 @@ import { RoutineEntity } from './entities/routine.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { ExerciseEntity } from 'src/exercises/entities/exercise.entity';
+import { Role } from 'src/auth/roles.enum';
 
 @Injectable()
 export class RoutineService {
@@ -143,7 +144,9 @@ export class RoutineService {
   // Obtener estadísticas
   async getStatistics(): Promise<{ users: number; routines: number; exercises: number }> {
     try {
-      const totalUsers = await this.userRepository.count();
+      const totalUsers = await this.userRepository.count({
+        where: { role: Role.User }, // Filtrar por rol
+      });
       const totalRoutines = await this.routineRepository.count();
       const totalExercises = await this.exerciseRepository.count();
 
@@ -157,4 +160,49 @@ export class RoutineService {
       throw new BadRequestException('Failed to retrieve statistics');
     }
   }
+
+  // RoutineService.ts
+
+  async getRoutineCompletionPercentage() {
+    // Obtener todas las rutinas con sus días de entrenamiento y ejercicios
+    const routines = await this.routineRepository.find({
+      relations: [
+        'user',
+        'trainingDays',
+        'trainingDays.exercises',
+      ],
+    });
+
+    // Preparar el resultado
+    const routinesCompletion = routines.map(routine => {
+      let totalExercises = 0;
+      let completedExercises = 0;
+
+      // Iterar sobre los días de entrenamiento
+      routine.trainingDays.forEach(trainingDay => {
+        // Iterar sobre los ejercicios de cada día
+        trainingDay.exercises.forEach(userRoutineExercise => {
+          totalExercises += 1;
+          if (userRoutineExercise.completed) {
+            completedExercises += 1;
+          }
+        });
+      });
+
+      // Calcular el porcentaje de completitud
+      const completionPercentage = totalExercises > 0 ? (completedExercises / totalExercises) * 100 : 0;
+
+      return {
+        routineId: routine.id,
+        routineName: routine.name,
+        userId: routine.user.id,
+        completionPercentage: completionPercentage.toFixed(2), // Porcentaje con 2 decimales
+        totalExercises,
+        completedExercises,
+      };
+    });
+
+    return routinesCompletion;
+  }
+
 }
