@@ -35,7 +35,7 @@ async function bootstrap() {
   };
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Api Backend PowerTrainingApp, PF Henry 17/10/2024 17:10 ')
+    .setTitle('Api Backend PowerTrainingApp, PF Henry 17/10/2024 21:46 ')
     .setDescription(
       'Api con la documentación de cada endpoint disponible en la aplicación <br><ul>'+
       '<li>[DOCUMENTO PROPUESTA](https://docs.google.com/document/d/1wvy5_HF3dLqiopC9N9y4wPnM6jVAU-wKj5h8ycFf-xQ/edit?tab=t.0)<BR>'+
