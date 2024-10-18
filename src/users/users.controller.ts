@@ -91,6 +91,28 @@ export class UsersController {
   findAll(@Query('limit') limit: number = 5, @Query('page') page: number = 1) {
     return this.usersService.findAll(limit, page);
   }
+  
+  
+  @ApiBearerAuth('access-token')
+  @Roles(Role.Admin, Role.Superadmin)
+  @UseGuards(CombinedAuthGuard, RolesGuard)
+  @Get('usersWithCount')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    example: 5,
+    description: 'Limite de items por página',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    example: 1,
+    description: 'Número de página',
+  })
+  @ApiOperation({ summary: 'Retrieve all users' })
+  findAllWithCount(@Query('limit') limit: number = 5, @Query('page') page: number = 1) {
+    return this.usersService.findAllWithCount(limit, page);
+  }
 
   @ApiBearerAuth('access-token')
   @Roles(Role.Admin, Role.Superadmin)

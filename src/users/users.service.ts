@@ -84,6 +84,31 @@ export class UsersService {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
+  
+  async findAllWithCount(limit: number, page: number): Promise<{ data: UserEntity[]; count: number }> {
+    try {
+      page = Math.max(1, Math.round(page));
+      limit = Math.max(1, Math.round(limit));
+  
+      const total = await this.userRepository.count({ where: { role: Role.User } });
+  
+      const users: UserEntity[] = await this.userRepository.find({
+        where: { role: Role.User },
+        take: limit,
+        skip: (page - 1) * limit,
+        order: { name: 'ASC' },
+        relations: ['routines'],
+      });
+  
+      return {
+        data: users,
+        count: total, 
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+  
 
   async findAllByFilters(
     filters: {
