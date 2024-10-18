@@ -8,6 +8,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { ExerciseEntity } from 'src/exercises/entities/exercise.entity';
 import { Role } from 'src/auth/roles.enum';
+import { Status } from 'src/exercises/types/status.enum';
 
 @Injectable()
 export class RoutineService {
@@ -145,10 +146,13 @@ export class RoutineService {
   async getStatistics(): Promise<{ users: number; routines: number; exercises: number }> {
     try {
       const totalUsers = await this.userRepository.count({
-        where: { role: Role.User }, // Filtrar por rol
+        where: { role: Role.User }, 
       });
       const totalRoutines = await this.routineRepository.count();
-      const totalExercises = await this.exerciseRepository.count();
+      
+      const totalExercises = await this.exerciseRepository.count({
+        where: { status: Status.ACTIVE }
+      });
 
       return {
         users: totalUsers,
