@@ -56,8 +56,8 @@ export class ExercisesController {
     @Query('benefits') benefits?: string,
     @Query('tags') tags?: string,
     @Query('status') status?: string,
-    @Query('page') page: number = 1,  // Página por defecto es 1
-    @Query('limit') limit: number = 10 // Límite por defecto es 10
+    @Query('page') page: number = 1,  
+    @Query('limit') limit: number = 10 
   ): Promise<{ data: ExerciseEntity[], count: number }> {
     console.log(status)
     return this.exercisesService.findAllByFilters({ name, benefits, tags, status }, page, limit);
@@ -67,11 +67,6 @@ export class ExercisesController {
   findOne(@Param('id') id: string) {
     return this.exercisesService.findOne(id);
   }
-  /*@UseGuards(JwtAuthGuard) // Aplica el guardia a esta ruta
-  @Get('/protected')
-  test() {
-    return 'este es un recurso protegido';
-  }*/
 
   @Patch(':id')
   @ApiOperation({ summary: 'You can update exercises, remember only 3 types of status lowercase active or inactive or trash' }) 
