@@ -55,6 +55,12 @@ export class RoutineController {
     return await this.routineService.getStatistics();
   }
 
+
+  @Get('completion-percentage')
+  async getRoutineCompletionPercentage() {
+    return await this.routineService.getRoutineCompletionPercentage();
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Get a routine by ID' })
   async findOne(@Param('id') id: string) {
@@ -84,5 +90,5 @@ export class RoutineController {
       throw new BadRequestException(error.message || `Failed to delete routine with ID ${id}`);
     }
   }
-  
+
 }

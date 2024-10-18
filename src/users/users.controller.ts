@@ -72,7 +72,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  //@Roles(Role.Admin, Role.Superadmin)
+  @Roles(Role.Admin, Role.Superadmin)
   @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get()
   @ApiQuery({
@@ -93,7 +93,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  //@Roles(Role.Admin, Role.Superadmin)
+  @Roles(Role.Admin, Role.Superadmin)
   @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get('/related')
   @ApiOperation({ summary: 'Retrieve all users with their relations' })
@@ -121,8 +121,8 @@ export class UsersController {
     @Query('birthday') birthday?: string,
     @Query('role') role?: string,
     @Query('email') email?: string,
-    @Query('page') page: number = 1, // Página por defecto es 1
-    @Query('limit') limit: number = 10, // Límite por defecto es 10
+    @Query('page') page: number = 1, 
+    @Query('limit') limit: number = 10, 
   ): Promise<{ data: UserEntity[]; count: number }> {
     if (!name && !lastname && !birthday && !role && !email) {
       throw new BadRequestException(
@@ -135,6 +135,7 @@ export class UsersController {
       limit,
     );
   }
+
   /*
   @Get('/auth1')
   loginWhitAuth0(@Req() req : Request) {
@@ -142,6 +143,7 @@ export class UsersController {
    console.log('El estado de req.oidc.isAuthenticated() en users.controller.ts es '+req.oidc.isAuthenticated());
     return req.oidc.isAuthenticated() ? 'Logged in' : 'Not logged in';
   }*/
+
   @ApiBearerAuth('access-token')
   @UseGuards(CombinedAuthGuard)
   @Get(':id')
@@ -167,7 +169,7 @@ export class UsersController {
   }
 
   // @ApiBearerAuth('access-token')
-  // @UseGuards(CombinedAuthGuard)
+  @UseGuards(CombinedAuthGuard)
   @Delete(':id')
   @ApiOperation({
     summary:
@@ -180,7 +182,7 @@ export class UsersController {
   @Post('receiveroutinesByEmail/:email')
   async receiveRoutineByemail(@Param('email') email: string) {
    
-    return await this.usersService.receiveRoutineByemail(email);
+    return await this.usersService.receiveRoutineByEmail(email);
   }
   
   @Post('receiveroutinesByUuid/:uuid')

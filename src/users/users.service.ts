@@ -2,7 +2,6 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,74 +22,67 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    // @Inject(notificationSender)
-    // private notificationSender: notificationSender,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const user = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
-    if (user) {
-      throw new BadRequestException('Email already in use');
-    }
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: createUserDto.email },
+      });
+      if (user) {
+        throw new BadRequestException('Email already in use');
+      }
 
-    const hashedPassword: string = await bcrypt.hash(
-      createUserDto.password,
-      10,
-    );
-    if (!hashedPassword) {
-      throw new BadRequestException('Password could not be hashed');
-    }
+      const hashedPassword: string = await bcrypt.hash(createUserDto.password, 10);
+      const dbUser = await this.userRepository.save({
+        ...createUserDto,
+        password: hashedPassword,
+      });
 
-    const dbUser = await this.userRepository.save({
-      ...createUserDto,
-      password: hashedPassword,
-    });
-    if (!dbUser) {
-      throw new BadRequestException('User could not be register correctly');
+      return dbUser;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
-
-    return dbUser;
   }
 
-  async createAdmin(createAdminDto: CreateAdminDto) {
-    const user = await this.userRepository.findOne({
-      where: { email: createAdminDto.email },
-    });
-    if (user) {
-      throw new BadRequestException('Email already in use');
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: createAdminDto.email },
+      });
+      if (user) {
+        throw new BadRequestException('Email already in use');
+      }
+
+      const hashedPassword: string = await bcrypt.hash(createAdminDto.password, 10);
+      const dbAdmin = await this.userRepository.save({
+        ...createAdminDto,
+        password: hashedPassword,
+        role: Role.Admin,
+      });
+
+      return dbAdmin;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
-    const hashedPassword: string = await bcrypt.hash(
-      createAdminDto.password,
-      10,
-    );
-    if (!hashedPassword) {
-      throw new BadRequestException('Password could not be hashed');
-    }
-    const dbAdmin = await this.userRepository.save({
-      ...createAdminDto,
-      password: hashedPassword,
-      role: Role.Admin
-    });
-    if (!dbAdmin) {
-      throw new BadRequestException('User could not be register correctly');
-    }
-    return dbAdmin;
   }
 
-  async findAll(limit: number, page: number) {
-    page = Math.max(1, Math.round(page));
-    limit = Math.max(1, Math.round(limit));
+  async findAll(limit: number, page: number): Promise<UserEntity[]> {
+    try {
+      page = Math.max(1, Math.round(page));
+      limit = Math.max(1, Math.round(limit));
 
-    const users: UserEntity[] = await this.userRepository.find({
-      take: limit,
-      skip: (page - 1) * limit,
-      order: { name: 'ASC' },
-      relations: ['routines'],
-    });
+      const users: UserEntity[] = await this.userRepository.find({
+        take: limit,
+        skip: (page - 1) * limit,
+        order: { name: 'ASC' },
+        relations: ['routines'],
+      });
 
-    return users;
+      return users;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async findAllByFilters(
@@ -101,30 +93,23 @@ export class UsersService {
       role?: string;
       email?: string;
     },
-    page: number = 1, // Página actual, por defecto es la 1
-    limit: number = 10, // Límite de resultados por página, por defecto 10
+    page: number = 1,
+    limit: number = 10,
   ): Promise<{ data: UserEntity[]; count: number }> {
     try {
       const qb = this.userRepository.createQueryBuilder('users');
       qb.leftJoinAndSelect('users.routines', 'routines');
 
-      // Aplicar filtros dinámicos
       if (filters.name) {
-        qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', {
-          name: filters.name,
-        });
+        qb.andWhere('LOWER(users.name) LIKE LOWER(:name)', { name: filters.name });
       }
 
       if (filters.lastname) {
-        qb.andWhere('LOWER(users.lastName) LIKE LOWER(:lastname)', {
-          lastname: filters.lastname,
-        });
+        qb.andWhere('LOWER(users.lastName) LIKE LOWER(:lastname)', { lastname: filters.lastname });
       }
 
       if (filters.birthday) {
-        qb.andWhere('users.birthDay = :birthday', {
-          birthday: filters.birthday,
-        });
+        qb.andWhere('users.birthDay = :birthday', { birthday: filters.birthday });
       }
 
       if (filters.role !== undefined) {
@@ -132,117 +117,148 @@ export class UsersService {
       }
 
       if (filters.email) {
-        qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', {
-          email: `%${filters.email}%`,
-        });
+        qb.andWhere('LOWER(users.email) LIKE LOWER(:email)', { email: `%${filters.email}%` });
       }
 
-      // Paginación: definir el offset y el límite
       const offset = (page - 1) * limit;
       qb.skip(offset).take(limit);
 
-      // Obtener los resultados y el total
-      const [data, count] = await qb.getManyAndCount(); // Esto devuelve los resultados y el conteo total de registros
-
-      return { data, count }; // Devolvemos los resultados y el total
+      const [data, count] = await qb.getManyAndCount();
+      return { data, count };
     } catch (error) {
-      console.log(error);
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async findOne(id: string) {
-    return await this.userRepository.findOne({
-      where: { id },
-      relations: ['routines'],
-    });
-  }
-  async findOneUser(id: string) {
-    return await this.userRepository.findOne({
-      where: { id },
-    });
-  }
-
-  async update(id: uuid, updateUserDto: UpdateUserDto) {
+  async findOne(id: string): Promise<UserEntity> {
     try {
-      
-    
-    let user = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
-     if (updateUserDto.password) {
-    const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-    user.password = hashedPassword;
-     }
-    //    return await this.userRepository.save(user);
-    //  }
-    user = { ...user, ...updateUserDto };
-    
-    return  await this.userRepository.update(id, user);
-  } catch (error) {
-    return {
-      success: false,
-      message: error.message
+      const user = await this.userRepository.findOne({
+        where: { id },
+        relations: ['routines'],
+      });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-  }
 
-  async changeOtp(email: string, otp: string, newPassword: string) {
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) {
-      throw new BadRequestException('User not found');
+  async findOneUser(id: string): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
+  }
 
-    if (user.resetOtp !== otp || user.otpExpiresAt < new Date()) {
-      throw new BadRequestException('Invalid or expired OTP');
+  async update(id: uuid, updateUserDto: UpdateUserDto): Promise<void> {
+    try {
+      let user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+
+      if (updateUserDto.password) {
+        const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
+        user.password = hashedPassword;
+      }
+
+      user = { ...user, ...updateUserDto };
+      await this.userRepository.update(id, user);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    user.resetOtp = null;
-    user.otpExpiresAt = null;
-    await this.userRepository.save(user);
-
-    return 'Password changed successfully';
   }
 
-  async remove(id: uuid) {
-    return await this.userRepository.delete(id);
+  async changeOtp(email: string, otp: string, newPassword: string): Promise<string> {
+    try {
+      const user = await this.userRepository.findOne({ where: { email } });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+
+      if (user.resetOtp !== otp || user.otpExpiresAt < new Date()) {
+        throw new BadRequestException('Invalid or expired OTP');
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.resetOtp = null;
+      user.otpExpiresAt = null;
+      await this.userRepository.save(user);
+
+      return 'Password changed successfully';
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  async findAllRelated() {
-    const users: UserEntity[] = await this.userRepository.find({
-      relations: ['payments', 'routines', 'subscriptions'],
-    });
-
-    return users;
+  async remove(id: uuid): Promise<void> {
+    try {
+      const result = await this.userRepository.delete(id);
+      if (result.affected === 0) {
+        throw new BadRequestException('User not found');
+      }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  async receiveRoutineByemail(email: string) {
-    const user = await this.userRepository.findOne({
-      where: { email: email },
-      relations: [
-        'routines',
-        'routines.trainingDays',
-        'routines.trainingDays.exercises',
-        'routines.trainingDays.exercises.exercise',
-      ],
-    });
-    return this.notificationSender.receiveRoutineByemail(user);
+  async findAllRelated(): Promise<UserEntity[]> {
+    try {
+      const users = await this.userRepository.find({
+        relations: ['payments', 'routines', 'subscriptions'],
+      });
+      return users;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async receiveRoutineByEmail(email: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email },
+        relations: [
+          'routines',
+          'routines.trainingDays',
+          'routines.trainingDays.exercises',
+          'routines.trainingDays.exercises.exercise',
+        ],
+      });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      return this.notificationSender.receiveRoutineByemail(user);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async receiveRoutineByUUID(uuid: string) {
-    const user = await this.userRepository.findOne({
-      where: { id: uuid },
-      relations: [
-        'routines',
-        'routines.trainingDays',
-        'routines.trainingDays.exercises',
-        'routines.trainingDays.exercises.exercise',
-      ],
-    });
-    return this.notificationSender.receiveRoutineByemail(user);
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: uuid },
+        relations: [
+          'routines',
+          'routines.trainingDays',
+          'routines.trainingDays.exercises',
+          'routines.trainingDays.exercises.exercise',
+        ],
+      });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      return this.notificationSender.receiveRoutineByemail(user);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async seedUsers() {
