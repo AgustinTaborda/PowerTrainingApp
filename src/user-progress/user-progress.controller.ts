@@ -5,7 +5,7 @@ import { UpdateUserProgressDto } from './dto/update-user-progress.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
-@ApiTags('user-progress')
+@ApiTags('USER-PROGRESS')
 @ApiBearerAuth('access-token')
 @UseGuards(CombinedAuthGuard) 
 @Controller('user-progress')

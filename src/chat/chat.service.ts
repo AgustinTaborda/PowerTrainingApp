@@ -59,6 +59,12 @@ export class ChatService {
       sender,
       receiver,
     });
+    // Actualizar el timestamp del último mensaje del sender
+    if (receiver.role === Role.Admin) {
+      sender.lastMessageTimestamp = new Date();
+      await this.userRepository.save(sender);
+    }
+
     return this.messageRepository.save(message);
   }
 
@@ -75,6 +81,30 @@ export class ChatService {
     });
 
     return status;
+  }
+
+  async getUsersOrderedByLastMessage(): Promise<UserEntity[]> {
+    const users = await this.userRepository.find();
+
+    // Ordenar usuarios: primero por timestamp más reciente, luego los que tienen lastMessageTimestamp como null
+    users.sort((a, b) => {
+      if (a.lastMessageTimestamp === null && b.lastMessageTimestamp !== null) {
+        return 1; // b debe ir antes que a
+      }
+      if (a.lastMessageTimestamp !== null && b.lastMessageTimestamp === null) {
+        return -1; // a debe ir antes que b
+      }
+      if (a.lastMessageTimestamp === null && b.lastMessageTimestamp === null) {
+        return 0; // ambos son iguales
+      }
+      // Si ambos tienen timestamp, ordenar por fecha más reciente
+      return (
+        new Date(b.lastMessageTimestamp).getTime() -
+        new Date(a.lastMessageTimestamp).getTime()
+      );
+    });
+
+    return users;
   }
 
   // Marcar mensajes como leídos

@@ -24,18 +24,18 @@ const isTest = false;
       throw new UnauthorizedException('Authorization header is missing');
     }
 
-    // Intentar primero verificar si el token es un JWT propio (emitido por tu backend)
+    // Intentar primero verificar si el token es un JWT propio
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
       request.user = payload;
-      return true;  // El token JWT fue verificado correctamente
+      return true;  
     } catch (err) {
       console.log('No es un JWT válido, intentando Google...');
     }
 
-    // Si el token no es válido para tu JWT, intentar verificarlo como un token de Google
+    // Si el token no es válido, intentar verificarlo como un token de Google
     try {
       const decodedHeader = jwt.decode(token, { complete: true })?.header;
       const kid = decodedHeader?.kid;
@@ -55,7 +55,7 @@ const isTest = false;
       const decodedGoogleToken = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
       
       request.user = decodedGoogleToken;
-      return true;  // El token de Google fue verificado correctamente
+      return true;  
     } catch (err) {
       console.log('Token inválido', err);
       throw new UnauthorizedException('Invalid token');

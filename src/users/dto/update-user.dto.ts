@@ -11,42 +11,49 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         })
         id : string = uuid();
         */
+       /*
        @ApiProperty({
         description : "Nombre del usuario",
         example : "Luis"
        }    
        )     
         name: string;
+
         @ApiProperty({
             description : "Apellidos del usuario",
             example : "Lopez"
         })   
         lastName: string;
+
         @ApiProperty({
             description : "Fecha de nacimiento del usuario",
             example : "2000-01-01"
         })    
         birthDay: Date;
+
         @ApiProperty({
             description : "Email del usuario",
             example : "luis@gmail.com"
         })   
         email: string;
+
         @ApiProperty({
             description : "Contraseña del usuario",
             example : "123456"
         })    
         password: string;
+
         @ApiProperty({
             description : "El rol que tiene este usuario",
             example : "Admin / User / Superadmin"
         })
         role: Role;
+        
         @ApiProperty({
             description : "Fecha de finalización de la suscripción",
             example : "2022-01-01"
         })
         subscriptionEndDate: Date;
-        
+        */
 
 }

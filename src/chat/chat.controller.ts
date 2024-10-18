@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Patch } from '@nestjs/common';
 import { ChatService } from './chat.service';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('CHAT')
 @Controller('chat')
 export class ChatController {
   constructor(private chatService: ChatService) {}
@@ -19,5 +20,10 @@ export class ChatController {
   async markMessagesAsRead(@Param('userId') userId: string) {
     const admin = await this.chatService.getAdminUser();
     return this.chatService.markMessagesAsRead(userId, admin.id);
+  }
+
+  @Get('/users-ordered-by-last-message')
+  async getUsersOrderedByLastMessage() {
+    return this.chatService.getUsersOrderedByLastMessage();
   }
 }

@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, BadRequestException, Query, ParseUUIDPipe } from '@nestjs/common';
 import { RoutineService } from './routine.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { ApiBearerAuth, ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 
-@ApiTags('Routine')
+@ApiTags('ROUTINE')
 @ApiBearerAuth('access-token')
 @UseGuards(CombinedAuthGuard)
 @Controller('routine')
@@ -36,8 +36,32 @@ export class RoutineController {
       throw new BadRequestException(error.message || 'Failed to fetch routines');
     }
   }
+  
+  @Get('/user/:userId')
+  @ApiOperation({ summary: 'Get routines by User ID' })
+  async findAllByUser(
+    @Param('userId', new ParseUUIDPipe()) userId: string
+  ) {
+    try {      
+      return await this.routineService.findByUserId(userId);
+    } catch (error) {
+      throw new BadRequestException(error.message || `Failed to fetch routines for the user ID ${userId}`);
+    }
+  }
 
-  @Get(':id')
+  @Get('/statistics')
+  @ApiOperation({ summary: 'Count routines, exercises and users' })
+  async getStatistics() {
+    return await this.routineService.getStatistics();
+  }
+
+
+  @Get('completion-percentage')
+  async getRoutineCompletionPercentage() {
+    return await this.routineService.getRoutineCompletionPercentage();
+  }
+
+  @Get('/:id')
   @ApiOperation({ summary: 'Get a routine by ID' })
   async findOne(@Param('id') id: string) {
     try {
@@ -66,4 +90,5 @@ export class RoutineController {
       throw new BadRequestException(error.message || `Failed to delete routine with ID ${id}`);
     }
   }
+
 }

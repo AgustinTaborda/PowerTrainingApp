@@ -10,7 +10,8 @@ import {
 import { SubscriptionPlanService } from './subscriptionsPlan.service';
 import { SubscriptionPlan } from './entities/subscriptionPlan.entity';
 import { ApiTags } from '@nestjs/swagger';
-@ApiTags('subscription-plans')
+
+@ApiTags('SUBSCIPTION-PLANS')
 @Controller('subscription-plans')
 export class SubscriptionPlanController {
   constructor(

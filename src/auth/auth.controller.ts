@@ -1,13 +1,19 @@
-import { Controller, Post, Body, Get, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CredentialsDto } from './dto/credentials.dto';
 import { Request } from 'express';
+import { UsersService } from 'src/users/users.service';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { RequestOtp } from './dto/requestOtp.dto';
 
-@ApiTags('Authorization')
+@ApiTags('AUTHORIZATION')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+    ) {}
 
   @Post('signin')
   authSignIn(@Body() credentials: CredentialsDto) {
@@ -35,5 +41,24 @@ export class AuthController {
         req.oidc.isAuthenticated()
       );
     }
+  }
+
+  @Post('request-otp')
+  @ApiOperation({ summary: 'Request an OTP to reset password' })
+  async requestOtp(@Body() requestOtp: RequestOtp) {
+    const { email } = requestOtp
+    return await this.authService.generateOtp(email);
+  }
+
+  @Post('reset')
+  @ApiOperation({ summary: 'Reset password using OTP' })
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    const { email, otp, newPassword, confirmPassword } = resetPasswordDto;
+
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
+    return await this.userService.changeOtp(email, otp, newPassword);
   }
 }

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmación de Compra - Suscripción</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: white;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #272626;
+        box-shadow: 4px 7px 16px 3px #0000001f;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        padding-bottom: 20px;
+      }
+      h1 {
+        color: #f9911e;
+        font-size: 25px;
+        padding-top: 20px;
+      }
+      h3 {
+        color: #f9911e;
+        margin: 0 35px;
+        padding-top: 20px;
+        padding-bottom: 10px;
+      }
+      p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .info {
+        margin: 20px 0;
+      }
+      .info p {
+        margin: 5px 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: white;
+        padding: 15px 0;
+        background: #777;
+      }
+      .card {
+        border: 1px solid #e2e2e2;
+        border-radius: 8px;
+        margin: 0px 35px;
+        color: white;
+      }
+      .card p {
+        padding: 0 15px;
+      }
+      .card p:nth-last-child(1) {
+        border-bottom: none;
+      }
+      .header div {
+        background-color: black;
+        padding: 20px 0;
+      }
+      .header div img {
+        width: 200px;
+      }
+      .contact {
+        text-align: center;
+        color: white;
+      }
+      .im {
+        color: #ffffff !important;
+      }
+      .thanks {
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="">
+          <img
+            class="w-1/3"
+            src="https://powertra.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo-white.12b30ffd.png&w=640&q=75"
+            alt=""
+          />
+        </div>
+        <h1 class="text-[#f9911e] text-2xl">
+          Thank you for your purchase! {{name}}!
+        </h1>
+        <p class="thanks">Your subscription has been successfully activated.</p>
+      </div>
+
+      <div class="card">
+        <p class="pb-2 px-4"><strong>Plan name :</strong> {{planName}}</p>
+        <p class="pb-2 px-4"><strong>Duration:</strong> {{duration}} months</p>
+        <p class="pb-2 px-4"><strong>Price:</strong> ${{price}} ARS</p>
+        <p class="pb-2 px-4"><strong>Start date :</strong> {{startDate}}</p>
+        <p class="px-4"><strong>End date :</strong> {{endDate}}</p>
+      </div>
+
+      <h3 class="text-lg mx-[35px] pt-2">Payment details :</h3>
+      <div class="card">
+        <p class="px-4"><strong>Payment ID :</strong> {{paymentId}}</p>
+      </div>
+
+      <p class="contact">
+        If you have any questions, please do not hesitate to contact us .
+      </p>
+
+      <div class="footer bg-gray-600 text-white py-5">
+        <p>© 2024 Power Training. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>

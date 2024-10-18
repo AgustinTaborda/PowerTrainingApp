@@ -1,13 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateRoutineDto } from './create-routine.dto';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, IsNotEmpty, IsDate } from 'class-validator';
 
 export class UpdateRoutineDto extends PartialType(CreateRoutineDto) {
   
   @ApiPropertyOptional({
-    description: 'Nombre descriptivo de la rutina',
-    example: 'Pecho y triceps',
+    description: 'Indica el nombre de la rutina',
+    example: 'Rutina de ejemplo',
   })
   @IsString()
   @IsOptional()
@@ -20,6 +20,22 @@ export class UpdateRoutineDto extends PartialType(CreateRoutineDto) {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiPropertyOptional({
+    description: 'Fecha de inicio de la rutina',
+    example: '2024-10-01',
+  })
+  @IsDate()
+  @IsNotEmpty()
+  startDate: Date;
+
+  @ApiPropertyOptional({
+    description: 'Fecha de finalización de la rutina',
+    example: '2024-10-07',
+  })
+  @IsDate()
+  @IsNotEmpty()
+  endDate: Date;
 
   @ApiPropertyOptional({
     description: 'Indica si la rutina está completada o no',

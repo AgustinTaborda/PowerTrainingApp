@@ -31,8 +31,10 @@ import { CombinedAuthGuard } from 'src/guards/google-jwtauth.guard';
 import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/decorator/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { notificationSender } from '../mailer/routinesender.service';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
-@ApiTags('users')
+@ApiTags('USERS')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -54,6 +56,11 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+  @Post('/admin')
+  @ApiOperation({ summary: 'Create a new Admin' })
+  async createAdmin(@Body() createAdminDto: CreateAdminDto) {
+    return await this.usersService.createAdmin(createAdminDto);
+  }
   @Get('/logout')
   logout(@Res() res: Response) {
     // Redirigir al usuario al logout de Auth0
@@ -65,7 +72,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  //@Roles(Role.Admin, Role.Superadmin)
+  @Roles(Role.Admin, Role.Superadmin)
   @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get()
   @ApiQuery({
@@ -85,9 +92,8 @@ export class UsersController {
     return this.usersService.findAll(limit, page);
   }
 
-
   @ApiBearerAuth('access-token')
-  //@Roles(Role.Admin, Role.Superadmin)
+  @Roles(Role.Admin, Role.Superadmin)
   @UseGuards(CombinedAuthGuard, RolesGuard)
   @Get('/related')
   @ApiOperation({ summary: 'Retrieve all users with their relations' })
@@ -115,8 +121,8 @@ export class UsersController {
     @Query('birthday') birthday?: string,
     @Query('role') role?: string,
     @Query('email') email?: string,
-    @Query('page') page: number = 1, // Página por defecto es 1
-    @Query('limit') limit: number = 10, // Límite por defecto es 10
+    @Query('page') page: number = 1, 
+    @Query('limit') limit: number = 10, 
   ): Promise<{ data: UserEntity[]; count: number }> {
     if (!name && !lastname && !birthday && !role && !email) {
       throw new BadRequestException(
@@ -129,6 +135,7 @@ export class UsersController {
       limit,
     );
   }
+
   /*
   @Get('/auth1')
   loginWhitAuth0(@Req() req : Request) {
@@ -136,6 +143,7 @@ export class UsersController {
    console.log('El estado de req.oidc.isAuthenticated() en users.controller.ts es '+req.oidc.isAuthenticated());
     return req.oidc.isAuthenticated() ? 'Logged in' : 'Not logged in';
   }*/
+
   @ApiBearerAuth('access-token')
   @UseGuards(CombinedAuthGuard)
   @Get(':id')
@@ -156,10 +164,11 @@ export class UsersController {
       'Update an specific user by id (UUID), example: 06b715e7-8b21-4398-a610-940e473f95e9 in param, and body, see example value below',
   })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    console.log(id)
     return this.usersService.update(id, updateUserDto);
   }
 
-  @ApiBearerAuth('access-token')
+  // @ApiBearerAuth('access-token')
   @UseGuards(CombinedAuthGuard)
   @Delete(':id')
   @ApiOperation({
@@ -169,4 +178,17 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id); // dato interesante, si se le coloca +id, el "+" lo convierte a number
   }
+
+  @Post('receiveroutinesByEmail/:email')
+  async receiveRoutineByemail(@Param('email') email: string) {
+   
+    return await this.usersService.receiveRoutineByEmail(email);
+  }
+  
+  @Post('receiveroutinesByUuid/:uuid')
+  async receiveRoutineByUuid(@Param('uuid') uuid: string) {
+   
+    return await this.usersService.receiveRoutineByUUID(uuid);
+  }
+    
 }

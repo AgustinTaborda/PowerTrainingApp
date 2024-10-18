@@ -15,8 +15,21 @@ export class ExcelreportsService {
   ) {}
 
 
-  async generateExcel(response: Response): Promise<void> {
-    const data = await this.execisesRepository.find(); 
+  async getAllExercises(response: Response): Promise<void> {
+    const data = await this.execisesRepository
+    .createQueryBuilder('exercises')
+    .select([
+      'exercises.name',
+      'exercises.description',
+      'exercises.urlvideoexample',
+      'exercises.benefits',
+      'exercises.tags',
+      'exercises.status'
+    ]) 
+    .getMany();
+
+    
+
 
     await this.generateExcelReport(data,response);
        

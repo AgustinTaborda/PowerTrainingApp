@@ -9,7 +9,7 @@ export class dailyNotificationDto extends PartialType(NotificationscheduleEntity
             example: '03578b28-9b12-451d-b6da-23934ed85bce'
         })
     userId: string= uuid();
-
+    //cambio para git
     @ApiProperty(
         {
             example: '5906e7c0-ece7-4eff-867a-0c1cf5e1ae02'
